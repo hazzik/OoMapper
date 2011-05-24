@@ -42,63 +42,65 @@ namespace OoMapper
         }
 
         private static Expression FindMember(Type destinationType, string name, Expression source,
-                                             PropertyInfo[] sourceMembers)
+                                             IEnumerable<PropertyInfo> sourceMembers)
         {
-            PropertyInfo propertyInfo =
-                sourceMembers.FirstOrDefault(
-                    pi => string.Equals(pi.Name, name, StringComparison.InvariantCultureIgnoreCase));
-            if (propertyInfo != null)
-            {
-                return CreatePropertyExpression(source, propertyInfo, destinationType);
-            }
-            PropertyInfo propertyInfo2 =
-                sourceMembers.FirstOrDefault(pi => name.StartsWith(pi.Name, StringComparison.InvariantCultureIgnoreCase));
-            if (propertyInfo2 != null)
-            {
-                return FindMember(destinationType, name.Substring(propertyInfo2.Name.Length),
-                                  CreatePropertyExpression(source, propertyInfo2, destinationType),
-                                  propertyInfo2.PropertyType.GetProperties());
-            }
-            throw new NotSupportedException();
+            var list = new List<PropertyInfo>();
+            
+            FindMembers(list, name, sourceMembers);
+
+            return list.Aggregate(source, (current, memberInfo) => CreatePropertyExpression(current, memberInfo, destinationType));
+        }
+
+        private static void FindMembers(ICollection<PropertyInfo> list, string name, IEnumerable<PropertyInfo> sourceMembers)
+        {
+            if (string.IsNullOrEmpty(name))
+                return;
+            PropertyInfo propertyInfo = sourceMembers.FirstOrDefault(pi => name.StartsWith(pi.Name, StringComparison.InvariantCultureIgnoreCase));
+            if (propertyInfo == null)
+                throw new NotSupportedException();
+
+            list.Add(propertyInfo);
+            FindMembers(list, name.Substring(propertyInfo.Name.Length), propertyInfo.PropertyType.GetProperties());
         }
 
         private static Expression CreatePropertyExpression(Expression source, PropertyInfo sourceProperty,
                                                            Type destinationType)
         {
-            Type sourceType = sourceProperty.PropertyType;
-
             MemberExpression property = Expression.Property(source, sourceProperty);
 
             if (destinationType.IsArray)
             {
-                if (sourceType.IsArray)
-                {
-                    destinationType = destinationType.GetElementType();
-                    sourceType = sourceType.GetElementType();
+                destinationType = destinationType.GetElementType();
+                
+                var sourceType = GetElementType(sourceProperty.PropertyType);
 
-                    Tuple<Type, Type> key = Tuple.Create(sourceType, destinationType);
-                    LambdaExpression mapper = mappers[key];
-
-                    return Expression.Call(typeof (Enumerable), "ToArray", new[] {destinationType},
-                                           Expression.Call(typeof (Enumerable), "Select",
-                                                           new[] {sourceType, destinationType},
-                                                           property, mapper));
-                }
-                if (sourceType.IsGenericType && sourceType.GetGenericTypeDefinition() == typeof (IEnumerable<>))
-                {
-                    destinationType = destinationType.GetElementType();
-                    sourceType = sourceType.GetGenericArguments().First();
-
-                    Tuple<Type, Type> key = Tuple.Create(sourceType, destinationType);
-                    LambdaExpression mapper = mappers[key];
-
-                    return Expression.Call(typeof(Enumerable), "ToArray", new[] { destinationType },
-                                           Expression.Call(typeof(Enumerable), "Select",
-                                                           new[] { sourceType, destinationType },
-                                                           property, mapper));
-                }
+                Tuple<Type, Type> key = Tuple.Create(sourceType, destinationType);
+                
+                return CreateSelect(destinationType, property, sourceType, key);
             }
             return property;
+        }
+
+        private static Type GetElementType(Type propertyType)
+        {
+            if (propertyType.IsArray)
+            {
+                return propertyType.GetElementType();
+            }
+            if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof (IEnumerable<>))
+            {
+                return propertyType.GetGenericArguments().First();
+            }
+            return null;
+        }
+
+        private static Expression CreateSelect(Type destinationType, Expression property, Type sourceType, Tuple<Type, Type> key)
+        {
+            LambdaExpression mapper = mappers[key];
+            return Expression.Call(typeof(Enumerable), "ToArray", new[] { destinationType },
+                                   Expression.Call(typeof(Enumerable), "Select",
+                                                   new[] { sourceType, destinationType },
+                                                   property, mapper));
         }
 
         public static TDestination Map<TSource, TDestination>(TSource source)
