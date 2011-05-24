@@ -43,7 +43,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MapCollections.cs" />
+    <Compile Include="MapArray.cs" />
+    <Compile Include="MapIEnumerableToArray.cs" />
     <Compile Include="MapNameToNameFacts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

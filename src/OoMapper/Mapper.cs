@@ -41,38 +41,62 @@ namespace OoMapper
             mappers.Add(key, expression);
         }
 
-        private static Expression FindMember(Type destinationType, string name, Expression source, PropertyInfo[] sourceMembers)
+        private static Expression FindMember(Type destinationType, string name, Expression source,
+                                             PropertyInfo[] sourceMembers)
         {
-            PropertyInfo propertyInfo = sourceMembers.FirstOrDefault(pi => string.Equals(pi.Name, name, StringComparison.InvariantCultureIgnoreCase));
+            PropertyInfo propertyInfo =
+                sourceMembers.FirstOrDefault(
+                    pi => string.Equals(pi.Name, name, StringComparison.InvariantCultureIgnoreCase));
             if (propertyInfo != null)
             {
                 return CreatePropertyExpression(source, propertyInfo, destinationType);
             }
-            PropertyInfo propertyInfo2 = sourceMembers.FirstOrDefault(pi => name.StartsWith(pi.Name, StringComparison.InvariantCultureIgnoreCase));
+            PropertyInfo propertyInfo2 =
+                sourceMembers.FirstOrDefault(pi => name.StartsWith(pi.Name, StringComparison.InvariantCultureIgnoreCase));
             if (propertyInfo2 != null)
             {
-                return FindMember(destinationType, name.Substring(propertyInfo2.Name.Length), CreatePropertyExpression(source, propertyInfo2, destinationType), propertyInfo2.PropertyType.GetProperties());
+                return FindMember(destinationType, name.Substring(propertyInfo2.Name.Length),
+                                  CreatePropertyExpression(source, propertyInfo2, destinationType),
+                                  propertyInfo2.PropertyType.GetProperties());
             }
             throw new NotSupportedException();
         }
 
-        private static Expression CreatePropertyExpression(Expression source, PropertyInfo sourceProperty, Type destinationType)
+        private static Expression CreatePropertyExpression(Expression source, PropertyInfo sourceProperty,
+                                                           Type destinationType)
         {
             Type sourceType = sourceProperty.PropertyType;
 
             MemberExpression property = Expression.Property(source, sourceProperty);
 
-            if (destinationType.IsArray && sourceType.IsArray)
+            if (destinationType.IsArray)
             {
-                destinationType = destinationType.GetElementType();
-                sourceType = sourceType.GetElementType();
+                if (sourceType.IsArray)
+                {
+                    destinationType = destinationType.GetElementType();
+                    sourceType = sourceType.GetElementType();
 
-                Tuple<Type, Type> key = Tuple.Create(sourceType, destinationType);
-                LambdaExpression mapper = mappers[key];
+                    Tuple<Type, Type> key = Tuple.Create(sourceType, destinationType);
+                    LambdaExpression mapper = mappers[key];
 
-                return Expression.Call(typeof (Enumerable), "ToArray", new[] {destinationType},
-                                       Expression.Call(typeof (Enumerable), "Select", new[] {sourceType, destinationType},
-                                                       property, mapper));
+                    return Expression.Call(typeof (Enumerable), "ToArray", new[] {destinationType},
+                                           Expression.Call(typeof (Enumerable), "Select",
+                                                           new[] {sourceType, destinationType},
+                                                           property, mapper));
+                }
+                if (sourceType.IsGenericType && sourceType.GetGenericTypeDefinition() == typeof (IEnumerable<>))
+                {
+                    destinationType = destinationType.GetElementType();
+                    sourceType = sourceType.GetGenericArguments().First();
+
+                    Tuple<Type, Type> key = Tuple.Create(sourceType, destinationType);
+                    LambdaExpression mapper = mappers[key];
+
+                    return Expression.Call(typeof(Enumerable), "ToArray", new[] { destinationType },
+                                           Expression.Call(typeof(Enumerable), "Select",
+                                                           new[] { sourceType, destinationType },
+                                                           property, mapper));
+                }
             }
             return property;
         }
