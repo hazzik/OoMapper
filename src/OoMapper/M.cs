@@ -55,7 +55,7 @@ namespace OoMapper
 
         private static Expression CreateSelect(Type destinationType, Expression property, Type sourceType, Tuple<Type, Type> key)
         {
-            LambdaExpression mapper = Mapper.mappers[key].Build();
+            LambdaExpression mapper = Mapper.mappers[key].BuildNew();
             return Expression.Call(typeof (Enumerable), "ToArray", new[] {destinationType},
                                    Expression.Call(typeof (Enumerable), "Select",
                                                    new[] {sourceType, destinationType},

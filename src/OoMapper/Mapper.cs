@@ -27,8 +27,22 @@ namespace OoMapper
             Type sourceType = typeof (TSource);
             Type destinationType = typeof (TDestination);
             Tuple<Type, Type> key = Tuple.Create(sourceType, destinationType);
-            var expression = (Expression<Func<TSource, TDestination>>)mappers[key].Build();
+            var expression = (Expression<Func<TSource, TDestination>>)mappers[key].BuildNew();
             return expression.Compile().Invoke(source);
+        }
+       
+        public static TDestination Map<TSource, TDestination>(TSource source, TDestination destination)
+        {
+            Type sourceType = typeof (TSource);
+            Type destinationType = typeof (TDestination);
+            Tuple<Type, Type> key = Tuple.Create(sourceType, destinationType);
+            var expression = (Expression<Func<TSource, TDestination, TDestination>>)mappers[key].BuildExisting();
+            return expression.Compile().Invoke(source, destination);
+        }
+
+        public static void Reset()
+        {
+            mappers.Clear();
         }
     }
 }

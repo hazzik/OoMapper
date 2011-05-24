@@ -36,6 +36,7 @@ namespace OoMapper.Tests
         [Fact]
         public void Test3()
         {
+            Mapper.Reset();
             Mapper.Configure<ComplexSource2, Destination>();
 
             Destination map =
@@ -52,6 +53,25 @@ namespace OoMapper.Tests
 
             Assert.Equal("hello world", map.SomeProperty);
         }
+
+        [Fact]
+        public void MapExistingObject()
+        {
+            Mapper.Reset();
+            Mapper.Configure<ComplexSource2, Destination>();
+
+            var complexSource2 = new ComplexSource2
+                                     {
+                                         Some = new ComplexSourceChild2
+                                                    {
+                                                        Pro = new ComplexSourceChild3 {Perty = "hello world"}
+                                                    }
+                                     };
+            Destination map = Mapper.Map(complexSource2, new Destination());
+
+            Assert.Equal("hello world", map.SomeProperty);
+        }
+
 
         #region Nested type: ComplexSource
 

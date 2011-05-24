@@ -30,7 +30,7 @@ namespace OoMapper
             get { return sourceType; }
         }
 
-        public LambdaExpression Build()
+        public LambdaExpression BuildNew()
         {
             const string name = "src";
 
@@ -43,6 +43,24 @@ namespace OoMapper
             return Expression.Lambda(
                 Expression.MemberInit(
                     Expression.New(destinationType), bindings), source);
+        }
+
+        public LambdaExpression BuildExisting()
+        {
+            const string name = "src";
+
+            ParameterExpression source = Expression.Parameter(SourceType, name);
+            ParameterExpression destination = Expression.Parameter(destinationType, "dst");
+
+            var bindings = array
+                .Select(m => (Expression)Expression.Assign(Expression.MakeMemberAccess(destination, m.Destination), m.BuildSource(source)))
+                .Concat(new[] {destination})
+                .ToArray();
+
+            return Expression.Lambda(
+                Expression.Block(bindings),
+                source,
+                destination);
         }
 
         private static IEnumerable<PropertyInfo> FindMembers(string name, IEnumerable<PropertyInfo> sourceMembers)
