@@ -1,5 +1,4 @@
-﻿using System;
-using Xunit;
+﻿using Xunit;
 
 namespace OoMapper.Tests
 {
@@ -10,7 +9,10 @@ namespace OoMapper.Tests
         {
             Mapper.Configure<Source, Destination>();
 
-            Destination map = Mapper.Map<Source, Destination>(new Source {SomeProperty = "hello world"});
+            Destination map = Mapper.Map<Source, Destination>(new Source
+                                                                  {
+                                                                      SomeProperty = "hello world"
+                                                                  });
 
             Assert.Equal("hello world", map.SomeProperty);
         }
@@ -20,7 +22,13 @@ namespace OoMapper.Tests
         {
             Mapper.Configure<ComplexSource, Destination>();
 
-            Destination map = Mapper.Map<ComplexSource, Destination>(new ComplexSource {Some = new ComplexSource.ComplexSourceChild {Property = "hello world"}});
+            var source = new ComplexSource
+                                    {
+                                        Some = new ComplexSourceChild {Property = "hello world"}
+                                    };
+
+            Destination map =
+                Mapper.Map<ComplexSource, Destination>(source);
 
             Assert.Equal("hello world", map.SomeProperty);
         }
@@ -30,7 +38,17 @@ namespace OoMapper.Tests
         {
             Mapper.Configure<ComplexSource2, Destination>();
 
-            Destination map = Mapper.Map<ComplexSource2, Destination>(new ComplexSource2 {Some = new ComplexSourceChild2 {Pro = new ComplexSourceChild3 {Perty = "hello world"}}});
+            Destination map =
+                Mapper.Map<ComplexSource2, Destination>(new ComplexSource2
+                                                            {
+                                                                Some =
+                                                                    new ComplexSourceChild2
+                                                                        {
+                                                                            Pro =
+                                                                                new ComplexSourceChild3
+                                                                                    {Perty = "hello world"}
+                                                                        }
+                                                            });
 
             Assert.Equal("hello world", map.SomeProperty);
         }
@@ -40,15 +58,6 @@ namespace OoMapper.Tests
         internal class ComplexSource
         {
             public ComplexSourceChild Some { get; set; }
-
-            #region Nested type: ComplexSourceChild
-
-            internal class ComplexSourceChild
-            {
-                public string Property { get; set; }
-            }
-
-            #endregion
         }
 
         #endregion
@@ -58,6 +67,15 @@ namespace OoMapper.Tests
         private class ComplexSource2
         {
             public ComplexSourceChild2 Some { get; set; }
+        }
+
+        #endregion
+
+        #region Nested type: ComplexSourceChild
+
+        internal class ComplexSourceChild
+        {
+            public string Property { get; set; }
         }
 
         #endregion

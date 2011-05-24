@@ -61,8 +61,6 @@ namespace OoMapper
             Type sourceType = sourceProperty.PropertyType;
 
             MemberExpression property = Expression.Property(source, sourceProperty);
-            if (destinationType == sourceType)
-                return property;
 
             if (destinationType.IsArray && sourceType.IsArray)
             {
@@ -76,7 +74,7 @@ namespace OoMapper
                                        Expression.Call(typeof (Enumerable), "Select", new[] {sourceType, destinationType},
                                                        property, mapper));
             }
-            throw new NotSupportedException();
+            return property;
         }
 
         public static TDestination Map<TSource, TDestination>(TSource source)
