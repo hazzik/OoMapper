@@ -7,7 +7,7 @@ namespace OoMapper
 {
     public static class Mapper
     {
-        public static readonly IDictionary<Tuple<Type, Type>, TypeMap> mappers =
+        private static readonly IDictionary<Tuple<Type, Type>, TypeMap> mappers =
             new ConcurrentDictionary<Tuple<Type, Type>, TypeMap>();
 
     	private static readonly ConcurrentDictionary<Tuple<Type, Type>, LambdaExpression> newLambdas =
@@ -46,7 +46,7 @@ namespace OoMapper
 			return (Expression<Func<TSource, TDestination>>)BuildNew(key);
     	}
 
-    	private static LambdaExpression BuildNew(Tuple<Type, Type> key)
+        public static LambdaExpression BuildNew(Tuple<Type, Type> key)
     	{
     		return newLambdas.GetOrAdd(key, k => mappers[k].BuildNew());
     	}

@@ -61,11 +61,10 @@ namespace OoMapper
 		private static Expression CreateSelect(Type destinationType, Expression property, Type sourceType,
 		                                       Tuple<Type, Type> key, string methodName)
 		{
-			LambdaExpression mapper = Mapper.mappers[key].BuildNew();
-			return Expression.Call(typeof (Enumerable), methodName, new[] {destinationType},
+		    return Expression.Call(typeof (Enumerable), methodName, new[] {destinationType},
 			                       Expression.Call(typeof (Enumerable), "Select",
 			                                       new[] {sourceType, destinationType},
-			                                       property, mapper));
+			                                       property, Mapper.BuildNew(key)));
 		}
 	}
 }
