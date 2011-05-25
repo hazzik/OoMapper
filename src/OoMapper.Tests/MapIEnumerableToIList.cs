@@ -18,7 +18,7 @@ namespace OoMapper.Tests
 			             		           		new SourceChild
 			             		           			{
 			             		           				A = "hello world"
-			             		           			},
+			             		           			}
 			             		           	}
 			             	};
 

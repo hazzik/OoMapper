@@ -5,20 +5,22 @@ namespace OoMapper.Tests
     public class MapNameToNameFacts
     {
         [Fact]
-        public void Test()
+        public void MapMembersOnSameLevelWithEqualNames()
         {
             Mapper.CreateMap<Source, Destination>();
 
-            Destination map = Mapper.Map<Source, Destination>(new Source
-                                                                  {
-                                                                      SomeProperty = "hello world"
-                                                                  });
+            var source = new Source
+                             {
+                                 SomeProperty = "hello world"
+                             };
+
+            Destination map = Mapper.Map<Source, Destination>(source);
 
             Assert.Equal("hello world", map.SomeProperty);
         }
 
         [Fact]
-        public void Test2()
+        public void MapMemberWithPartNamesOnDifferentLevels()
         {
             Mapper.CreateMap<ComplexSource, Destination>();
 
@@ -34,22 +36,19 @@ namespace OoMapper.Tests
         }
 
         [Fact]
-        public void Test3()
+        public void MapMemberWithPartNamesOnDeepDifferentLevels()
         {
             Mapper.Reset();
             Mapper.CreateMap<ComplexSource2, Destination>();
 
-            Destination map =
-                Mapper.Map<ComplexSource2, Destination>(new ComplexSource2
-                                                            {
-                                                                Some =
-                                                                    new ComplexSourceChild2
-                                                                        {
-                                                                            Pro =
-                                                                                new ComplexSourceChild3
-                                                                                    {Perty = "hello world"}
-                                                                        }
-                                                            });
+            var source = new ComplexSource2
+                             {
+                                 Some = new ComplexSourceChild2
+                                            {
+                                                Pro = new ComplexSourceChild3 {Perty = "hello world"}
+                                            }
+                             };
+            Destination map = Mapper.Map<ComplexSource2, Destination>(source);
 
             Assert.Equal("hello world", map.SomeProperty);
         }
@@ -60,14 +59,14 @@ namespace OoMapper.Tests
             Mapper.Reset();
             Mapper.CreateMap<ComplexSource2, Destination>();
 
-            var complexSource2 = new ComplexSource2
+            var source = new ComplexSource2
                                      {
                                          Some = new ComplexSourceChild2
                                                     {
                                                         Pro = new ComplexSourceChild3 {Perty = "hello world"}
                                                     }
                                      };
-            Destination map = Mapper.Map(complexSource2, new Destination());
+            Destination map = Mapper.Map(source, new Destination());
 
             Assert.Equal("hello world", map.SomeProperty);
         }
@@ -75,7 +74,7 @@ namespace OoMapper.Tests
 
         #region Nested type: ComplexSource
 
-        internal class ComplexSource
+        private class ComplexSource
         {
             public ComplexSourceChild Some { get; set; }
         }
@@ -93,7 +92,7 @@ namespace OoMapper.Tests
 
         #region Nested type: ComplexSourceChild
 
-        internal class ComplexSourceChild
+        private class ComplexSourceChild
         {
             public string Property { get; set; }
         }
@@ -111,7 +110,7 @@ namespace OoMapper.Tests
 
         #region Nested type: ComplexSourceChild3
 
-        public class ComplexSourceChild3
+        private class ComplexSourceChild3
         {
             public string Perty { get; set; }
         }
