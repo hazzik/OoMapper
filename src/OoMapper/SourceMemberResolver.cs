@@ -10,19 +10,21 @@ namespace OoMapper
 	public class SourceMemberResolver
 	{
 		private readonly IEnumerable<PropertyInfo> source;
+	    private readonly IMappingConfiguration configuration;
 
-		public SourceMemberResolver(IEnumerable<PropertyInfo> source)
+	    public SourceMemberResolver(IEnumerable<PropertyInfo> source, IMappingConfiguration configuration)
 		{
-			this.source = source;
+		    this.source = source;
+		    this.configuration = configuration;
 		}
 
-		public Expression BuildSource(Expression x, Type destinationType)
+	    public Expression BuildSource(Expression x, Type destinationType)
 		{
 			return source.Aggregate(x, (current, memberInfo) =>
 			                           CreatePropertyExpression(current, memberInfo, destinationType));
 		}
 
-		private static Expression CreatePropertyExpression(Expression source, PropertyInfo sourceProperty,
+		private Expression CreatePropertyExpression(Expression source, PropertyInfo sourceProperty,
 		                                                   Type destinationType)
 		{
 			MemberExpression property = Expression.Property(source, sourceProperty);
@@ -58,13 +60,13 @@ namespace OoMapper
 			return type.GetInterfaces().Contains(typeof (IEnumerable));
 		}
 
-		private static Expression CreateSelect(Type destinationType, Expression property, Type sourceType,
+		private Expression CreateSelect(Type destinationType, Expression property, Type sourceType,
 		                                       Tuple<Type, Type> key, string methodName)
 		{
 		    return Expression.Call(typeof (Enumerable), methodName, new[] {destinationType},
 			                       Expression.Call(typeof (Enumerable), "Select",
 			                                       new[] {sourceType, destinationType},
-			                                       property, Mapper.BuildNew(key)));
+                                                   property, configuration.BuildNew(key)));
 		}
 	}
 }

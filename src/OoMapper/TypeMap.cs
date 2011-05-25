@@ -11,25 +11,27 @@ namespace OoMapper
 		private readonly IEnumerable<M> array;
 		private readonly Type destinationType;
 		private readonly Type sourceType;
+	    private readonly IMappingConfiguration configuration;
 
-		public TypeMap(Type sourceType, Type destinationType)
+	    public TypeMap(Type sourceType, Type destinationType, IMappingConfiguration configuration)
 		{
 			PropertyInfo[] sourceMembers = sourceType.GetProperties();
 			PropertyInfo[] destinationMembers = destinationType.GetProperties();
 
 			this.sourceType = sourceType;
 			this.destinationType = destinationType;
+	        this.configuration = configuration;
 
-			array = destinationMembers
+	        array = destinationMembers
 				.Select(destination => new M(FindMembers(destination, sourceMembers), destination))
 				.ToArray();
 		}
 
-		private static SourceMemberResolver FindMembers(PropertyInfo destination, IEnumerable<PropertyInfo> sourceMembers)
+		private SourceMemberResolver FindMembers(PropertyInfo destination, IEnumerable<PropertyInfo> sourceMembers)
 		{
 			var propertyInfos = new List<PropertyInfo>();
 			FindMembers(propertyInfos, destination.Name, sourceMembers);
-			return new SourceMemberResolver(propertyInfos);
+			return new SourceMemberResolver(propertyInfos, configuration);
 		}
 
 		public LambdaExpression BuildNew()
