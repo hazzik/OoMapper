@@ -46,6 +46,8 @@
     <Compile Include="MapArray.cs" />
     <Compile Include="MapCollectionIgnoreMapperOrder.cs" />
     <Compile Include="MapIEnumerableToArray.cs" />
+    <Compile Include="MapIEnumerableToICollection.cs" />
+    <Compile Include="MapIEnumerableToIList.cs" />
     <Compile Include="MapNameToNameFacts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

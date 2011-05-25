@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -15,14 +16,9 @@ namespace OoMapper
 			this.source = source;
 		}
 
-		public IEnumerable<PropertyInfo> Source
-		{
-			get { return source; }
-		}
-
 		public Expression BuildSource(Expression x, Type destinationType)
 		{
-			return Source.Aggregate(x, (current, memberInfo) =>
+			return source.Aggregate(x, (current, memberInfo) =>
 			                           CreatePropertyExpression(current, memberInfo, destinationType));
 		}
 
@@ -31,37 +27,42 @@ namespace OoMapper
 		{
 			MemberExpression property = Expression.Property(source, sourceProperty);
 
-			if (destinationType.IsArray)
+			if (IsEnumerable(destinationType))
 			{
-				destinationType = destinationType.GetElementType();
-
+				var isArray = destinationType.IsArray;
+				destinationType = GetElementType(destinationType);
 				Type sourceType = GetElementType(sourceProperty.PropertyType);
-
+				if (sourceType == null) return property;
 				Tuple<Type, Type> key = Tuple.Create(sourceType, destinationType);
-
-				return CreateSelect(destinationType, property, sourceType, key);
+				return CreateSelect(destinationType, property, sourceType, key, isArray ? "ToArray" : "ToList");
 			}
+
 			return property;
 		}
 
 		private static Type GetElementType(Type propertyType)
 		{
-			if (propertyType.IsArray)
+			if (propertyType.HasElementType)
 			{
 				return propertyType.GetElementType();
 			}
-			if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof (IEnumerable<>))
+			if (propertyType.IsGenericType)
 			{
 				return propertyType.GetGenericArguments().First();
 			}
 			return null;
 		}
 
+		private static bool IsEnumerable(Type type)
+		{
+			return type.GetInterfaces().Contains(typeof (IEnumerable));
+		}
+
 		private static Expression CreateSelect(Type destinationType, Expression property, Type sourceType,
-		                                       Tuple<Type, Type> key)
+		                                       Tuple<Type, Type> key, string methodName)
 		{
 			LambdaExpression mapper = Mapper.mappers[key].BuildNew();
-			return Expression.Call(typeof (Enumerable), "ToArray", new[] {destinationType},
+			return Expression.Call(typeof (Enumerable), methodName, new[] {destinationType},
 			                       Expression.Call(typeof (Enumerable), "Select",
 			                                       new[] {sourceType, destinationType},
 			                                       property, mapper));
