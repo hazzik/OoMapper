@@ -6,12 +6,12 @@ namespace OoMapper
     public class PropertyMap
     {
         private readonly PropertyInfo destinationProperty;
-        private readonly SourceMemberResolver sourceMemberResolver;
+        public ISourceMemberResolver SourceMemberResolver { get; set; }
 
-        public PropertyMap(PropertyInfo destinationProperty, SourceMemberResolver sourceMemberResolver)
+        public PropertyMap(PropertyInfo destinationProperty, ISourceMemberResolver sourceMemberResolver)
         {
             this.destinationProperty = destinationProperty;
-            this.sourceMemberResolver = sourceMemberResolver;
+            this.SourceMemberResolver = sourceMemberResolver;
         }
 
         public bool IsIgnored { get; set; }
@@ -24,13 +24,13 @@ namespace OoMapper
         public Expression BuildAssign(Expression destination, Expression source)
         {
             PropertyInfo info = destinationProperty;
-            return Expression.Assign(Expression.MakeMemberAccess(destination, info), sourceMemberResolver.BuildSource(source, info.PropertyType));
+            return Expression.Assign(Expression.MakeMemberAccess(destination, info), SourceMemberResolver.BuildSource(source, info.PropertyType));
         }
 
         public MemberAssignment BuildBind(Expression source)
         {
             PropertyInfo info = destinationProperty;
-            return Expression.Bind(info, sourceMemberResolver.BuildSource(source, info.PropertyType));
+            return Expression.Bind(info, SourceMemberResolver.BuildSource(source, info.PropertyType));
         }
     }
 }

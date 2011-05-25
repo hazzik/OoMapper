@@ -43,6 +43,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomPropertyMappingFacts.cs" />
     <Compile Include="IgnoreFacts.cs" />
     <Compile Include="MapArray.cs" />
     <Compile Include="MapCollectionIgnoreMapperOrder.cs" />

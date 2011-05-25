@@ -40,6 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ISourceMemberResolver.cs" />
+    <Compile Include="LambdaSourceMemberResolver.cs" />
     <Compile Include="PropertyMap.cs" />
     <Compile Include="Mapper.cs" />
     <Compile Include="MappingConfiguration.cs" />

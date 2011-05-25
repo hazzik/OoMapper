@@ -7,8 +7,8 @@ using System.Reflection;
 
 namespace OoMapper
 {
-	public class SourceMemberResolver
-	{
+    public class SourceMemberResolver : ISourceMemberResolver
+    {
 		private readonly IEnumerable<PropertyInfo> source;
 	    private readonly IMappingConfiguration configuration;
 

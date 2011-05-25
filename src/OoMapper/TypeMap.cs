@@ -77,7 +77,7 @@ namespace OoMapper
             PropertyInfo propertyInfo =
                 sourceMembers.FirstOrDefault(pi => name.StartsWith(pi.Name, StringComparison.InvariantCultureIgnoreCase));
             if (propertyInfo == null)
-                throw new NotSupportedException();
+                return;
 
             list.Add(propertyInfo);
             FindMembers(list, name.Substring(propertyInfo.Name.Length), propertyInfo.PropertyType.GetProperties());

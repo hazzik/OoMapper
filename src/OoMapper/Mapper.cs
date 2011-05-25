@@ -48,11 +48,11 @@ namespace OoMapper
             this.typeMap = typeMap;
         }
 
-        public MapperExpression<TSource, TDestination> ForMember<TProperty>(Expression<Func<TDestination, TProperty>> member, Action<PropertyMapExpression> options)
+        public MapperExpression<TSource, TDestination> ForMember<TProperty>(Expression<Func<TDestination, TProperty>> member, Action<PropertyMapExpression<TSource>> options)
         {
             MemberInfo mi = GetMemberInfo(member);
             var propertyMap = typeMap.GetPropertyMapFor(mi);
-            options(new PropertyMapExpression(propertyMap));
+            options(new PropertyMapExpression<TSource>(propertyMap));
             return this;
         }
 
@@ -67,7 +67,7 @@ namespace OoMapper
         }
     }
 
-    public class PropertyMapExpression
+    public class PropertyMapExpression<TSource>
     {
         private readonly PropertyMap propertyMap;
 
@@ -79,6 +79,11 @@ namespace OoMapper
         public void Ignore()
         {
             propertyMap.IsIgnored = true;
+        }
+
+        public void MapFrom<TProperty>(Expression<Func<TSource, TProperty>> sourceMember)
+        {
+            propertyMap.SourceMemberResolver = new LambdaSourceMemberResolver(sourceMember);
         }
     }
 }
