@@ -6,82 +6,77 @@ using System.Reflection;
 
 namespace OoMapper
 {
-    public class TypeMap
-    {
-        private readonly IEnumerable<M> array;
-        private readonly Type destinationType;
-        private readonly Type sourceType;
+	public class TypeMap
+	{
+		private readonly IEnumerable<M> array;
+		private readonly Type destinationType;
+		private readonly Type sourceType;
 
-        public TypeMap(Type sourceType, Type destinationType)
-        {
-            PropertyInfo[] sourceMembers = sourceType.GetProperties();
-            PropertyInfo[] destinationMembers = destinationType.GetProperties();
+		public TypeMap(Type sourceType, Type destinationType)
+		{
+			PropertyInfo[] sourceMembers = sourceType.GetProperties();
+			PropertyInfo[] destinationMembers = destinationType.GetProperties();
 
-            this.sourceType = sourceType;
-            this.destinationType = destinationType;
+			this.sourceType = sourceType;
+			this.destinationType = destinationType;
 
-            array = destinationMembers
-                .Select(x => new M(x, FindMembers(x.Name, sourceMembers)))
-                .ToArray();
-        }
+			array = destinationMembers
+				.Select(destination => new M(FindMembers(destination, sourceMembers), destination))
+				.ToArray();
+		}
 
-        private Type SourceType
-        {
-            get { return sourceType; }
-        }
+		private static SourceMemberResolver FindMembers(PropertyInfo destination, IEnumerable<PropertyInfo> sourceMembers)
+		{
+			var propertyInfos = new List<PropertyInfo>();
+			FindMembers(propertyInfos, destination.Name, sourceMembers);
+			return new SourceMemberResolver(propertyInfos);
+		}
 
-        public LambdaExpression BuildNew()
-        {
-            const string name = "src";
+		public LambdaExpression BuildNew()
+		{
+			const string name = "src";
 
-            ParameterExpression source = Expression.Parameter(SourceType, name);
+			ParameterExpression source = Expression.Parameter(sourceType, name);
 
-            MemberAssignment[] bindings = array
-                .Select(m => Expression.Bind(m.Destination, m.BuildSource(source)))
-                .ToArray();
+			MemberAssignment[] bindings = array
+				.Select(m => m.BuildBind(source))
+				.ToArray();
 
-            return Expression.Lambda(
-                Expression.MemberInit(
-                    Expression.New(destinationType), bindings), source);
-        }
+			return Expression.Lambda(
+				Expression.MemberInit(
+					Expression.New(destinationType), bindings), source);
+		}
 
-        public LambdaExpression BuildExisting()
-        {
-            const string name = "src";
+		public LambdaExpression BuildExisting()
+		{
+			const string name = "src";
 
-            ParameterExpression source = Expression.Parameter(SourceType, name);
-            ParameterExpression destination = Expression.Parameter(destinationType, "dst");
+			ParameterExpression source = Expression.Parameter(sourceType, name);
+			ParameterExpression destination = Expression.Parameter(destinationType, "dst");
 
-            var bindings = array
-                .Select(m => (Expression)Expression.Assign(Expression.MakeMemberAccess(destination, m.Destination), m.BuildSource(source)))
-                .Concat(new[] {destination})
-                .ToArray();
+			Expression[] bindings = array
+				.Select(m => m.BuildAssign(destination, source))
+				.Concat(new[] {destination})
+				.ToArray();
 
-            return Expression.Lambda(
-                Expression.Block(bindings),
-                source,
-                destination);
-        }
+			return Expression.Lambda(
+				Expression.Block(bindings),
+				source,
+				destination);
+		}
 
-        private static IEnumerable<PropertyInfo> FindMembers(string name, IEnumerable<PropertyInfo> sourceMembers)
-        {
-            var list = new List<PropertyInfo>();
-            FindMembers(list, name, sourceMembers);
-            return list;
-        }
+		private static void FindMembers(ICollection<PropertyInfo> list, string name,
+		                                IEnumerable<PropertyInfo> sourceMembers)
+		{
+			if (String.IsNullOrEmpty(name))
+				return;
+			PropertyInfo propertyInfo =
+				sourceMembers.FirstOrDefault(pi => name.StartsWith(pi.Name, StringComparison.InvariantCultureIgnoreCase));
+			if (propertyInfo == null)
+				throw new NotSupportedException();
 
-        private static void FindMembers(ICollection<PropertyInfo> list, string name,
-                                        IEnumerable<PropertyInfo> sourceMembers)
-        {
-            if (String.IsNullOrEmpty(name))
-                return;
-            PropertyInfo propertyInfo =
-                sourceMembers.FirstOrDefault(pi => name.StartsWith(pi.Name, StringComparison.InvariantCultureIgnoreCase));
-            if (propertyInfo == null)
-                throw new NotSupportedException();
-
-            list.Add(propertyInfo);
-            FindMembers(list, name.Substring(propertyInfo.Name.Length), propertyInfo.PropertyType.GetProperties());
-        }
-    }
+			list.Add(propertyInfo);
+			FindMembers(list, name.Substring(propertyInfo.Name.Length), propertyInfo.PropertyType.GetProperties());
+		}
+	}
 }

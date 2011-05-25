@@ -1,71 +1,29 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
 namespace OoMapper
 {
-    public class M
-    {
-        private readonly PropertyInfo destination;
-        private readonly IEnumerable<PropertyInfo> source;
+	public class M
+	{
+		private readonly PropertyInfo destinationProperty;
+		private readonly SourceMemberResolver sourceMemberResolver;
 
-        public M(PropertyInfo destination, IEnumerable<PropertyInfo> source)
-        {
-            this.destination = destination;
-            this.source = source;
-        }
+		public M(SourceMemberResolver sourceMemberResolver, PropertyInfo destinationProperty)
+		{
+			this.destinationProperty = destinationProperty;
+			this.sourceMemberResolver = sourceMemberResolver;
+		}
 
-        public PropertyInfo Destination
-        {
-            get { return destination; }
-        }
+		public Expression BuildAssign(Expression destination, Expression source)
+		{
+			PropertyInfo info = destinationProperty;
+			return Expression.Assign(Expression.MakeMemberAccess(destination, info), sourceMemberResolver.BuildSource(source, info.PropertyType));
+		}
 
-        private static Expression CreatePropertyExpression(Expression source, PropertyInfo sourceProperty,
-                                                          Type destinationType)
-        {
-            MemberExpression property = Expression.Property(source, sourceProperty);
-
-            if (destinationType.IsArray)
-            {
-                destinationType = destinationType.GetElementType();
-
-                Type sourceType = GetElementType(sourceProperty.PropertyType);
-
-                Tuple<Type, Type> key = Tuple.Create(sourceType, destinationType);
-
-                return CreateSelect(destinationType, property, sourceType, key);
-            }
-            return property;
-        }
-
-        private static Type GetElementType(Type propertyType)
-        {
-            if (propertyType.IsArray)
-            {
-                return propertyType.GetElementType();
-            }
-            if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof (IEnumerable<>))
-            {
-                return propertyType.GetGenericArguments().First();
-            }
-            return null;
-        }
-
-        private static Expression CreateSelect(Type destinationType, Expression property, Type sourceType, Tuple<Type, Type> key)
-        {
-            LambdaExpression mapper = Mapper.mappers[key].BuildNew();
-            return Expression.Call(typeof (Enumerable), "ToArray", new[] {destinationType},
-                                   Expression.Call(typeof (Enumerable), "Select",
-                                                   new[] {sourceType, destinationType},
-                                                   property, mapper));
-        }
-
-        public Expression BuildSource(Expression x)
-        {
-            return source.Aggregate(x, (current, memberInfo) =>
-                                       CreatePropertyExpression(current, memberInfo, Destination.PropertyType));
-        }
-    }
+		public MemberAssignment BuildBind(Expression source)
+		{
+			PropertyInfo info = destinationProperty;
+			return Expression.Bind(info, sourceMemberResolver.BuildSource(source, info.PropertyType));
+		}
+	}
 }

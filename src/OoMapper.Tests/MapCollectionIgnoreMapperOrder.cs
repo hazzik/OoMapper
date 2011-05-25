@@ -8,8 +8,8 @@ namespace OoMapper.Tests
         [Fact]
         public void Test()
         {
-            Mapper.Configure<Source, Destination>();
-            Mapper.Configure<SourceChild, DestinationChild>();
+            Mapper.CreateMap<Source, Destination>();
+            Mapper.CreateMap<SourceChild, DestinationChild>();
 
             var source = new Source
                              {

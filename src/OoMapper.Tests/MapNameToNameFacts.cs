@@ -7,7 +7,7 @@ namespace OoMapper.Tests
         [Fact]
         public void Test()
         {
-            Mapper.Configure<Source, Destination>();
+            Mapper.CreateMap<Source, Destination>();
 
             Destination map = Mapper.Map<Source, Destination>(new Source
                                                                   {
@@ -20,7 +20,7 @@ namespace OoMapper.Tests
         [Fact]
         public void Test2()
         {
-            Mapper.Configure<ComplexSource, Destination>();
+            Mapper.CreateMap<ComplexSource, Destination>();
 
             var source = new ComplexSource
                                     {
@@ -37,7 +37,7 @@ namespace OoMapper.Tests
         public void Test3()
         {
             Mapper.Reset();
-            Mapper.Configure<ComplexSource2, Destination>();
+            Mapper.CreateMap<ComplexSource2, Destination>();
 
             Destination map =
                 Mapper.Map<ComplexSource2, Destination>(new ComplexSource2
@@ -58,7 +58,7 @@ namespace OoMapper.Tests
         public void MapExistingObject()
         {
             Mapper.Reset();
-            Mapper.Configure<ComplexSource2, Destination>();
+            Mapper.CreateMap<ComplexSource2, Destination>();
 
             var complexSource2 = new ComplexSource2
                                      {
