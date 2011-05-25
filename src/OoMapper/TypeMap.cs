@@ -9,23 +9,25 @@ namespace OoMapper
     public class TypeMap
     {
         private readonly IMappingConfiguration configuration;
-        private readonly Type destinationType;
         private readonly ICollection<PropertyMap> propertyMaps;
-        private readonly Type sourceType;
 
         public TypeMap(Type sourceType, Type destinationType, IMappingConfiguration configuration)
         {
             PropertyInfo[] sourceMembers = sourceType.GetProperties();
             PropertyInfo[] destinationMembers = destinationType.GetProperties();
 
-            this.sourceType = sourceType;
-            this.destinationType = destinationType;
+            SourceType = sourceType;
+            DestinationType = destinationType;
             this.configuration = configuration;
 
             propertyMaps = destinationMembers
                 .Select(destination => new PropertyMap(destination, FindMembers(destination, sourceMembers)))
                 .ToList();
         }
+
+        public Type SourceType { get; private set; }
+
+        public Type DestinationType { get; private set; }
 
         private SourceMemberResolver FindMembers(PropertyInfo destination, IEnumerable<PropertyInfo> sourceMembers)
         {
@@ -38,7 +40,7 @@ namespace OoMapper
         {
             const string name = "src";
 
-            ParameterExpression source = Expression.Parameter(sourceType, name);
+            ParameterExpression source = Expression.Parameter(SourceType, name);
 
             MemberAssignment[] bindings = propertyMaps
                 .Where(x => x.IsIgnored == false)
@@ -47,15 +49,15 @@ namespace OoMapper
 
             return Expression.Lambda(
                 Expression.MemberInit(
-                    Expression.New(destinationType), bindings), source);
+                    Expression.New(DestinationType), bindings), source);
         }
 
         public LambdaExpression BuildExisting()
         {
             const string name = "src";
 
-            ParameterExpression source = Expression.Parameter(sourceType, name);
-            ParameterExpression destination = Expression.Parameter(destinationType, "dst");
+            ParameterExpression source = Expression.Parameter(SourceType, name);
+            ParameterExpression destination = Expression.Parameter(DestinationType, "dst");
 
             Expression[] bindings = propertyMaps
                 .Where(x => x.IsIgnored == false)

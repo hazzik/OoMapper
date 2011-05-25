@@ -35,8 +35,7 @@ namespace OoMapper
 				destinationType = GetElementType(destinationType);
 				Type sourceType = GetElementType(sourceProperty.PropertyType);
 				if (sourceType == null) return property;
-				Tuple<Type, Type> key = Tuple.Create(sourceType, destinationType);
-				return CreateSelect(destinationType, property, sourceType, key, isArray ? "ToArray" : "ToList");
+				return CreateSelect(sourceType, destinationType, property, isArray ? "ToArray" : "ToList");
 			}
 
 			return property;
@@ -60,13 +59,12 @@ namespace OoMapper
 			return type.GetInterfaces().Contains(typeof (IEnumerable));
 		}
 
-		private Expression CreateSelect(Type destinationType, Expression property, Type sourceType,
-		                                       Tuple<Type, Type> key, string methodName)
+		private Expression CreateSelect(Type sourceType, Type destinationType, Expression property, string methodName)
 		{
 		    return Expression.Call(typeof (Enumerable), methodName, new[] {destinationType},
 			                       Expression.Call(typeof (Enumerable), "Select",
 			                                       new[] {sourceType, destinationType},
-                                                   property, configuration.BuildNew(key)));
+                                                   property, configuration.BuildNew(sourceType, destinationType)));
 		}
 	}
 }

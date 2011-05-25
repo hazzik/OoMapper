@@ -23,7 +23,7 @@ namespace OoMapper
 
             Tuple<Type, Type> key = Tuple.Create(sourceType, destinationType);
 
-            configuration.AddMapping(typeMap, key);
+            configuration.AddMapping(typeMap);
 
             return new MapperExpression<TSource, TDestination>(typeMap);
         }

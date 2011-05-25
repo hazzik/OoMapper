@@ -8,11 +8,11 @@ namespace OoMapper
     public interface IMappingConfiguration
     {
         Expression<Func<TSource, TDestination>> BuildNew<TSource, TDestination>();
-        LambdaExpression BuildNew(Tuple<Type, Type> key);
+        LambdaExpression BuildNew(Type sourceType, Type destinationType);
         Expression<Func<TSource, TDestination, TDestination>> BuildExisting<TSource, TDestination>();
-        LambdaExpression BuildExisting(Tuple<Type, Type> key);
+        LambdaExpression BuildExisting(Type sourceType, Type destinationType);
         void Reset();
-        void AddMapping(TypeMap typeMap, Tuple<Type, Type> key);
+        void AddMapping(TypeMap typeMap);
     }
 
     public class MappingConfiguration : IMappingConfiguration
@@ -28,28 +28,22 @@ namespace OoMapper
 
         public  Expression<Func<TSource, TDestination>> BuildNew<TSource, TDestination>()
         {
-            Type sourceType = typeof (TSource);
-            Type destinationType = typeof (TDestination);
-            Tuple<Type, Type> key = Tuple.Create(sourceType, destinationType);
-            return (Expression<Func<TSource, TDestination>>) BuildNew(key);
+            return (Expression<Func<TSource, TDestination>>) BuildNew(typeof (TSource), typeof (TDestination));
         }
 
-        public  LambdaExpression BuildNew(Tuple<Type, Type> key)
+        public LambdaExpression BuildNew(Type sourceType, Type destinationType)
         {
-            return newLambdas.GetOrAdd(key, k => mappers[k].BuildNew());
+            return newLambdas.GetOrAdd(Tuple.Create(sourceType, destinationType), k => mappers[k].BuildNew());
         }
 
         public  Expression<Func<TSource, TDestination, TDestination>> BuildExisting<TSource, TDestination>()
         {
-            Type sourceType = typeof (TSource);
-            Type destinationType = typeof (TDestination);
-            Tuple<Type, Type> key = Tuple.Create(sourceType, destinationType);
-            return (Expression<Func<TSource, TDestination, TDestination>>) BuildExisting(key);
+            return (Expression<Func<TSource, TDestination, TDestination>>) BuildExisting(typeof (TSource), typeof (TDestination));
         }
 
-        public  LambdaExpression BuildExisting(Tuple<Type, Type> key)
+        public LambdaExpression BuildExisting(Type sourceType, Type destinationType)
         {
-            return existingLambdas.GetOrAdd(key, k => mappers[k].BuildExisting());
+            return existingLambdas.GetOrAdd(Tuple.Create(sourceType, destinationType), k => mappers[k].BuildExisting());
         }
 
         public  void Reset()
@@ -57,9 +51,9 @@ namespace OoMapper
             mappers.Clear();
         }
 
-        public  void AddMapping(TypeMap typeMap, Tuple<Type, Type> key)
+        public  void AddMapping(TypeMap typeMap)
         {
-            mappers.Add(key, typeMap);
+            mappers.Add(Tuple.Create(typeMap.SourceType, typeMap.DestinationType), typeMap);
         }
     }
 }
