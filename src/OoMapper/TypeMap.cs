@@ -8,7 +8,7 @@ namespace OoMapper
 {
 	public class TypeMap
 	{
-		private readonly IEnumerable<M> array;
+		private readonly IEnumerable<PropertyMap> propertyMaps;
 		private readonly Type destinationType;
 		private readonly Type sourceType;
 	    private readonly IMappingConfiguration configuration;
@@ -22,8 +22,8 @@ namespace OoMapper
 			this.destinationType = destinationType;
 	        this.configuration = configuration;
 
-	        array = destinationMembers
-				.Select(destination => new M(FindMembers(destination, sourceMembers), destination))
+	        propertyMaps = destinationMembers
+				.Select(destination => new PropertyMap(destination, FindMembers(destination, sourceMembers)))
 				.ToArray();
 		}
 
@@ -40,9 +40,9 @@ namespace OoMapper
 
 			ParameterExpression source = Expression.Parameter(sourceType, name);
 
-			MemberAssignment[] bindings = array
-				.Select(m => m.BuildBind(source))
-				.ToArray();
+		    MemberAssignment[] bindings = propertyMaps
+		        .Select(m => m.BuildBind(source))
+		        .ToArray();
 
 			return Expression.Lambda(
 				Expression.MemberInit(
@@ -56,7 +56,7 @@ namespace OoMapper
 			ParameterExpression source = Expression.Parameter(sourceType, name);
 			ParameterExpression destination = Expression.Parameter(destinationType, "dst");
 
-			Expression[] bindings = array
+			Expression[] bindings = propertyMaps
 				.Select(m => m.BuildAssign(destination, source))
 				.Concat(new[] {destination})
 				.ToArray();

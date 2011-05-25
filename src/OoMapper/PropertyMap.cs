@@ -3,12 +3,12 @@ using System.Reflection;
 
 namespace OoMapper
 {
-	public class M
+	public class PropertyMap
 	{
 		private readonly PropertyInfo destinationProperty;
 		private readonly SourceMemberResolver sourceMemberResolver;
 
-		public M(SourceMemberResolver sourceMemberResolver, PropertyInfo destinationProperty)
+		public PropertyMap(PropertyInfo destinationProperty, SourceMemberResolver sourceMemberResolver)
 		{
 			this.destinationProperty = destinationProperty;
 			this.sourceMemberResolver = sourceMemberResolver;
