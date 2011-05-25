@@ -6,15 +6,25 @@ namespace OoMapper
     public class LambdaSourceMemberResolver : ISourceMemberResolver
     {
         private readonly LambdaExpression sourceMember;
+        private readonly IMappingConfiguration configuration;
 
-        public LambdaSourceMemberResolver(LambdaExpression sourceMember)
+        public LambdaSourceMemberResolver(LambdaExpression sourceMember, IMappingConfiguration configuration)
         {
             this.sourceMember = sourceMember;
+            this.configuration = configuration;
         }
 
         public Expression BuildSource(Expression x, Type destinationType)
         {
-            return new ParameterRewriter(sourceMember.Parameters[0], x).Visit(sourceMember.Body);
+            Expression expression = new ParameterRewriter(sourceMember.Parameters[0], x).Visit(sourceMember.Body);
+
+            if(expression.Type != destinationType)
+            {
+                LambdaExpression lambda = configuration.BuildNew(expression.Type, destinationType);
+                return new ParameterRewriter(lambda.Parameters[0], expression).Visit(lambda.Body);
+            }
+
+            return expression;
         }
 
         private class ParameterRewriter : ExpressionVisitor

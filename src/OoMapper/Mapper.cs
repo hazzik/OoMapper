@@ -25,7 +25,7 @@ namespace OoMapper
 
             configuration.AddMapping(typeMap);
 
-            return new MapperExpression<TSource, TDestination>(typeMap);
+            return new MapperExpression<TSource, TDestination>(typeMap, configuration);
         }
 
         public static TDestination Map<TSource, TDestination>(TSource source)
@@ -42,17 +42,19 @@ namespace OoMapper
     public class MapperExpression<TSource, TDestination>
     {
         private readonly TypeMap typeMap;
+        private readonly IMappingConfiguration configuration;
 
-        public MapperExpression(TypeMap typeMap)
+        public MapperExpression(TypeMap typeMap, IMappingConfiguration configuration)
         {
             this.typeMap = typeMap;
+            this.configuration = configuration;
         }
 
         public MapperExpression<TSource, TDestination> ForMember<TProperty>(Expression<Func<TDestination, TProperty>> member, Action<PropertyMapExpression<TSource>> options)
         {
             MemberInfo mi = GetMemberInfo(member);
             var propertyMap = typeMap.GetPropertyMapFor(mi);
-            options(new PropertyMapExpression<TSource>(propertyMap));
+            options(new PropertyMapExpression<TSource>(propertyMap, configuration));
             return this;
         }
 
@@ -70,10 +72,12 @@ namespace OoMapper
     public class PropertyMapExpression<TSource>
     {
         private readonly PropertyMap propertyMap;
+        private IMappingConfiguration configuration;
 
-        public PropertyMapExpression(PropertyMap propertyMap)
+        public PropertyMapExpression(PropertyMap propertyMap, IMappingConfiguration configuration)
         {
             this.propertyMap = propertyMap;
+            this.configuration = configuration;
         }
 
         public void Ignore()
@@ -83,7 +87,7 @@ namespace OoMapper
 
         public void MapFrom<TProperty>(Expression<Func<TSource, TProperty>> sourceMember)
         {
-            propertyMap.SourceMemberResolver = new LambdaSourceMemberResolver(sourceMember);
+            propertyMap.SourceMemberResolver = new LambdaSourceMemberResolver(sourceMember, configuration);
         }
     }
 }

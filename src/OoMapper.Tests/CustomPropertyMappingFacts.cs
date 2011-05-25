@@ -1,3 +1,4 @@
+using System;
 using Xunit;
 
 namespace OoMapper.Tests
@@ -8,8 +9,8 @@ namespace OoMapper.Tests
         public void NewFact()
         {
             Mapper.CreateMap<Source, Destination>()
-                .ForMember(x => x.SomeProperty, opt => opt.MapFrom(x => x.OtherProperty));
-            int i = sizeof (float);
+                .ForMember(x => x.SomeProperty, opt => opt.MapFrom(x => x.OtherProperty))
+                .ForMember(x => x.Child, opt => opt.Ignore());
 
             var source = new Source
                              {
@@ -19,11 +20,42 @@ namespace OoMapper.Tests
             Assert.Equal("hello", destination.SomeProperty);
         }
 
+        [Fact]
+        public void MapWithDifferentSourceType()
+        {
+            Mapper.CreateMap<SourceChild, DestinationChild>();
+            Mapper.CreateMap<Source, Destination>()
+                .ForMember(x => x.SomeProperty, opt => opt.Ignore())
+                .ForMember(x => x.Child, opt => opt.MapFrom(x => x.ChildProperty));
+
+            var source = new Source
+                             {
+                                 ChildProperty = new SourceChild
+                                                     {
+                                                         A = "X"
+                                                     },
+                             };
+            Destination destination = Mapper.Map<Source, Destination>(source);
+            Assert.Equal("X", destination.Child.A);
+        }
+
         #region Nested type: Destination
 
         private class Destination
         {
             public string SomeProperty { get; set; }
+
+            public DestinationChild Child { get; set; }
+        }
+
+        private class DestinationChild
+        {
+            public string A { get; set; }
+        }
+
+        private class SourceChild
+        {
+            public string A { get; set; }
         }
 
         #endregion
@@ -33,6 +65,7 @@ namespace OoMapper.Tests
         private class Source
         {
             public string OtherProperty { get; set; }
+            public SourceChild ChildProperty { get; set; }
         }
 
         #endregion
