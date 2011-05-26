@@ -18,13 +18,14 @@ namespace OoMapper
         {
             Expression expression = new ParameterRewriter(sourceMember.Parameters[0], x).Visit(sourceMember.Body);
 
-            if(expression.Type != destinationType)
-            {
-                LambdaExpression lambda = configuration.BuildNew(expression.Type, destinationType);
-                return new ParameterRewriter(lambda.Parameters[0], expression).Visit(lambda.Body);
-            }
+        	var newSourceType = expression.Type;
+			if (newSourceType != destinationType)
+			{
+				LambdaExpression lambda = configuration.BuildNew(newSourceType, destinationType);
+				return new ParameterRewriter(lambda.Parameters[0], expression).Visit(lambda.Body);
+			}
 
-            return expression;
+        	return expression;
         }
 
         private class ParameterRewriter : ExpressionVisitor

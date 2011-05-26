@@ -49,6 +49,8 @@ namespace OoMapper
         public  void Reset()
         {
             mappers.Clear();
+			newLambdas.Clear();
+			existingLambdas.Clear();
         }
 
         public  void AddMapping(TypeMap typeMap)
