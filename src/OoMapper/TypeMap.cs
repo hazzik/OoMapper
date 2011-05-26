@@ -6,88 +6,104 @@ using System.Reflection;
 
 namespace OoMapper
 {
-    public class TypeMap
-    {
-        private readonly IMappingConfiguration configuration;
-        private readonly ICollection<PropertyMap> propertyMaps;
+	public class TypeMap
+	{
+		private readonly IMappingConfiguration configuration;
+		private readonly ICollection<PropertyMap> propertyMaps;
 
-        public TypeMap(Type sourceType, Type destinationType, IMappingConfiguration configuration)
-        {
-            PropertyInfo[] sourceMembers = sourceType.GetProperties();
-            PropertyInfo[] destinationMembers = destinationType.GetProperties();
+		public TypeMap(Type sourceType, Type destinationType, IMappingConfiguration configuration)
+		{
+			IEnumerable<MemberInfo> sourceMembers = GetSourceMembers(sourceType);
 
-            SourceType = sourceType;
-            DestinationType = destinationType;
-            this.configuration = configuration;
+			PropertyInfo[] destinationMembers = destinationType.GetProperties();
 
-            propertyMaps = destinationMembers
-                .Select(destination => new PropertyMap(destination, FindMembers(destination, sourceMembers)))
-                .ToList();
-        }
+			SourceType = sourceType;
+			DestinationType = destinationType;
+			this.configuration = configuration;
 
-        public Type SourceType { get; private set; }
+			propertyMaps = destinationMembers
+				.Select(destination => new PropertyMap(destination, FindMembers(destination, sourceMembers)))
+				.ToList();
+		}
 
-        public Type DestinationType { get; private set; }
+		public Type SourceType { get; private set; }
 
-        private SourceMemberResolver FindMembers(PropertyInfo destination, IEnumerable<PropertyInfo> sourceMembers)
-        {
-            var propertyInfos = new List<PropertyInfo>();
-            FindMembers(propertyInfos, destination.Name, sourceMembers);
-            return new SourceMemberResolver(propertyInfos, configuration);
-        }
+		public Type DestinationType { get; private set; }
 
-        public LambdaExpression BuildNew()
-        {
-            const string name = "src";
+		private SourceMemberResolver FindMembers(PropertyInfo destination, IEnumerable<MemberInfo> sourceMembers)
+		{
+			var propertyInfos = new List<MemberInfo>();
+			FindMembers(propertyInfos, destination.Name, sourceMembers);
+			return new SourceMemberResolver(propertyInfos, configuration);
+		}
 
-            ParameterExpression source = Expression.Parameter(SourceType, name);
+		public LambdaExpression BuildNew()
+		{
+			const string name = "src";
 
-            MemberAssignment[] bindings = propertyMaps
-                .Where(x => x.IsIgnored == false)
-                .Select(m => m.BuildBind(source))
-                .ToArray();
+			ParameterExpression source = Expression.Parameter(SourceType, name);
 
-            return Expression.Lambda(
-                Expression.MemberInit(
-                    Expression.New(DestinationType), bindings), source);
-        }
+			MemberAssignment[] bindings = propertyMaps
+				.Where(x => x.IsIgnored == false)
+				.Select(m => m.BuildBind(source))
+				.ToArray();
 
-        public LambdaExpression BuildExisting()
-        {
-            const string name = "src";
+			return Expression.Lambda(
+				Expression.MemberInit(
+					Expression.New(DestinationType), bindings), source);
+		}
 
-            ParameterExpression source = Expression.Parameter(SourceType, name);
-            ParameterExpression destination = Expression.Parameter(DestinationType, "dst");
+		public LambdaExpression BuildExisting()
+		{
+			const string name = "src";
 
-            Expression[] bindings = propertyMaps
-                .Where(x => x.IsIgnored == false)
-                .Select(m => m.BuildAssign(destination, source))
-                .Concat(new[] {destination})
-                .ToArray();
+			ParameterExpression source = Expression.Parameter(SourceType, name);
+			ParameterExpression destination = Expression.Parameter(DestinationType, "dst");
 
-            return Expression.Lambda(
-                Expression.Block(bindings),
-                source,
-                destination);
-        }
+			Expression[] bindings = propertyMaps
+				.Where(x => x.IsIgnored == false)
+				.Select(m => m.BuildAssign(destination, source))
+				.Concat(new[] {destination})
+				.ToArray();
 
-        private static void FindMembers(ICollection<PropertyInfo> list, string name,
-                                        IEnumerable<PropertyInfo> sourceMembers)
-        {
-            if (String.IsNullOrEmpty(name))
-                return;
-            PropertyInfo propertyInfo =
-                sourceMembers.FirstOrDefault(pi => name.StartsWith(pi.Name, StringComparison.InvariantCultureIgnoreCase));
-            if (propertyInfo == null)
-                return;
+			return Expression.Lambda(
+				Expression.Block(bindings),
+				source,
+				destination);
+		}
 
-            list.Add(propertyInfo);
-            FindMembers(list, name.Substring(propertyInfo.Name.Length), propertyInfo.PropertyType.GetProperties());
-        }
+		private static IEnumerable<MemberInfo> GetSourceMembers(Type sourceType)
+		{
+			return sourceType.GetProperties().Concat((MemberInfo[]) sourceType.GetFields());
+		}
 
-        public PropertyMap GetPropertyMapFor(MemberInfo destinationMember)
-        {
-            return propertyMaps.FirstOrDefault(map => map.DestinationMember == destinationMember);
-        }
-    }
+		private static void FindMembers(ICollection<MemberInfo> list, string name,
+		                                IEnumerable<MemberInfo> sourceMembers)
+		{
+			if (String.IsNullOrEmpty(name))
+				return;
+			MemberInfo memberInfo =
+				sourceMembers.FirstOrDefault(pi => name.StartsWith(pi.Name, StringComparison.InvariantCultureIgnoreCase));
+			if (memberInfo == null)
+				return;
+
+			list.Add(memberInfo);
+
+			FindMembers(list, name.Substring(memberInfo.Name.Length), GetSourceMembers(GetType(memberInfo)));
+		}
+
+		private static Type GetType(MemberInfo memberInfo)
+		{
+			if (memberInfo is PropertyInfo)
+				return (memberInfo as PropertyInfo).PropertyType;
+			if (memberInfo is FieldInfo)
+				return (memberInfo as FieldInfo).FieldType;
+			throw new NotSupportedException();
+		}
+
+		public PropertyMap GetPropertyMapFor(MemberInfo destinationMember)
+		{
+			return propertyMaps.FirstOrDefault(map => map.DestinationMember == destinationMember);
+		}
+	}
 }

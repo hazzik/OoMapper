@@ -47,6 +47,7 @@
     <Compile Include="IgnoreFacts.cs" />
     <Compile Include="MapArray.cs" />
     <Compile Include="MapCollectionIgnoreMapperOrder.cs" />
+    <Compile Include="MapFromToFields.cs" />
     <Compile Include="MapIEnumerableToArray.cs" />
     <Compile Include="MapIEnumerableToICollection.cs" />
     <Compile Include="MapIEnumerableToIList.cs" />

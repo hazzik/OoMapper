@@ -9,10 +9,10 @@ namespace OoMapper
 {
     public class SourceMemberResolver : ISourceMemberResolver
     {
-		private readonly IEnumerable<PropertyInfo> source;
+		private readonly List<MemberInfo> source;
 	    private readonly IMappingConfiguration configuration;
 
-	    public SourceMemberResolver(IEnumerable<PropertyInfo> source, IMappingConfiguration configuration)
+	    public SourceMemberResolver(List<MemberInfo> source, IMappingConfiguration configuration)
 		{
 		    this.source = source;
 		    this.configuration = configuration;
@@ -24,16 +24,16 @@ namespace OoMapper
 			                           CreatePropertyExpression(current, memberInfo, destinationType));
 		}
 
-		private Expression CreatePropertyExpression(Expression source, PropertyInfo sourceProperty,
+		private Expression CreatePropertyExpression(Expression source, MemberInfo sourceProperty,
 		                                                   Type destinationType)
 		{
-			MemberExpression property = Expression.Property(source, sourceProperty);
+			MemberExpression property = GetMemberExpression(source, sourceProperty);
 
 			if (IsEnumerable(destinationType))
 			{
 				var isArray = destinationType.IsArray;
 				destinationType = GetElementType(destinationType);
-				Type sourceType = GetElementType(sourceProperty.PropertyType);
+				Type sourceType = GetElementType(property.Type);
 				if (sourceType == null) return property;
 				return CreateSelect(sourceType, destinationType, property, isArray ? "ToArray" : "ToList");
 			}
@@ -41,7 +41,17 @@ namespace OoMapper
 			return property;
 		}
 
-		private static Type GetElementType(Type propertyType)
+    	private static MemberExpression GetMemberExpression(Expression source, MemberInfo sourceProperty)
+    	{
+			if (sourceProperty is PropertyInfo)
+				return Expression.Property(source, (PropertyInfo) sourceProperty);
+			if (sourceProperty is FieldInfo)
+				return Expression.Field(source, (FieldInfo)sourceProperty);
+
+    		throw new NotSupportedException();
+    	}
+
+    	private static Type GetElementType(Type propertyType)
 		{
 			if (propertyType.HasElementType)
 			{
