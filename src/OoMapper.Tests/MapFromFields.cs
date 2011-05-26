@@ -1,8 +1,8 @@
-using Xunit;
-
-namespace OoMapper.Tests
+﻿namespace OoMapper.Tests
 {
-	public class MapFromToFields
+	using Xunit;
+
+	public class MapFromFields
 	{
 		[Fact]
 		public void MapFromField()

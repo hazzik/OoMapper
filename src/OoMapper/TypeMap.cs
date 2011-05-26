@@ -13,9 +13,9 @@ namespace OoMapper
 
 		public TypeMap(Type sourceType, Type destinationType, IMappingConfiguration configuration)
 		{
-			IEnumerable<MemberInfo> sourceMembers = GetSourceMembers(sourceType);
+			IEnumerable<MemberInfo> sourceMembers = GetMembers(sourceType);
 
-			PropertyInfo[] destinationMembers = destinationType.GetProperties();
+			IEnumerable<MemberInfo> destinationMembers = GetMembers(destinationType);
 
 			SourceType = sourceType;
 			DestinationType = destinationType;
@@ -30,7 +30,7 @@ namespace OoMapper
 
 		public Type DestinationType { get; private set; }
 
-		private SourceMemberResolver FindMembers(PropertyInfo destination, IEnumerable<MemberInfo> sourceMembers)
+		private SourceMemberResolver FindMembers(MemberInfo destination, IEnumerable<MemberInfo> sourceMembers)
 		{
 			var propertyInfos = new List<MemberInfo>();
 			FindMembers(propertyInfos, destination.Name, sourceMembers);
@@ -72,7 +72,7 @@ namespace OoMapper
 				destination);
 		}
 
-		private static IEnumerable<MemberInfo> GetSourceMembers(Type sourceType)
+		private static IEnumerable<MemberInfo> GetMembers(Type sourceType)
 		{
 			return sourceType.GetProperties().Concat((MemberInfo[]) sourceType.GetFields());
 		}
@@ -89,7 +89,7 @@ namespace OoMapper
 
 			list.Add(memberInfo);
 
-			FindMembers(list, name.Substring(memberInfo.Name.Length), GetSourceMembers(GetType(memberInfo)));
+			FindMembers(list, name.Substring(memberInfo.Name.Length), GetMembers(GetType(memberInfo)));
 		}
 
 		private static Type GetType(MemberInfo memberInfo)
