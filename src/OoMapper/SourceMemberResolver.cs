@@ -7,27 +7,27 @@ using System.Reflection;
 
 namespace OoMapper
 {
-    public class SourceMemberResolver : ISourceMemberResolver
+	public class SourceMemberResolver : SourceMemberResolverBase
     {
 		private readonly List<MemberInfo> source;
 	    private readonly IMappingConfiguration configuration;
 
-	    public SourceMemberResolver(List<MemberInfo> source, IMappingConfiguration configuration)
-		{
+	    public SourceMemberResolver(List<MemberInfo> source, IMappingConfiguration configuration) 
+			: base(configuration)
+	    {
 		    this.source = source;
 		    this.configuration = configuration;
 		}
 
-	    public Expression BuildSource(Expression x, Type destinationType)
+		protected override Expression BuildSourceCore(Expression x, Type destinationType)
 		{
 			return source.Aggregate(x, (current, memberInfo) =>
 			                           CreatePropertyExpression(current, memberInfo, destinationType));
 		}
 
-		private Expression CreatePropertyExpression(Expression source, MemberInfo sourceProperty,
-		                                                   Type destinationType)
+		private Expression CreatePropertyExpression(Expression x, MemberInfo sourceProperty, Type destinationType)
 		{
-			MemberExpression property = GetMemberExpression(source, sourceProperty);
+			MemberExpression property = GetMemberExpression(x, sourceProperty);
 
 			if (IsEnumerable(destinationType))
 			{

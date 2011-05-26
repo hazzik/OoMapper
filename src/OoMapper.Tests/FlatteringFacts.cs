@@ -2,7 +2,7 @@
 
 namespace OoMapper.Tests
 {
-    public class MapNameToNameFacts
+    public class FlatteringFacts
     {
         [Fact]
         public void MapMembersOnSameLevelWithEqualNames()

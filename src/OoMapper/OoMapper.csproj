@@ -47,6 +47,7 @@
     <Compile Include="MappingConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SourceMemberResolver.cs" />
+    <Compile Include="SourceMemberResolverBase.cs" />
     <Compile Include="TypeMap.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
