@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 
 namespace OoMapper
 {
-	public class TypeMap
+    public class TypeMap
 	{
 		private readonly IMappingConfiguration configuration;
 		private readonly ICollection<PropertyMap> propertyMaps;
@@ -30,49 +29,19 @@ namespace OoMapper
 
 		public Type DestinationType { get; private set; }
 
-		private SourceMemberResolver FindMembers(MemberInfo destination, IEnumerable<MemberInfo> sourceMembers)
+	    public IEnumerable<PropertyMap> PropertyMaps
+	    {
+	        get { return propertyMaps; }
+	    }
+
+	    private SourceMemberResolver FindMembers(MemberInfo destination, IEnumerable<MemberInfo> sourceMembers)
 		{
 			var propertyInfos = new List<MemberInfo>();
 			FindMembers(propertyInfos, destination.Name, sourceMembers);
 			return new SourceMemberResolver(propertyInfos, configuration);
 		}
 
-		public LambdaExpression BuildNew()
-		{
-			const string name = "src";
-
-			ParameterExpression source = Expression.Parameter(SourceType, name);
-
-			MemberAssignment[] bindings = propertyMaps
-				.Where(x => x.IsIgnored == false)
-				.Select(m => m.BuildBind(source))
-				.ToArray();
-
-			return Expression.Lambda(
-				Expression.MemberInit(
-					Expression.New(DestinationType), bindings), source);
-		}
-
-		public LambdaExpression BuildExisting()
-		{
-			const string name = "src";
-
-			ParameterExpression source = Expression.Parameter(SourceType, name);
-			ParameterExpression destination = Expression.Parameter(DestinationType, "dst");
-
-			Expression[] bindings = propertyMaps
-				.Where(x => x.IsIgnored == false)
-				.Select(m => m.BuildAssign(destination, source))
-				.Concat(new[] {destination})
-				.ToArray();
-
-			return Expression.Lambda(
-				Expression.Block(bindings),
-				source,
-				destination);
-		}
-
-		private static IEnumerable<MemberInfo> GetMembers(Type sourceType)
+	    private static IEnumerable<MemberInfo> GetMembers(Type sourceType)
 		{
 			return sourceType.GetProperties().Concat((MemberInfo[]) sourceType.GetFields());
 		}
@@ -103,7 +72,7 @@ namespace OoMapper
 
 		public PropertyMap GetPropertyMapFor(MemberInfo destinationMember)
 		{
-			return propertyMaps.FirstOrDefault(map => map.DestinationMember == destinationMember);
+			return PropertyMaps.FirstOrDefault(map => map.DestinationMember == destinationMember);
 		}
 	}
 }

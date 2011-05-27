@@ -5,26 +5,13 @@ using System.Linq.Expressions;
 
 namespace OoMapper
 {
-    public interface IMappingConfiguration
-    {
-        Expression<Func<TSource, TDestination>> BuildNew<TSource, TDestination>();
-        LambdaExpression BuildNew(Type sourceType, Type destinationType);
-        Expression<Func<TSource, TDestination, TDestination>> BuildExisting<TSource, TDestination>();
-        LambdaExpression BuildExisting(Type sourceType, Type destinationType);
-        void Reset();
-        void AddMapping(TypeMap typeMap);
-    }
-
     public class MappingConfiguration : IMappingConfiguration
     {
-        private  readonly IDictionary<Tuple<Type, Type>, TypeMap> mappers =
+        private readonly IDictionary<Tuple<Type, Type>, TypeMap> mappers =
             new ConcurrentDictionary<Tuple<Type, Type>, TypeMap>();
 
-        private  readonly ConcurrentDictionary<Tuple<Type, Type>, LambdaExpression> newLambdas =
-            new ConcurrentDictionary<Tuple<Type, Type>, LambdaExpression>();
-
-        private  readonly ConcurrentDictionary<Tuple<Type, Type>, LambdaExpression> existingLambdas =
-            new ConcurrentDictionary<Tuple<Type, Type>, LambdaExpression>();
+        private readonly IObjectMapperBuilder newObjectMapperBuilder = new CachedObjectMapperBuilder(new NewObjectMapperBuilder());
+        private readonly IObjectMapperBuilder existingObjectMapperBuilder = new CachedObjectMapperBuilder(new ExistingObjectMapperBuilder());
 
         public  Expression<Func<TSource, TDestination>> BuildNew<TSource, TDestination>()
         {
@@ -33,7 +20,8 @@ namespace OoMapper
 
         public LambdaExpression BuildNew(Type sourceType, Type destinationType)
         {
-            return newLambdas.GetOrAdd(Tuple.Create(sourceType, destinationType), k => mappers[k].BuildNew());
+            Tuple<Type, Type> tuple = Tuple.Create(sourceType, destinationType);
+            return newObjectMapperBuilder.Build(mappers[tuple]);
         }
 
         public  Expression<Func<TSource, TDestination, TDestination>> BuildExisting<TSource, TDestination>()
@@ -43,14 +31,8 @@ namespace OoMapper
 
         public LambdaExpression BuildExisting(Type sourceType, Type destinationType)
         {
-            return existingLambdas.GetOrAdd(Tuple.Create(sourceType, destinationType), k => mappers[k].BuildExisting());
-        }
-
-        public  void Reset()
-        {
-            mappers.Clear();
-			newLambdas.Clear();
-			existingLambdas.Clear();
+            Tuple<Type, Type> tuple = Tuple.Create(sourceType, destinationType);
+            return existingObjectMapperBuilder.Build(mappers[tuple]);
         }
 
         public  void AddMapping(TypeMap typeMap)

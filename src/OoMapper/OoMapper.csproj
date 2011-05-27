@@ -40,12 +40,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CachedObjectMapperBuilder.cs" />
+    <Compile Include="ExistingObjectMapperBuilder.cs" />
+    <Compile Include="IMappingConfiguration.cs" />
+    <Compile Include="IObjectMapperBuilder.cs" />
     <Compile Include="ISourceMemberResolver.cs" />
     <Compile Include="LambdaSourceMemberResolver.cs" />
+    <Compile Include="MapperExpression.cs" />
+    <Compile Include="NewObjectMapperBuilder.cs" />
     <Compile Include="PropertyMap.cs" />
     <Compile Include="Mapper.cs" />
     <Compile Include="MappingConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyMapExpression.cs" />
     <Compile Include="SourceMemberResolver.cs" />
     <Compile Include="SourceMemberResolverBase.cs" />
     <Compile Include="TypeMap.cs" />
