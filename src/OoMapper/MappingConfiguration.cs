@@ -20,8 +20,7 @@ namespace OoMapper
 
         public LambdaExpression BuildNew(Type sourceType, Type destinationType)
         {
-            Tuple<Type, Type> tuple = Tuple.Create(sourceType, destinationType);
-            return newObjectMapperBuilder.Build(mappers[tuple]);
+            return newObjectMapperBuilder.Build(GetTypeMap(Tuple.Create(sourceType, destinationType)));
         }
 
         public  Expression<Func<TSource, TDestination, TDestination>> BuildExisting<TSource, TDestination>()
@@ -31,13 +30,20 @@ namespace OoMapper
 
         public LambdaExpression BuildExisting(Type sourceType, Type destinationType)
         {
-            Tuple<Type, Type> tuple = Tuple.Create(sourceType, destinationType);
-            return existingObjectMapperBuilder.Build(mappers[tuple]);
+            return existingObjectMapperBuilder.Build(GetTypeMap(Tuple.Create(sourceType, destinationType)));
         }
 
         public  void AddMapping(TypeMap typeMap)
         {
             mappers.Add(Tuple.Create(typeMap.SourceType, typeMap.DestinationType), typeMap);
+        }
+
+        private TypeMap GetTypeMap(Tuple<Type, Type> tuple)
+        {
+            TypeMap typeMap;
+            if (mappers.TryGetValue(tuple, out typeMap) == false)
+                throw new KeyNotFoundException(tuple.ToString());
+            return typeMap;
         }
     }
 }
