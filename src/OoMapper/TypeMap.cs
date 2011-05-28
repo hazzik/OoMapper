@@ -42,9 +42,9 @@ namespace OoMapper
 		}
 
 	    private static IEnumerable<MemberInfo> GetMembers(Type sourceType)
-		{
+	    {
 			return sourceType.GetProperties().Concat((MemberInfo[]) sourceType.GetFields());
-		}
+	    }
 
 		private static void FindMembers(ICollection<MemberInfo> list, string name,
 		                                IEnumerable<MemberInfo> sourceMembers)
@@ -72,7 +72,7 @@ namespace OoMapper
 
 		public PropertyMap GetPropertyMapFor(MemberInfo destinationMember)
 		{
-			return PropertyMaps.FirstOrDefault(map => map.DestinationMember == destinationMember);
+		    return PropertyMaps.FirstOrDefault(map => map.DestinationMember.Name.Equals(destinationMember.Name, StringComparison.Ordinal));
 		}
 	}
 }

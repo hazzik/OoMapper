@@ -6,7 +6,7 @@ namespace OoMapper
     public class PropertyMapExpression<TSource>
     {
         private readonly PropertyMap propertyMap;
-        private IMappingConfiguration configuration;
+        private readonly IMappingConfiguration configuration;
 
         public PropertyMapExpression(PropertyMap propertyMap, IMappingConfiguration configuration)
         {

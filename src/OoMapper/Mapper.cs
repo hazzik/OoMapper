@@ -32,5 +32,15 @@ namespace OoMapper
         {
             return configuration.BuildExisting<TSource, TDestination>().Compile().Invoke(source, destination);
         }
+
+        public static object Map(object source, Type sourceType, Type destinationType)
+        {
+            return configuration.BuildNew(sourceType, destinationType).Compile().DynamicInvoke(source);
+        }
+
+        public static object Map(object source, object destination, Type sourceType, Type destinationType)
+        {
+            return configuration.BuildExisting(sourceType, destinationType).Compile().DynamicInvoke(source, destination);
+        }
     }
 }
