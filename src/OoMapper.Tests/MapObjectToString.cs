@@ -16,22 +16,14 @@ namespace OoMapper.Tests
             Assert.Equal("100500", destination.Value);
         }
 
-        #region Nested type: Destination
-
         private class Destination
         {
             public string Value { get; set; }
         }
 
-        #endregion
-
-        #region Nested type: Source
-
         private class Source
         {
             public int Value { get; set; }
         }
-
-        #endregion
     }
 }
