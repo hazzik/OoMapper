@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -7,7 +6,7 @@ using System.Reflection;
 
 namespace OoMapper
 {
-	public class SourceMemberResolver : SourceMemberResolverBase
+    public class SourceMemberResolver : SourceMemberResolverBase
     {
 		private readonly List<MemberInfo> source;
 	    private readonly IMappingConfiguration configuration;
@@ -29,11 +28,11 @@ namespace OoMapper
 		{
 			MemberExpression property = GetMemberExpression(x, sourceProperty);
 
-			if (IsEnumerable(destinationType))
+			if (destinationType.IsEnumerable())
 			{
 				var isArray = destinationType.IsArray;
-				destinationType = GetElementType(destinationType);
-				Type sourceType = GetElementType(property.Type);
+				destinationType = TypeUtils.GetElementType(destinationType);
+				Type sourceType = TypeUtils.GetElementType(property.Type);
 				if (sourceType == null) return property;
 				return CreateSelect(sourceType, destinationType, property, isArray ? "ToArray" : "ToList");
 			}
@@ -51,25 +50,7 @@ namespace OoMapper
     		throw new NotSupportedException();
     	}
 
-    	private static Type GetElementType(Type propertyType)
-		{
-			if (propertyType.HasElementType)
-			{
-				return propertyType.GetElementType();
-			}
-			if (propertyType.IsGenericType)
-			{
-				return propertyType.GetGenericArguments().First();
-			}
-			return null;
-		}
-
-		private static bool IsEnumerable(Type type)
-		{
-			return type.GetInterfaces().Contains(typeof (IEnumerable));
-		}
-
-		private Expression CreateSelect(Type sourceType, Type destinationType, Expression property, string methodName)
+	    private Expression CreateSelect(Type sourceType, Type destinationType, Expression property, string methodName)
 		{
 		    return Expression.Call(typeof (Enumerable), methodName, new[] {destinationType},
 			                       Expression.Call(typeof (Enumerable), "Select",

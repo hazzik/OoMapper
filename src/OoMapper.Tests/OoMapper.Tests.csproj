@@ -57,6 +57,7 @@
     <Compile Include="MapIEnumerableToICollection.cs" />
     <Compile Include="MapIEnumerableToIList.cs" />
     <Compile Include="FlatteringFacts.cs" />
+    <Compile Include="MapTopLevelIEnumerable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

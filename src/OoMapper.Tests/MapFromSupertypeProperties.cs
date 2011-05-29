@@ -7,6 +7,7 @@ namespace OoMapper.Tests
         [Fact]
         public void TestAutomapping()
         {
+Mapper.Reset();
             Mapper.CreateMap<Source, Destination>();
             var source = new Source
                              {
@@ -19,6 +20,7 @@ namespace OoMapper.Tests
         [Fact]
         public void TestExplicitMapping()
         {
+Mapper.Reset();
             Mapper.CreateMap<Source, Destination>()
                 .ForMember(x => x.Value, opt => opt.MapFrom(x => x.Value));
 
