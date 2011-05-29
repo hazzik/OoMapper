@@ -1,4 +1,3 @@
-using System;
 using System.Linq.Expressions;
 
 namespace OoMapper
@@ -13,9 +12,9 @@ namespace OoMapper
             this.sourceMember = sourceMember;
         }
 
-		protected override Expression BuildSourceCore(Expression x, Type destinationType)
-    	{
-    		return new ParameterRewriter(sourceMember.Parameters[0], x).Visit(sourceMember.Body);
-    	}
+		protected override Expression BuildSourceCore(Expression x)
+		{
+		    return new ParameterRewriter(sourceMember.Parameters[0], x).Visit(sourceMember.Body);
+		}
     }
 }

@@ -14,7 +14,7 @@ namespace OoMapper
 
         public Expression BuildSource(Expression x, Type destinationType)
         {
-            Expression expression = BuildSourceCore(x, destinationType);
+            Expression expression = BuildSourceCore(x);
             Type sourceType = expression.Type;
             if (destinationType == sourceType || destinationType.IsAssignableFrom(sourceType))
             {
@@ -23,6 +23,11 @@ namespace OoMapper
             if (destinationType == typeof (string))
             {
                 return Expression.Call(expression, "ToString", new Type[0]);
+            }
+            if (destinationType.IsEnumerable() && sourceType.IsEnumerable())
+            {
+                LambdaExpression lambda = configuration.BuildNew(sourceType, destinationType);
+                return new ParameterRewriter(lambda.Parameters[0], expression).Visit(lambda.Body);
             }
             try
             {
@@ -35,7 +40,7 @@ namespace OoMapper
             }
         }
 
-        protected abstract Expression BuildSourceCore(Expression x, Type destinationType);
+        protected abstract Expression BuildSourceCore(Expression x);
 
         protected class ParameterRewriter : ExpressionVisitor
         {

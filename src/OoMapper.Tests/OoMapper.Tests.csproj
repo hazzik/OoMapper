@@ -51,6 +51,7 @@
     <Compile Include="MapArray.cs" />
     <Compile Include="MapCollectionIgnoreMapperOrder.cs" />
     <Compile Include="MapFromFields.cs" />
+    <Compile Include="MapIEnumerableToIListExplicit.cs" />
     <Compile Include="MapObjectToString.cs" />
     <Compile Include="MapToFields.cs" />
     <Compile Include="MapIEnumerableToArray.cs" />

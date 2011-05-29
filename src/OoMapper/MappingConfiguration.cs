@@ -26,10 +26,11 @@ namespace OoMapper
         {
             if (sourceType.IsEnumerable() && destinationType.IsEnumerable())
             {
+                var isArray = destinationType.IsArray;
                 Type sourceElementType = TypeUtils.GetElementType(sourceType);
                 Type destinationElementType = TypeUtils.GetElementType(destinationType);
                 var parameterExpression = Expression.Parameter(sourceType, "src");
-                return Expression.Lambda(Expression.Convert(CreateSelect(sourceElementType, destinationElementType, parameterExpression, "ToList"), destinationType), parameterExpression);
+                return Expression.Lambda(Expression.Convert(CreateSelect(sourceElementType, destinationElementType, parameterExpression, isArray ? "ToArray" : "ToList"), destinationType), parameterExpression);
             }
             return newObjectMapperBuilder.Build(GetTypeMap(Tuple.Create(sourceType, destinationType)));
         }
