@@ -8,9 +8,9 @@ namespace OoMapper
 {
     public class SourceMemberResolver : SourceMemberResolverBase
     {
-		private readonly List<MemberInfo> source;
+		private readonly IEnumerable<MemberInfo> source;
 
-        public SourceMemberResolver(List<MemberInfo> source, IMappingConfiguration configuration) 
+        public SourceMemberResolver(IEnumerable<MemberInfo> source, IMappingConfiguration configuration) 
 			: base(configuration)
 	    {
 		    this.source = source;
@@ -21,7 +21,7 @@ namespace OoMapper
 		    return source.Aggregate(x, GetMemberExpression);
 		}
 
-        protected static MemberExpression GetMemberExpression(Expression source, MemberInfo sourceProperty)
+        private static MemberExpression GetMemberExpression(Expression source, MemberInfo sourceProperty)
         {
             if (sourceProperty is PropertyInfo)
                 return Expression.Property(source, (PropertyInfo) sourceProperty);
