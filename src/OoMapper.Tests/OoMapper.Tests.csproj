@@ -47,6 +47,7 @@
     <Compile Include="CustomPropertyMappingFacts.cs" />
     <Compile Include="DeepMappingFacts.cs" />
     <Compile Include="IgnoreFacts.cs" />
+    <Compile Include="InheritanceTests.cs" />
     <Compile Include="MapFromSupertypeProperties.cs" />
     <Compile Include="MapArray.cs" />
     <Compile Include="MapCollectionIgnoreMapperOrder.cs" />

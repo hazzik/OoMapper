@@ -32,8 +32,9 @@ namespace OoMapper
                 var parameterExpression = Expression.Parameter(sourceType, "src");
                 return Expression.Lambda(Expression.Convert(CreateSelect(sourceElementType, destinationElementType, parameterExpression, isArray ? "ToArray" : "ToList"), destinationType), parameterExpression);
             }
-            return newObjectMapperBuilder.Build(GetTypeMap(Tuple.Create(sourceType, destinationType)));
+            return newObjectMapperBuilder.Build(FindTypeMap(sourceType, destinationType));
         }
+
         private Expression CreateSelect(Type sourceType, Type destinationType, Expression property, string methodName)
         {
             return Expression.Call(typeof(Enumerable), methodName, new[] { destinationType },
@@ -50,7 +51,7 @@ namespace OoMapper
 
         public LambdaExpression BuildExisting(Type sourceType, Type destinationType)
         {
-            return existingObjectMapperBuilder.Build(GetTypeMap(Tuple.Create(sourceType, destinationType)));
+            return existingObjectMapperBuilder.Build(FindTypeMap(sourceType, destinationType));
         }
 
         public void AddMapping(TypeMap typeMap)
@@ -60,12 +61,15 @@ namespace OoMapper
 
         #endregion
 
-        private TypeMap GetTypeMap(Tuple<Type, Type> tuple)
+        private TypeMap FindTypeMap(Type sourceType, Type destinationType)
         {
+            Tuple<Type, Type> tuple = Tuple.Create(sourceType, destinationType);
             TypeMap typeMap;
-            if (mappers.TryGetValue(tuple, out typeMap) == false)
+            if (mappers.TryGetValue(tuple, out typeMap))
+                return typeMap;
+            if (sourceType.BaseType == null)
                 throw new KeyNotFoundException(tuple.ToString());
-            return typeMap;
+            return FindTypeMap(sourceType.BaseType, destinationType);
         }
     }
 }

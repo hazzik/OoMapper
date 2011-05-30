@@ -25,12 +25,18 @@ namespace OoMapper
 
         public static TDestination Map<TSource, TDestination>(TSource source)
         {
-            return configuration.BuildNew<TSource, TDestination>().Compile().Invoke(source);
+            Type sourceType = typeof (TSource);
+            Type destinationType = typeof (TDestination);
+            var func = (Func<TSource, TDestination>)configuration.BuildNew(sourceType, destinationType).Compile();
+            return func.Invoke(source);
         }
 
         public static TDestination Map<TSource, TDestination>(TSource source, TDestination destination)
         {
-            return configuration.BuildExisting<TSource, TDestination>().Compile().Invoke(source, destination);
+            Type sourceType = typeof(TSource);
+            Type destinationType = typeof(TDestination);
+            var func = (Func<TSource, TDestination, TDestination>)configuration.BuildExisting(sourceType, destinationType).Compile();
+            return func.Invoke(source, destination);
         }
 
         public static object Map(object source, Type sourceType, Type destinationType)
