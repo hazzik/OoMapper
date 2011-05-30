@@ -9,10 +9,22 @@ namespace OoMapper.Tests
         {
             Mapper.Reset();
             Mapper.CreateMap<Source, Destination>();
-            var destination = Mapper.Map<SubSource, Destination>(new SubSource
-                                                                     {
-                                                                         Value = "hello world"
-                                                                     });
+            Destination destination = Mapper.Map<SubSource, Destination>(new SubSource
+                                                                             {
+                                                                                 Value = "hello world"
+                                                                             });
+            Assert.Equal("hello world", destination.Value);
+        }
+
+        [Fact]
+        public void ShouldMapAsInterfaceClass()
+        {
+            Mapper.Reset();
+            Mapper.CreateMap<ISource, Destination>();
+            Destination destination = Mapper.Map<SubSource, Destination>(new SubSource
+                                                                             {
+                                                                                 Value = "hello world"
+                                                                             });
             Assert.Equal("hello world", destination.Value);
         }
 
@@ -25,11 +37,24 @@ namespace OoMapper.Tests
 
         #endregion
 
+        #region Nested type: ISource
+
+        private interface ISource
+        {
+            string Value { get; }
+        }
+
+        #endregion
+
         #region Nested type: Source
 
-        private class Source
+        private class Source : ISource
         {
+            #region ISource Members
+
             public string Value { get; set; }
+
+            #endregion
         }
 
         #endregion

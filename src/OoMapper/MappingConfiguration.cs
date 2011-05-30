@@ -17,11 +17,6 @@ namespace OoMapper
 
         #region IMappingConfiguration Members
 
-        public Expression<Func<TSource, TDestination>> BuildNew<TSource, TDestination>()
-        {
-            return (Expression<Func<TSource, TDestination>>) BuildNew(typeof (TSource), typeof (TDestination));
-        }
-
         public LambdaExpression BuildNew(Type sourceType, Type destinationType)
         {
             if (sourceType.IsEnumerable() && destinationType.IsEnumerable())
@@ -32,7 +27,7 @@ namespace OoMapper
                 var parameterExpression = Expression.Parameter(sourceType, "src");
                 return Expression.Lambda(Expression.Convert(CreateSelect(sourceElementType, destinationElementType, parameterExpression, isArray ? "ToArray" : "ToList"), destinationType), parameterExpression);
             }
-            return newObjectMapperBuilder.Build(FindTypeMap(sourceType, destinationType));
+            return newObjectMapperBuilder.Build(GetTypeMap(sourceType, destinationType));
         }
 
         private Expression CreateSelect(Type sourceType, Type destinationType, Expression property, string methodName)
@@ -44,14 +39,9 @@ namespace OoMapper
         }
 
 
-        public Expression<Func<TSource, TDestination, TDestination>> BuildExisting<TSource, TDestination>()
-        {
-            return (Expression<Func<TSource, TDestination, TDestination>>) BuildExisting(typeof (TSource), typeof (TDestination));
-        }
-
         public LambdaExpression BuildExisting(Type sourceType, Type destinationType)
         {
-            return existingObjectMapperBuilder.Build(FindTypeMap(sourceType, destinationType));
+            return existingObjectMapperBuilder.Build(GetTypeMap(sourceType, destinationType));
         }
 
         public void AddMapping(TypeMap typeMap)
@@ -61,15 +51,28 @@ namespace OoMapper
 
         #endregion
 
+        private TypeMap GetTypeMap(Type sourceType, Type destinationType)
+        {
+            var map = FindTypeMap(sourceType, destinationType);
+            if (map == null) throw new KeyNotFoundException(Tuple.Create(sourceType, destinationType).ToString());
+            return map;
+        }
+
         private TypeMap FindTypeMap(Type sourceType, Type destinationType)
         {
             Tuple<Type, Type> tuple = Tuple.Create(sourceType, destinationType);
             TypeMap typeMap;
             if (mappers.TryGetValue(tuple, out typeMap))
                 return typeMap;
-            if (sourceType.BaseType == null)
-                throw new KeyNotFoundException(tuple.ToString());
-            return FindTypeMap(sourceType.BaseType, destinationType);
+            typeMap = sourceType.GetInterfaces()
+                .Select(@interface => FindTypeMap(@interface, destinationType))
+                .FirstOrDefault(tm => tm != null);
+            if (typeMap != null)
+                return typeMap;
+            var baseType = sourceType.BaseType;
+            if (baseType != null)
+                return FindTypeMap(baseType, destinationType);
+            return null;
         }
     }
 }
