@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace OoMapper
 {
-    public class TypeMap
+	public class TypeMap
 	{
 		private readonly IMappingConfiguration configuration;
 		private readonly ICollection<PropertyMap> propertyMaps;
@@ -21,7 +21,7 @@ namespace OoMapper
 			this.configuration = configuration;
 
 			propertyMaps = destinationMembers
-				.Select(destination => new PropertyMap(destination, FindMembers(destination, sourceMembers)))
+				.Select(destination => new PropertyMap(destination, CreateSourceMemberResolver(destination, sourceMembers)))
 				.ToList();
 		}
 
@@ -34,17 +34,17 @@ namespace OoMapper
 	        get { return propertyMaps; }
 	    }
 
-	    private SourceMemberResolver FindMembers(MemberInfo destination, IEnumerable<MemberInfo> sourceMembers)
+		private SourceMemberResolver CreateSourceMemberResolver(MemberInfo destination, IEnumerable<MemberInfo> sourceMembers)
 		{
 			var propertyInfos = new List<MemberInfo>();
 			FindMembers(propertyInfos, destination.Name, sourceMembers);
 			return new SourceMemberResolver(propertyInfos, configuration);
 		}
 
-	    private static IEnumerable<MemberInfo> GetMembers(Type sourceType)
-	    {
+		private static IEnumerable<MemberInfo> GetMembers(Type sourceType)
+		{
 			return sourceType.GetProperties().Concat((MemberInfo[]) sourceType.GetFields());
-	    }
+		}
 
 		private static void FindMembers(ICollection<MemberInfo> list, string name,
 		                                IEnumerable<MemberInfo> sourceMembers)
