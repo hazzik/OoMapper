@@ -16,7 +16,7 @@ namespace OoMapper
 		    this.source = source;
 	    }
 
-		protected override Expression BuildSourceCore(Expression x)
+        protected override Expression BuildSourceCore(Expression x)
 		{
 		    return source.Aggregate(x, GetMemberExpression);
 		}

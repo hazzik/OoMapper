@@ -48,6 +48,9 @@
     <Compile Include="DeepMappingFacts.cs" />
     <Compile Include="IgnoreFacts.cs" />
     <Compile Include="InheritanceTests.cs" />
+    <Compile Include="MapDictionaryToDictionary.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="MapFromSupertypeProperties.cs" />
     <Compile Include="MapArray.cs" />
     <Compile Include="MapCollectionIgnoreMapperOrder.cs" />

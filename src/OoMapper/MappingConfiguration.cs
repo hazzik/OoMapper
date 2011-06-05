@@ -20,35 +20,58 @@ namespace OoMapper
         public LambdaExpression BuildNew(Type sourceType, Type destinationType)
         {
             ParameterExpression source = Expression.Parameter(sourceType, "src");
+            return Expression.Lambda(BuildNewExpressionBody(source, destinationType), source);
+        }
+
+        public Expression BuildNewExpressionBody(Expression expression, Type destinationType)
+        {
+            var sourceType = expression.Type;
+            if (destinationType == sourceType || destinationType.IsAssignableFrom(sourceType))
+            {
+                return expression;
+            }
+            if (sourceType.IsDictionary() && destinationType.IsDictionary())
+            {
+                var sourceElementType = TypeUtils.GetElementTypeOfEnumerable(sourceType);
+                var destinationElementType = TypeUtils.GetElementTypeOfEnumerable(destinationType);
+
+                ParameterExpression parameter = Expression.Parameter(sourceElementType, "src");
+
+                Type destinationKeyType = destinationElementType.GetProperty("Key").PropertyType;
+                Type destinationValueType = destinationElementType.GetProperty("Value").PropertyType;
+
+                MethodCallExpression call = Expression.Call(typeof (Enumerable), "ToDictionary", new[] {sourceElementType, destinationKeyType, destinationValueType},
+                                                            expression,
+                                                            CreateSelector(destinationKeyType, parameter, "Key"),
+                                                            CreateSelector(destinationValueType, parameter, "Value"));
+                return call;
+            }
             if (sourceType.IsEnumerable() && destinationType.IsEnumerable())
             {
-                var isArray = destinationType.IsArray;
+                bool isArray = destinationType.IsArray;
                 Type sourceElementType = TypeUtils.GetElementTypeOfEnumerable(sourceType);
                 Type destinationElementType = TypeUtils.GetElementTypeOfEnumerable(destinationType);
-                return Expression.Lambda(Expression.Convert(CreateSelect(sourceElementType, destinationElementType, source, isArray ? "ToArray" : "ToList"), destinationType), source);
+                return Expression.Convert(CreateSelect(sourceElementType, destinationElementType, expression, isArray ? "ToArray" : "ToList"), destinationType);
             }
             if (destinationType == typeof(string))
             {
-                return Expression.Lambda(Expression.Call(source, "ToString", new Type[0]), source);
+                return Expression.Call(expression, "ToString", new Type[0]);
             }
             try
             {
-                return Expression.Lambda(Expression.Convert(source, destinationType), source);
+                return Expression.Convert(expression, destinationType);
             }
             catch (InvalidOperationException)
             {
-                return newObjectMapperBuilder.Build(GetTypeMap(sourceType, destinationType));
+                LambdaExpression lambda = newObjectMapperBuilder.Build(GetTypeMap(sourceType, destinationType));
+                return new ParameterRewriter(lambda.Parameters[0], expression).Visit(lambda.Body);
             }
         }
 
-        private Expression CreateSelect(Type sourceType, Type destinationType, Expression property, string methodName)
+        private LambdaExpression CreateSelector(Type destinationType, ParameterExpression source, string sourcePropertyName)
         {
-            return Expression.Call(typeof (Enumerable), methodName, new[] {destinationType},
-                                   Expression.Call(typeof (Enumerable), "Select",
-                                                   new[] {sourceType, destinationType},
-                                                   property, BuildNew(sourceType, destinationType)));
+            return Expression.Lambda(BuildNewExpressionBody(Expression.Property(source, sourcePropertyName), destinationType), source);
         }
-
 
         public LambdaExpression BuildExisting(Type sourceType, Type destinationType)
         {
@@ -62,9 +85,17 @@ namespace OoMapper
 
         #endregion
 
+        private Expression CreateSelect(Type sourceType, Type destinationType, Expression property, string methodName)
+        {
+            return Expression.Call(typeof (Enumerable), methodName, new[] {destinationType},
+                                   Expression.Call(typeof (Enumerable), "Select",
+                                                   new[] {sourceType, destinationType},
+                                                   property, BuildNew(sourceType, destinationType)));
+        }
+
         private TypeMap GetTypeMap(Type sourceType, Type destinationType)
         {
-            var map = FindTypeMap(sourceType, destinationType);
+            TypeMap map = FindTypeMap(sourceType, destinationType);
             if (map == null) throw new KeyNotFoundException(Tuple.Create(sourceType, destinationType).ToString());
             return map;
         }
@@ -80,7 +111,7 @@ namespace OoMapper
                 .FirstOrDefault(tm => tm != null);
             if (typeMap != null)
                 return typeMap;
-            var baseType = sourceType.BaseType;
+            Type baseType = sourceType.BaseType;
             if (baseType != null)
                 return FindTypeMap(baseType, destinationType);
             return null;

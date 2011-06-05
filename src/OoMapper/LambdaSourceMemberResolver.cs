@@ -12,7 +12,7 @@ namespace OoMapper
             this.sourceMember = sourceMember;
         }
 
-		protected override Expression BuildSourceCore(Expression x)
+	    protected override Expression BuildSourceCore(Expression x)
 		{
 		    return new ParameterRewriter(sourceMember.Parameters[0], x).Visit(sourceMember.Body);
 		}
