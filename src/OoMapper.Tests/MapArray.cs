@@ -1,12 +1,11 @@
-﻿using System;
-using Xunit;
+﻿using Xunit;
 
 namespace OoMapper.Tests
 {
     public class MapArray
     {
         [Fact]
-        public void NewFact()
+        public void Test()
         {
             Mapper.CreateMap<SourceChild, DestinationChild>();
             Mapper.CreateMap<Source, Destination>();

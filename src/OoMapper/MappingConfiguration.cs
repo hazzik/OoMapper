@@ -19,22 +19,33 @@ namespace OoMapper
 
         public LambdaExpression BuildNew(Type sourceType, Type destinationType)
         {
+            ParameterExpression source = Expression.Parameter(sourceType, "src");
             if (sourceType.IsEnumerable() && destinationType.IsEnumerable())
             {
                 var isArray = destinationType.IsArray;
                 Type sourceElementType = TypeUtils.GetElementTypeOfEnumerable(sourceType);
                 Type destinationElementType = TypeUtils.GetElementTypeOfEnumerable(destinationType);
-                var parameterExpression = Expression.Parameter(sourceType, "src");
-                return Expression.Lambda(Expression.Convert(CreateSelect(sourceElementType, destinationElementType, parameterExpression, isArray ? "ToArray" : "ToList"), destinationType), parameterExpression);
+                return Expression.Lambda(Expression.Convert(CreateSelect(sourceElementType, destinationElementType, source, isArray ? "ToArray" : "ToList"), destinationType), source);
             }
-            return newObjectMapperBuilder.Build(GetTypeMap(sourceType, destinationType));
+            if (destinationType == typeof(string))
+            {
+                return Expression.Lambda(Expression.Call(source, "ToString", new Type[0]), source);
+            }
+            try
+            {
+                return Expression.Lambda(Expression.Convert(source, destinationType), source);
+            }
+            catch (InvalidOperationException)
+            {
+                return newObjectMapperBuilder.Build(GetTypeMap(sourceType, destinationType));
+            }
         }
 
         private Expression CreateSelect(Type sourceType, Type destinationType, Expression property, string methodName)
         {
-            return Expression.Call(typeof(Enumerable), methodName, new[] { destinationType },
-                                   Expression.Call(typeof(Enumerable), "Select",
-                                                   new[] { sourceType, destinationType },
+            return Expression.Call(typeof (Enumerable), methodName, new[] {destinationType},
+                                   Expression.Call(typeof (Enumerable), "Select",
+                                                   new[] {sourceType, destinationType},
                                                    property, BuildNew(sourceType, destinationType)));
         }
 

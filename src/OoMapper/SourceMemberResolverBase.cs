@@ -24,20 +24,8 @@ namespace OoMapper
             {
                 return Expression.Call(expression, "ToString", new Type[0]);
             }
-            if (destinationType.IsEnumerable() && sourceType.IsEnumerable())
-            {
-                LambdaExpression lambda = configuration.BuildNew(sourceType, destinationType);
-                return new ParameterRewriter(lambda.Parameters[0], expression).Visit(lambda.Body);
-            }
-            try
-            {
-                return Expression.Convert(expression, destinationType);
-            }
-            catch (InvalidOperationException)
-            {
-                LambdaExpression lambda = configuration.BuildNew(sourceType, destinationType);
-                return new ParameterRewriter(lambda.Parameters[0], expression).Visit(lambda.Body);
-            }
+            LambdaExpression lambda = configuration.BuildNew(sourceType, destinationType);
+            return new ParameterRewriter(lambda.Parameters[0], expression).Visit(lambda.Body);
         }
 
         protected abstract Expression BuildSourceCore(Expression x);
@@ -57,6 +45,18 @@ namespace OoMapper
             {
                 return node == candidate ? replacement : base.Visit(node);
             }
+        }
+    }
+
+    class SourceMemberResolverBaseImpl : SourceMemberResolverBase
+    {
+        public SourceMemberResolverBaseImpl(IMappingConfiguration configuration) : base(configuration)
+        {
+        }
+
+        protected override Expression BuildSourceCore(Expression x)
+        {
+            return x;
         }
     }
 }
