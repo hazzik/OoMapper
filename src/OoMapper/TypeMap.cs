@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace OoMapper
 {
-	public class TypeMap
+	public class TypeMap : ITypePair
 	{
 		private readonly IMappingConfiguration configuration;
 		private readonly ICollection<PropertyMap> propertyMaps;

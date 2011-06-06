@@ -41,10 +41,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CachedObjectMapperBuilder.cs" />
+    <Compile Include="DynamicMapperBase.cs" />
+    <Compile Include="DynamicMapperBuilder.cs" />
     <Compile Include="ExistingObjectMapperBuilder.cs" />
     <Compile Include="IMappingConfiguration.cs" />
     <Compile Include="IObjectMapperBuilder.cs" />
     <Compile Include="ISourceMemberResolver.cs" />
+    <Compile Include="ITypePair.cs" />
     <Compile Include="LambdaSourceMemberResolver.cs" />
     <Compile Include="MapperExpression.cs" />
     <Compile Include="NewObjectMapperBuilder.cs" />
