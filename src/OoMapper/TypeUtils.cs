@@ -4,7 +4,9 @@ using System.Linq;
 
 namespace OoMapper
 {
-    public static class TypeUtils
+	using System.Collections.Generic;
+
+	public static class TypeUtils
     {
         public static Type GetElementTypeOfEnumerable(Type type)
         {
@@ -28,5 +30,12 @@ namespace OoMapper
         {
             return type.GetInterfaces().Contains(typeof (IEnumerable));
         }
+
+		public static bool IsDictionary(this Type type)
+		{
+			if(type.IsGenericType && type.GetGenericTypeDefinition()==typeof(IDictionary<,>))
+				return true;
+			return type.GetInterface("IDictionary`2") != null;
+		}
     }
 }

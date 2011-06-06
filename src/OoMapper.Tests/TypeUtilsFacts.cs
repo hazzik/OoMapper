@@ -12,5 +12,19 @@ namespace OoMapper.Tests
             Type elementType = TypeUtils.GetElementTypeOfEnumerable(typeof (Dictionary<int, int>));
             Assert.Equal(typeof (KeyValuePair<int, int>), elementType);
         }
+        
+		[Fact]
+        public void IsDictionaryReturnsTrueForIDictionary()
+        {
+            bool b = typeof (IDictionary<int, int>).IsDictionary();
+			Assert.True(b);
+        }
+
+		[Fact]
+        public void IsDictionaryReturnsTrueForDictionary()
+        {
+            bool b = typeof (Dictionary<int, int>).IsDictionary();
+			Assert.True(b);
+        }
     }
 }
