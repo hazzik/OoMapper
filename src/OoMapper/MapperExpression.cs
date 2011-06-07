@@ -42,5 +42,13 @@ namespace OoMapper
 		    tmc.Include<TSourceChild, TDestinationChild>();
 			return this;
 		}
+
+        public MapperExpression<TSource, TDestination> ForAllMembers(Action<PropertyMapExpression<TSource>> options)
+        {
+            var pmc = new PropertyMapConfiguration("*");
+            options(new PropertyMapExpression<TSource>(pmc, configuration));
+            tmc.AddPropertyMapConfiguration(pmc);
+            return this;
+        }
     }
 }

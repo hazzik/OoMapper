@@ -11,7 +11,7 @@ namespace OoMapper
         {
             IEnumerable<MemberInfo> sourceMembers = GetMembers(tmc.SourceType);
             IEnumerable<MemberInfo> destinationMembers = GetMembers(tmc.DestinationType);
-            var propertyMaps = destinationMembers
+            List<PropertyMap> propertyMaps = destinationMembers
                 .Select(destination => CreatePropertyMap(tmc, configuration, sourceMembers, destination))
                 .Where(propertyMap => propertyMap != null)
                 .ToList();
@@ -32,7 +32,9 @@ namespace OoMapper
         private static bool MapPropertyMap(TypeMapConfiguration tmc, MemberInfo destination, out PropertyMap propertyMap)
         {
             propertyMap = null;
-            var pmc = tmc.GetPropertyMapConfiguration(destination.Name);
+            PropertyMapConfiguration pmc = tmc.GetPropertyMapConfiguration(destination.Name);
+            if (pmc == null || !pmc.IsMapped())
+                pmc = tmc.GetPropertyMapConfiguration("*");
             if (pmc == null || !pmc.IsMapped())
                 return false;
             if (pmc.IsIgnored() == false)

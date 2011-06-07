@@ -51,6 +51,7 @@
     <Compile Include="CustomPropertyMappingFacts.cs" />
     <Compile Include="DeepMappingFacts.cs" />
     <Compile Include="DynamicMapperBuilderTests.cs" />
+    <Compile Include="ForAllMembersFacts.cs" />
     <Compile Include="IgnoreFacts.cs" />
     <Compile Include="IncludedMappingShouldInheritBaseMappings.cs" />
     <Compile Include="InheritanceTests.cs" />
