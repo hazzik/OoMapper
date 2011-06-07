@@ -16,11 +16,11 @@ namespace OoMapper
             Type sourceType = typeof (TSource);
             Type destinationType = typeof (TDestination);
 
-            var typeMap = TypeMapBuilder.CreateTypeMap(sourceType, destinationType, configuration);
+            var tmc = new TypeMapConfiguration(sourceType, destinationType);
 
-            configuration.AddMapping(typeMap);
+            configuration.AddTypeMapConfiguration(tmc);
 
-            return new MapperExpression<TSource, TDestination>(typeMap, configuration);
+            return new MapperExpression<TSource, TDestination>(tmc, configuration);
         }
 
         public static TDestination Map<TSource, TDestination>(TSource source)

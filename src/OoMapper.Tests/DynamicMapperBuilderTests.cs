@@ -12,17 +12,16 @@ namespace OoMapper.Tests
     	[Fact]
         public void DynamicMapper()
         {
-            var type = DynamicMapperBuilder.Create().CreateDynamicMapper(new[]
-                                                                         	{
-                                                                         		TypeMapBuilder.CreateTypeMap(typeof (object), typeof (object), null),
-                                                                         		TypeMapBuilder.CreateTypeMap(typeof (string), typeof (string), null),
-                                                                         	});
+    	    var mockMapperConfiguration = new Mock<IMappingConfiguration>();
+    	    mockMapperConfiguration.Setup(z => z.BuildNew(typeof (string), typeof (string))).Returns((Expression<Func<string, string>>) (y => string.Format("{0}{1}", y, 1))).Verifiable();
+    	    mockMapperConfiguration.Setup(z => z.BuildNew(typeof (object), typeof (object))).Returns((Expression<Func<object, object>>) (y => ((int) y) + 1)).Verifiable();
+    	    var type = DynamicMapperBuilder.Create().CreateDynamicMapper(new[]
+    	                                                                     {
+    	                                                                         new TypeMapConfiguration(typeof (object), typeof (object)),
+    	                                                                         new TypeMapConfiguration(typeof (string), typeof (string)),
+    	                                                                     });
 
-            var mockMapperConfiguration = new Mock<IMappingConfiguration>();
-            mockMapperConfiguration.Setup(z => z.BuildNew(typeof (string), typeof (string))).Returns((Expression<Func<string, string>>) (y => string.Format("{0}{1}", y, 1))).Verifiable();
-            mockMapperConfiguration.Setup(z => z.BuildNew(typeof (object), typeof (object))).Returns((Expression<Func<object, object>>) (y => ((int) y) + 1)).Verifiable();
-
-    		var instance = (DynamicMapperBase) Activator.CreateInstance(type, mockMapperConfiguration.Object);
+    	    var instance = (DynamicMapperBase) Activator.CreateInstance(type, mockMapperConfiguration.Object);
     		var map1 = (int) instance.DynamicMap(1);
     		var map2 = (string) instance.DynamicMap("hello");
 
@@ -35,15 +34,15 @@ namespace OoMapper.Tests
         [Fact]
         public void QueryableWithDynamicMapper()
         {
-        	var type = DynamicMapperBuilder.Create().CreateDynamicMapper(new[]
-        	                                                             	{
-        	                                                             		TypeMapBuilder.CreateTypeMap(typeof (object), typeof (object), null),
-        	                                                             		TypeMapBuilder.CreateTypeMap(typeof (string), typeof (string), null),
-        	                                                             	});
-
             var mockMapperConfiguration = new Mock<IMappingConfiguration>();
             mockMapperConfiguration.Setup(z => z.BuildNew(typeof (string), typeof (string))).Returns((Expression<Func<string, string>>) (y => string.Format("{0}{1}", y, 1))).Verifiable();
             mockMapperConfiguration.Setup(z => z.BuildNew(typeof(object), typeof(object))).Returns((Expression<Func<object, object>>)(y => ((int)y) + 1)).Verifiable();
+
+            var type = DynamicMapperBuilder.Create().CreateDynamicMapper(new[]
+                                                                             {
+                                                                                 new TypeMapConfiguration(typeof (object), typeof (object)),
+                                                                                 new TypeMapConfiguration(typeof (string), typeof (string)),
+                                                                             });
 
             var instance = (DynamicMapperBase)Activator.CreateInstance(type, mockMapperConfiguration.Object);
 

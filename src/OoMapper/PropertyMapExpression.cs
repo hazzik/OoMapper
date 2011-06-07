@@ -5,23 +5,23 @@ namespace OoMapper
 {
     public class PropertyMapExpression<TSource>
     {
-        private readonly PropertyMap propertyMap;
+        private readonly PropertyMapConfiguration pmc;
         private readonly IMappingConfiguration configuration;
 
-        public PropertyMapExpression(PropertyMap propertyMap, IMappingConfiguration configuration)
+        public PropertyMapExpression(PropertyMapConfiguration pmc, IMappingConfiguration configuration)
         {
-            this.propertyMap = propertyMap;
+            this.pmc = pmc;
             this.configuration = configuration;
         }
 
         public void Ignore()
         {
-            propertyMap.IsIgnored = true;
+            pmc.Ignore();
         }
 
         public void MapFrom<TProperty>(Expression<Func<TSource, TProperty>> sourceMember)
         {
-            propertyMap.SourceMemberResolver = new LambdaSourceMemberResolver(sourceMember, configuration);
+            pmc.SetCustomResolver(new LambdaSourceMemberResolver(sourceMember, configuration));
         }
     }
 }

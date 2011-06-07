@@ -6,15 +6,14 @@ namespace OoMapper
 {
     public class TypeMap : ITypePair
     {
-        private readonly IDictionary<string, PropertyMap> propertyMaps = new Dictionary<string, PropertyMap>(StringComparer.Ordinal);
+        private readonly ICollection<PropertyMap> propertyMaps = new List<PropertyMap>();
 
 	    public TypeMap(Type sourceType, Type destinationType, IEnumerable<PropertyMap> propertyMaps)
 		{
 	        SourceType = sourceType;
 			DestinationType = destinationType;
 
-	        this.propertyMaps = propertyMaps
-	            .ToDictionary(x => x.DestinationMemberName, x => x);
+	        this.propertyMaps = propertyMaps.ToList();
 		}
 
 		public Type SourceType { get; private set; }
@@ -23,26 +22,7 @@ namespace OoMapper
 
 	    public IEnumerable<PropertyMap> PropertyMaps
 	    {
-	        get { return propertyMaps.Values; }
+	        get { return propertyMaps; }
 	    }
-
-		public IEnumerable<Tuple<Type, Type>> Includes
-		{
-			get { return includes; }
-		}
-
-	    public PropertyMap GetPropertyMapFor(string name)
-	    {
-	        PropertyMap pm;
-	        propertyMaps.TryGetValue(name, out pm);
-	        return pm;
-	    }
-
-        private readonly ICollection<Tuple<Type, Type>> includes = new List<Tuple<Type, Type>>();
-
-		public void Include<TSource, TDestination>()
-		{
-			includes.Add(Tuple.Create(typeof (TSource), typeof (TDestination)));
-		}
-	}
+    }
 }

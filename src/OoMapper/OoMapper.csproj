@@ -62,6 +62,7 @@
     <Compile Include="SourceMemberResolverBase.cs" />
     <Compile Include="TypeMap.cs" />
     <Compile Include="TypeMapBuilder.cs" />
+    <Compile Include="TypeMapConfiguration.cs" />
     <Compile Include="TypeUtils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

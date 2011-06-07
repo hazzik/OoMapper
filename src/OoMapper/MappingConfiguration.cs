@@ -9,18 +9,21 @@ namespace OoMapper
     public class MappingConfiguration : IMappingConfiguration
     {
         private readonly IObjectMapperBuilder existingObjectMapperBuilder = new CachedObjectMapperBuilder(new ExistingObjectMapperBuilder());
+        private readonly Lazy<DynamicMapperBuilder> lazyDynamicMapperBuilder = new Lazy<DynamicMapperBuilder>(DynamicMapperBuilder.Create);
 
-        private readonly IDictionary<Tuple<Type, Type>, TypeMap> mappers =
+        private readonly ConcurrentDictionary<Tuple<Type, Type>, TypeMap> mappers =
             new ConcurrentDictionary<Tuple<Type, Type>, TypeMap>();
 
         private readonly IObjectMapperBuilder newObjectMapperBuilder = new CachedObjectMapperBuilder(new NewObjectMapperBuilder());
+        private readonly ISet<TypeMapConfiguration> processed = new HashSet<TypeMapConfiguration>();
+        private readonly ICollection<TypeMapConfiguration> typeMapConfigurations = new List<TypeMapConfiguration>();
 
-    	private DynamicMapperBuilder DynamicMapperBuilder
-    	{
-    		get { return lazyDynamicMapperBuilder.Value; }
-    	}
+        private DynamicMapperBuilder DynamicMapperBuilder
+        {
+            get { return lazyDynamicMapperBuilder.Value; }
+        }
 
-    	#region IMappingConfiguration Members
+        #region IMappingConfiguration Members
 
         public LambdaExpression BuildNew(Type sourceType, Type destinationType)
         {
@@ -30,15 +33,15 @@ namespace OoMapper
 
         public Expression BuildNewExpressionBody(Expression expression, Type destinationType)
         {
-        	var sourceType = expression.Type;
+            Type sourceType = expression.Type;
             if (destinationType == sourceType || destinationType.IsAssignableFrom(sourceType))
             {
                 return expression;
             }
             if (sourceType.IsDictionary() && destinationType.IsDictionary())
             {
-                var sourceElementType = TypeUtils.GetElementTypeOfEnumerable(sourceType);
-                var destinationElementType = TypeUtils.GetElementTypeOfEnumerable(destinationType);
+                Type sourceElementType = TypeUtils.GetElementTypeOfEnumerable(sourceType);
+                Type destinationElementType = TypeUtils.GetElementTypeOfEnumerable(destinationType);
 
                 ParameterExpression parameter = Expression.Parameter(sourceElementType, "src");
 
@@ -58,7 +61,7 @@ namespace OoMapper
                 Type destinationElementType = TypeUtils.GetElementTypeOfEnumerable(destinationType);
                 return Expression.Convert(CreateSelect(sourceElementType, destinationElementType, expression, isArray ? "ToArray" : "ToList"), destinationType);
             }
-            if (destinationType == typeof(string))
+            if (destinationType == typeof (string))
             {
                 return Expression.Call(expression, "ToString", new Type[0]);
             }
@@ -68,35 +71,30 @@ namespace OoMapper
             }
             catch (InvalidOperationException)
             {
-            	var typeMap = GetTypeMap(sourceType, destinationType);
+                TypeMapConfiguration map = FindTypeMapConfiguration(sourceType, destinationType);
+                if (map == null) throw new KeyNotFoundException(Tuple.Create(sourceType, destinationType).ToString());
 
-				if (typeMap.Includes.Any() == false || processed.Add(typeMap) == false)
-				{
-					LambdaExpression lambda = newObjectMapperBuilder.Build(typeMap);
-					return new ParameterRewriter(lambda.Parameters[0], expression).Visit(lambda.Body);
-				}
-            	var typeMaps = GetTypeMapsWithIncludes(typeMap).ToArray();
-            	var dynamicMapper = DynamicMapperBuilder.CreateDynamicMapper(typeMaps);
-            	var instance = (DynamicMapperBase) Activator.CreateInstance(dynamicMapper, this);
-            	return Expression.Convert(Expression.Call(Expression.Constant(instance), "DynamicMap", Type.EmptyTypes, expression), destinationType);
+                if (processed.Add(map) == false || map.HasIncludes() == false)
+                {
+                    TypeMap typeMap = CreateOrGetTypeMap(map);
+                    LambdaExpression lambda = newObjectMapperBuilder.Build(typeMap);
+                    return new ParameterRewriter(lambda.Parameters[0], expression).Visit(lambda.Body);
+                }
+                TypeMap[] typeMaps = GetTypeMapsWithIncludes(map).ToArray();
+                Type dynamicMapper = DynamicMapperBuilder.CreateDynamicMapper(typeMaps);
+                var instance = (DynamicMapperBase) Activator.CreateInstance(dynamicMapper, this);
+                return Expression.Convert(Expression.Call(Expression.Constant(instance), "DynamicMap", Type.EmptyTypes, expression), destinationType);
             }
         }
 
-    	private readonly ISet<TypeMap> processed = new HashSet<TypeMap>();
-    	private readonly Lazy<DynamicMapperBuilder> lazyDynamicMapperBuilder = new Lazy<DynamicMapperBuilder>(DynamicMapperBuilder.Create);
-
-    	private IEnumerable<TypeMap> GetTypeMapsWithIncludes(TypeMap typeMap)
-    	{
-    		yield return typeMap;
-    		foreach (var include in typeMap.Includes)
-    		{
-    			yield return GetTypeMap(include.Item1, include.Item2);
-    		}
-    	}
-
-    	private LambdaExpression CreateSelector(Type destinationType, ParameterExpression source, string sourcePropertyName)
+        public void AddTypeMapConfiguration(TypeMapConfiguration tmc)
         {
-            return Expression.Lambda(BuildNewExpressionBody(Expression.Property(source, sourcePropertyName), destinationType), source);
+            typeMapConfigurations.Add(tmc);
+        }
+
+        public IEnumerable<TypeMapConfiguration> TypeMapConfigurations
+        {
+            get { return typeMapConfigurations; }
         }
 
         public LambdaExpression BuildExisting(Type sourceType, Type destinationType)
@@ -104,12 +102,24 @@ namespace OoMapper
             return existingObjectMapperBuilder.Build(GetTypeMap(sourceType, destinationType));
         }
 
-        public void AddMapping(TypeMap typeMap)
+        #endregion
+
+        private TypeMap CreateOrGetTypeMap(TypeMapConfiguration map)
         {
-            mappers.Add(Tuple.Create(typeMap.SourceType, typeMap.DestinationType), typeMap);
+            return mappers.GetOrAdd(Tuple.Create(map.SourceType, map.DestinationType), k => TypeMapBuilder.CreateTypeMap(map, this));
         }
 
-        #endregion
+        private IEnumerable<TypeMap> GetTypeMapsWithIncludes(TypeMapConfiguration map)
+        {
+            yield return CreateOrGetTypeMap(map);
+            foreach (var include in map.Includes)
+                yield return GetTypeMap(include.Item1, include.Item2);
+        }
+
+        private LambdaExpression CreateSelector(Type destinationType, ParameterExpression source, string sourcePropertyName)
+        {
+            return Expression.Lambda(BuildNewExpressionBody(Expression.Property(source, sourcePropertyName), destinationType), source);
+        }
 
         private Expression CreateSelect(Type sourceType, Type destinationType, Expression property, string methodName)
         {
@@ -121,25 +131,24 @@ namespace OoMapper
 
         private TypeMap GetTypeMap(Type sourceType, Type destinationType)
         {
-            TypeMap map = FindTypeMap(sourceType, destinationType);
+            TypeMapConfiguration map = FindTypeMapConfiguration(sourceType, destinationType);
             if (map == null) throw new KeyNotFoundException(Tuple.Create(sourceType, destinationType).ToString());
-            return map;
+            return CreateOrGetTypeMap(map);
         }
 
-        private TypeMap FindTypeMap(Type sourceType, Type destinationType)
+        private TypeMapConfiguration FindTypeMapConfiguration(Type sourceType, Type destinationType)
         {
-            Tuple<Type, Type> tuple = Tuple.Create(sourceType, destinationType);
-            TypeMap typeMap;
-            if (mappers.TryGetValue(tuple, out typeMap))
+            TypeMapConfiguration typeMap = typeMapConfigurations.FirstOrDefault(x => x.SourceType == sourceType && x.DestinationType == destinationType);
+            if (typeMap != null)
                 return typeMap;
             typeMap = sourceType.GetInterfaces()
-                .Select(@interface => FindTypeMap(@interface, destinationType))
+                .Select(@interface => FindTypeMapConfiguration(@interface, destinationType))
                 .FirstOrDefault(tm => tm != null);
             if (typeMap != null)
                 return typeMap;
             Type baseType = sourceType.BaseType;
             if (baseType != null)
-                return FindTypeMap(baseType, destinationType);
+                return FindTypeMapConfiguration(baseType, destinationType);
             return null;
         }
     }

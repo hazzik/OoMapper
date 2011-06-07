@@ -7,14 +7,37 @@ namespace OoMapper
 {
     public static class TypeMapBuilder
     {
-        public static TypeMap CreateTypeMap(Type sourceType, Type destinationType, IMappingConfiguration configuration)
+        public static TypeMap CreateTypeMap(TypeMapConfiguration tmc, IMappingConfiguration configuration)
         {
-            IEnumerable<MemberInfo> sourceMembers = GetMembers(sourceType);
-            IEnumerable<MemberInfo> destinationMembers = GetMembers(destinationType);
-            List<PropertyMap> propertyMaps = destinationMembers
-                .Select(destination => new PropertyMap(destination, CreateSourceMemberResolver(destination, sourceMembers, configuration)))
+            IEnumerable<MemberInfo> sourceMembers = GetMembers(tmc.SourceType);
+            IEnumerable<MemberInfo> destinationMembers = GetMembers(tmc.DestinationType);
+            var propertyMaps = destinationMembers
+                .Select(destination => CreatePropertyMap(tmc, configuration, sourceMembers, destination))
+                .Where(propertyMap => propertyMap != null)
                 .ToList();
-            return new TypeMap(sourceType, destinationType, propertyMaps);
+            return new TypeMap(tmc.SourceType, tmc.DestinationType, propertyMaps);
+        }
+
+        private static PropertyMap CreatePropertyMap(TypeMapConfiguration tmc, IMappingConfiguration configuration, IEnumerable<MemberInfo> sourceMembers, MemberInfo destination)
+        {
+            PropertyMap propertyMap;
+            if (MapPropertyMap(tmc, destination, out propertyMap) ||
+                configuration.TypeMapConfigurations.Where(x => x.Including(tmc)).Any(inheritedTmc => MapPropertyMap(inheritedTmc, destination, out propertyMap)))
+            {
+                return propertyMap;
+            }
+            return new PropertyMap(destination, CreateSourceMemberResolver(destination, sourceMembers, configuration));
+        }
+
+        private static bool MapPropertyMap(TypeMapConfiguration tmc, MemberInfo destination, out PropertyMap propertyMap)
+        {
+            propertyMap = null;
+            var pmc = tmc.GetPropertyMapConfiguration(destination.Name);
+            if (pmc == null || !pmc.IsMapped())
+                return false;
+            if (pmc.IsIgnored() == false)
+                propertyMap = new PropertyMap(destination, pmc.Resolver);
+            return true;
         }
 
         private static SourceMemberResolver CreateSourceMemberResolver(MemberInfo destination, IEnumerable<MemberInfo> sourceMembers, IMappingConfiguration mappingConfiguration)
