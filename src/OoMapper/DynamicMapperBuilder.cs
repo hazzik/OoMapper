@@ -1,4 +1,4 @@
-﻿namespace OoMapper.Tests
+﻿namespace OoMapper
 {
 	using System;
 	using System.Collections.Generic;
@@ -9,7 +9,7 @@
 	{
 		public static DynamicMapperBuilder Create()
 		{
-			AssemblyBuilder assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName("DynamicMappers"), AssemblyBuilderAccess.RunAndSave);
+			var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName("DynamicMappers"), AssemblyBuilderAccess.RunAndSave);
 			var moduleBuilder = assemblyBuilder.DefineDynamicModule("DynamicMappers", "DynamicMappers.dll");
 			return new DynamicMapperBuilder(moduleBuilder);
 		}
@@ -25,7 +25,7 @@
 
 		public Type CreateDynamicMapper(IEnumerable<ITypePair> typeMaps)
 		{
-			TypeBuilder mapperBuilder = moduleBuilder.DefineType(string.Format("M{0}", Guid.NewGuid()), TypeAttributes.Public, ParentType);
+			TypeBuilder mapperBuilder = moduleBuilder.DefineType(string.Format("M{0:N}", Guid.NewGuid()), TypeAttributes.Public, ParentType);
 
 			ConstructorBuilder constructorBuilder = mapperBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, new[] {typeof (IMappingConfiguration)});
 			ILGenerator constructorGenerator = constructorBuilder.GetILGenerator();
@@ -35,13 +35,13 @@
 			foreach (var typeMap in typeMaps)
 			{
 				Type filedType = typeof (Func<,>).MakeGenericType(typeMap.SourceType, typeMap.DestinationType);
-				FieldBuilder fieldBuilder = mapperBuilder.DefineField(string.Format("x{0}", Guid.NewGuid()), filedType, FieldAttributes.Private);
+				FieldBuilder fieldBuilder = mapperBuilder.DefineField(string.Format("x{0:N}", Guid.NewGuid()), filedType, FieldAttributes.Private);
 				constructorGenerator.Emit(OpCodes.Ldarg_0);
 				constructorGenerator.Emit(OpCodes.Ldarg_1);
 				constructorGenerator.Emit(OpCodes.Call, compileMethod.MakeGenericMethod(typeMap.SourceType, typeMap.DestinationType));
 				constructorGenerator.Emit(OpCodes.Stfld, fieldBuilder);
 
-				MethodBuilder methodBuilder = mapperBuilder.DefineMethod("Map", MethodAttributes.Public, typeMap.SourceType, new[] {typeMap.DestinationType});
+				MethodBuilder methodBuilder = mapperBuilder.DefineMethod("Map", MethodAttributes.Public, typeMap.DestinationType, new[] {typeMap.SourceType});
 				var methodGenerator = methodBuilder.GetILGenerator();
 				methodGenerator.Emit(OpCodes.Ldarg_0);
 				methodGenerator.Emit(OpCodes.Ldfld, fieldBuilder);
@@ -52,7 +52,9 @@
 
 			constructorGenerator.Emit(OpCodes.Ret);
 
-			return mapperBuilder.CreateType();
+			var dynamicMapper = mapperBuilder.CreateType();
+			//((AssemblyBuilder)moduleBuilder.Assembly).Save("DynamicMappers.dll");
+			return dynamicMapper;
 		}
 	}
 }

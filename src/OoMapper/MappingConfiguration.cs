@@ -15,7 +15,12 @@ namespace OoMapper
 
         private readonly IObjectMapperBuilder newObjectMapperBuilder = new CachedObjectMapperBuilder(new NewObjectMapperBuilder());
 
-        #region IMappingConfiguration Members
+    	private DynamicMapperBuilder DynamicMapperBuilder
+    	{
+    		get { return lazyDynamicMapperBuilder.Value; }
+    	}
+
+    	#region IMappingConfiguration Members
 
         public LambdaExpression BuildNew(Type sourceType, Type destinationType)
         {
@@ -25,7 +30,7 @@ namespace OoMapper
 
         public Expression BuildNewExpressionBody(Expression expression, Type destinationType)
         {
-            var sourceType = expression.Type;
+        	var sourceType = expression.Type;
             if (destinationType == sourceType || destinationType.IsAssignableFrom(sourceType))
             {
                 return expression;
@@ -63,12 +68,33 @@ namespace OoMapper
             }
             catch (InvalidOperationException)
             {
-                LambdaExpression lambda = newObjectMapperBuilder.Build(GetTypeMap(sourceType, destinationType));
-                return new ParameterRewriter(lambda.Parameters[0], expression).Visit(lambda.Body);
+            	var typeMap = GetTypeMap(sourceType, destinationType);
+
+				if (typeMap.Includes.Any() == false || processed.Add(typeMap) == false)
+				{
+					LambdaExpression lambda = newObjectMapperBuilder.Build(typeMap);
+					return new ParameterRewriter(lambda.Parameters[0], expression).Visit(lambda.Body);
+				}
+            	var typeMaps = GetTypeMapsWithIncludes(typeMap).ToArray();
+            	var dynamicMapper = DynamicMapperBuilder.CreateDynamicMapper(typeMaps);
+            	var instance = (DynamicMapperBase) Activator.CreateInstance(dynamicMapper, this);
+            	return Expression.Convert(Expression.Call(Expression.Constant(instance), "DynamicMap", Type.EmptyTypes, expression), destinationType);
             }
         }
 
-        private LambdaExpression CreateSelector(Type destinationType, ParameterExpression source, string sourcePropertyName)
+    	private readonly ISet<TypeMap> processed = new HashSet<TypeMap>();
+    	private readonly Lazy<DynamicMapperBuilder> lazyDynamicMapperBuilder = new Lazy<DynamicMapperBuilder>(DynamicMapperBuilder.Create);
+
+    	private IEnumerable<TypeMap> GetTypeMapsWithIncludes(TypeMap typeMap)
+    	{
+    		yield return typeMap;
+    		foreach (var include in typeMap.Includes)
+    		{
+    			yield return GetTypeMap(include.Item1, include.Item2);
+    		}
+    	}
+
+    	private LambdaExpression CreateSelector(Type destinationType, ParameterExpression source, string sourcePropertyName)
         {
             return Expression.Lambda(BuildNewExpressionBody(Expression.Property(source, sourcePropertyName), destinationType), source);
         }

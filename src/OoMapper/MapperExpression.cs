@@ -32,5 +32,13 @@ namespace OoMapper
             }
             return null;
         }
+
+		public MapperExpression<TSource, TDestination> Include<TSourceChild, TDestinationChild>()
+			where TSourceChild : TSource
+			where TDestinationChild : TDestination
+		{
+			typeMap.Include<TSourceChild, TDestinationChild>();
+			return this;
+		}
     }
 }

@@ -46,11 +46,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConventionMappedCollectionShouldMapBaseTypes.cs" />
     <Compile Include="ConvertValueTypes.cs" />
     <Compile Include="CustomPropertyMappingFacts.cs" />
     <Compile Include="DeepMappingFacts.cs" />
-    <Compile Include="Dyn.cs" />
+    <Compile Include="DynamicMapperBuilderTests.cs" />
     <Compile Include="IgnoreFacts.cs" />
+    <Compile Include="IncludedMappingShouldInheritBaseMappings.cs" />
     <Compile Include="InheritanceTests.cs" />
     <Compile Include="MapDictionaryToDictionary.cs">
       <SubType>Code</SubType>
@@ -68,6 +70,7 @@
     <Compile Include="MapIEnumerableToIList.cs" />
     <Compile Include="FlatteringFacts.cs" />
     <Compile Include="MapTopLevelIEnumerable.cs" />
+    <Compile Include="MapToSupertypeProperties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TypeUtilsFacts.cs" />
   </ItemGroup>

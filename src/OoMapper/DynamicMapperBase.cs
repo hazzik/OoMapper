@@ -1,4 +1,4 @@
-﻿namespace OoMapper.Tests
+﻿namespace OoMapper
 {
 	using System;
 
