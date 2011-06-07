@@ -72,6 +72,7 @@
     <Compile Include="MapTopLevelIEnumerable.cs" />
     <Compile Include="MapToSupertypeProperties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyMapConfigurationFacts.cs" />
     <Compile Include="TypeUtilsFacts.cs" />
   </ItemGroup>
   <ItemGroup>

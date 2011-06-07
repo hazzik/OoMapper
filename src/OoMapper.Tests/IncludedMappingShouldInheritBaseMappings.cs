@@ -9,6 +9,25 @@ namespace OoMapper.Tests
 			Mapper.Reset();
 		}
 
+        [Fact(Skip = "not now")]
+        public void included_mapping_should_inherit_base_mappings_should_not_throw()
+        {
+            Mapper.CreateMap<ModelObject, DtoObject>()
+                .ForMember(d => d.BaseString, m => m.MapFrom(s => s.DifferentBaseString))
+                .Include<ModelSubObject, DtoSubObject>();
+            Mapper.CreateMap<ModelSubObject, DtoSubObject>();
+
+            var source = new ModelSubObject
+                             {
+                                 DifferentBaseString = "123",
+                                 SubString = "456"
+                             };
+            DtoSubObject dto = Mapper.Map<ModelSubObject, DtoSubObject>(source);
+
+            Assert.Equal("123", dto.BaseString);
+            Assert.Equal("456", dto.SubString);
+        }
+
 		[Fact]
 		public void more_specific_map_should_override_base_ignore()
 		{

@@ -1,20 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace OoMapper
 {
     public class TypeMap : ITypePair
-	{
-	    private readonly ICollection<PropertyMap> propertyMaps;
+    {
+        private readonly IDictionary<string, PropertyMap> propertyMaps = new Dictionary<string, PropertyMap>(StringComparer.Ordinal);
 
-	    public TypeMap(Type sourceType, Type destinationType, ICollection<PropertyMap> propertyMaps)
+	    public TypeMap(Type sourceType, Type destinationType, IEnumerable<PropertyMap> propertyMaps)
 		{
 	        SourceType = sourceType;
 			DestinationType = destinationType;
 
-	        this.propertyMaps = propertyMaps;
+	        this.propertyMaps = propertyMaps
+	            .ToDictionary(x => x.DestinationMemberName, x => x);
 		}
 
 		public Type SourceType { get; private set; }
@@ -23,7 +23,7 @@ namespace OoMapper
 
 	    public IEnumerable<PropertyMap> PropertyMaps
 	    {
-	        get { return propertyMaps; }
+	        get { return propertyMaps.Values; }
 	    }
 
 		public IEnumerable<Tuple<Type, Type>> Includes
@@ -31,12 +31,14 @@ namespace OoMapper
 			get { return includes; }
 		}
 
-	    public PropertyMap GetPropertyMapFor(MemberInfo destinationMember)
-		{
-		    return PropertyMaps.FirstOrDefault(map => map.DestinationMember.Name.Equals(destinationMember.Name, StringComparison.Ordinal));
-		}
+	    public PropertyMap GetPropertyMapFor(string name)
+	    {
+	        PropertyMap pm;
+	        propertyMaps.TryGetValue(name, out pm);
+	        return pm;
+	    }
 
-		private readonly ICollection<Tuple<Type, Type>> includes = new List<Tuple<Type, Type>>();
+        private readonly ICollection<Tuple<Type, Type>> includes = new List<Tuple<Type, Type>>();
 
 		public void Include<TSource, TDestination>()
 		{

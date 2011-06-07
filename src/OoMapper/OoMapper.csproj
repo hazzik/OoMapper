@@ -56,6 +56,7 @@
     <Compile Include="Mapper.cs" />
     <Compile Include="MappingConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyMapConfiguration.cs" />
     <Compile Include="PropertyMapExpression.cs" />
     <Compile Include="SourceMemberResolver.cs" />
     <Compile Include="SourceMemberResolverBase.cs" />

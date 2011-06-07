@@ -7,27 +7,32 @@ namespace OoMapper
 	{
 		public PropertyMap(MemberInfo destinationProperty, ISourceMemberResolver sourceMemberResolver)
 		{
-			DestinationMember = destinationProperty;
+			destinationMember = destinationProperty;
 			SourceMemberResolver = sourceMemberResolver;
 		}
 
 		public ISourceMemberResolver SourceMemberResolver { get; set; }
 
-		public MemberInfo DestinationMember { get; private set; }
+        private readonly MemberInfo destinationMember;
 		
 		public bool IsIgnored { get; set; }
 
 		public Expression BuildAssign(Expression destination, Expression source)
 		{
-			MemberInfo info = DestinationMember;
+			MemberInfo info = destinationMember;
 			return Expression.Assign(Expression.MakeMemberAccess(destination, info),
-			                         SourceMemberResolver.BuildSource(source, MemberInfoExtensions.GetMemberType(info)));
+			                         SourceMemberResolver.BuildSource(source, info.GetMemberType()));
 		}
 
 		public MemberAssignment BuildBind(Expression source)
 		{
-			MemberInfo info = DestinationMember;
-			return Expression.Bind(info, SourceMemberResolver.BuildSource(source, MemberInfoExtensions.GetMemberType(info)));
+			MemberInfo info = destinationMember;
+			return Expression.Bind(info, SourceMemberResolver.BuildSource(source, info.GetMemberType()));
 		}
+
+        public string DestinationMemberName
+        {
+            get { return destinationMember.Name; }
+        }
 	}
 }

@@ -18,7 +18,7 @@ namespace OoMapper
         public MapperExpression<TSource, TDestination> ForMember<TProperty>(Expression<Func<TDestination, TProperty>> member, Action<PropertyMapExpression<TSource>> options)
         {
             MemberInfo mi = GetMemberInfo(member);
-            var propertyMap = typeMap.GetPropertyMapFor(mi);
+            var propertyMap = typeMap.GetPropertyMapFor(mi.Name);
             options(new PropertyMapExpression<TSource>(propertyMap, configuration));
             return this;
         }
@@ -37,7 +37,7 @@ namespace OoMapper
 			where TSourceChild : TSource
 			where TDestinationChild : TDestination
 		{
-			typeMap.Include<TSourceChild, TDestinationChild>();
+		    typeMap.Include<TSourceChild, TDestinationChild>();
 			return this;
 		}
     }
