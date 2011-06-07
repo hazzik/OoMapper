@@ -1,10 +1,9 @@
 namespace OoMapper
 {
-	using System;
-	using System.Linq.Expressions;
+    using System.Linq.Expressions;
 	using System.Reflection;
 
-	public class PropertyMap
+    public class PropertyMap
 	{
 		public PropertyMap(MemberInfo destinationProperty, ISourceMemberResolver sourceMemberResolver)
 		{
@@ -22,23 +21,13 @@ namespace OoMapper
 		{
 			MemberInfo info = DestinationMember;
 			return Expression.Assign(Expression.MakeMemberAccess(destination, info),
-			                         SourceMemberResolver.BuildSource(source, GetType(info)));
+			                         SourceMemberResolver.BuildSource(source, MemberInfoExtensions.GetMemberType(info)));
 		}
 
 		public MemberAssignment BuildBind(Expression source)
 		{
 			MemberInfo info = DestinationMember;
-			return Expression.Bind(info, SourceMemberResolver.BuildSource(source, GetType(info)));
+			return Expression.Bind(info, SourceMemberResolver.BuildSource(source, MemberInfoExtensions.GetMemberType(info)));
 		}
-
-		private static Type GetType(MemberInfo memberInfo)
-		{
-			if (memberInfo is PropertyInfo)
-				return (memberInfo as PropertyInfo).PropertyType;
-			if (memberInfo is FieldInfo)
-				return (memberInfo as FieldInfo).FieldType;
-			throw new NotSupportedException();
-		}
-
 	}
 }

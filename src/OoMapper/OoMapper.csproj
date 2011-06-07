@@ -50,6 +50,7 @@
     <Compile Include="ITypePair.cs" />
     <Compile Include="LambdaSourceMemberResolver.cs" />
     <Compile Include="MapperExpression.cs" />
+    <Compile Include="MemberInfoExtensions.cs" />
     <Compile Include="NewObjectMapperBuilder.cs" />
     <Compile Include="PropertyMap.cs" />
     <Compile Include="Mapper.cs" />
@@ -59,6 +60,7 @@
     <Compile Include="SourceMemberResolver.cs" />
     <Compile Include="SourceMemberResolverBase.cs" />
     <Compile Include="TypeMap.cs" />
+    <Compile Include="TypeMapBuilder.cs" />
     <Compile Include="TypeUtils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

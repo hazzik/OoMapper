@@ -16,7 +16,7 @@ namespace OoMapper
             Type sourceType = typeof (TSource);
             Type destinationType = typeof (TDestination);
 
-            var typeMap = new TypeMap(sourceType, destinationType, configuration);
+            var typeMap = TypeMapBuilder.CreateTypeMap(sourceType, destinationType, configuration);
 
             configuration.AddMapping(typeMap);
 

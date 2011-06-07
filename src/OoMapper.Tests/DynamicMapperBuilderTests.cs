@@ -14,8 +14,8 @@ namespace OoMapper.Tests
         {
             var type = DynamicMapperBuilder.Create().CreateDynamicMapper(new[]
                                                                          	{
-                                                                         		new TypeMap(typeof (object), typeof (object), null),
-                                                                         		new TypeMap(typeof (string), typeof (string), null),
+                                                                         		TypeMapBuilder.CreateTypeMap(typeof (object), typeof (object), null),
+                                                                         		TypeMapBuilder.CreateTypeMap(typeof (string), typeof (string), null),
                                                                          	});
 
             var mockMapperConfiguration = new Mock<IMappingConfiguration>();
@@ -37,8 +37,8 @@ namespace OoMapper.Tests
         {
         	var type = DynamicMapperBuilder.Create().CreateDynamicMapper(new[]
         	                                                             	{
-        	                                                             		new TypeMap(typeof (object), typeof (object), null),
-        	                                                             		new TypeMap(typeof (string), typeof (string), null),
+        	                                                             		TypeMapBuilder.CreateTypeMap(typeof (object), typeof (object), null),
+        	                                                             		TypeMapBuilder.CreateTypeMap(typeof (string), typeof (string), null),
         	                                                             	});
 
             var mockMapperConfiguration = new Mock<IMappingConfiguration>();
