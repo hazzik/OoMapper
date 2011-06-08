@@ -23,5 +23,15 @@ namespace OoMapper
         {
             pmc.SetCustomResolver(new LambdaSourceMemberResolver(sourceMember, configuration));
         }
+
+    	public void UseValue(object o)
+    	{
+    		MapFrom(x => o);
+    	}
+
+		public void UseValue<TValue>(TValue value)
+    	{
+    		MapFrom(x => value);
+    	}
     }
 }

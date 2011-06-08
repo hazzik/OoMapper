@@ -49,6 +49,7 @@
     <Compile Include="ConventionMappedCollectionShouldMapBaseTypes.cs" />
     <Compile Include="ConvertValueTypes.cs" />
     <Compile Include="CustomPropertyMappingFacts.cs" />
+    <Compile Include="DeepInheritance.cs" />
     <Compile Include="DeepMappingFacts.cs" />
     <Compile Include="DynamicMapperBuilderTests.cs" />
     <Compile Include="ForAllMembersFacts.cs" />

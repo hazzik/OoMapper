@@ -7,7 +7,7 @@ namespace OoMapper
 {
     public static class TypeMapBuilder
     {
-        public static TypeMap CreateTypeMap(TypeMapConfiguration tmc, IMappingConfiguration configuration)
+    	public static TypeMap CreateTypeMap(TypeMapConfiguration tmc, IMappingConfiguration configuration)
         {
             IEnumerable<MemberInfo> sourceMembers = GetMembers(tmc.SourceType);
             IEnumerable<MemberInfo> destinationMembers = GetMembers(tmc.DestinationType);
@@ -20,16 +20,29 @@ namespace OoMapper
 
         private static PropertyMap CreatePropertyMap(TypeMapConfiguration tmc, IMappingConfiguration configuration, IEnumerable<MemberInfo> sourceMembers, MemberInfo destination)
         {
-            PropertyMap propertyMap;
-            if (MapPropertyMap(tmc, destination, out propertyMap) ||
-                configuration.TypeMapConfigurations.Where(x => x.Including(tmc)).Any(inheritedTmc => MapPropertyMap(inheritedTmc, destination, out propertyMap)))
-            {
+            PropertyMap propertyMap = null;
+            var explicitPropertyMapFound = InheritedConfigurations(tmc, configuration)
+                .OrderBy(x => x.SourceType, TypeHierarchyComparer.Instance)
+                .ThenBy(x => x.DestinationType, TypeHierarchyComparer.Instance)
+                .Any(itmc => MapPropertyMap(itmc, destination, out propertyMap));
+
+            if (explicitPropertyMapFound)
                 return propertyMap;
-            }
+
             return new PropertyMap(destination, CreateSourceMemberResolver(destination, sourceMembers, configuration));
         }
 
-        private static bool MapPropertyMap(TypeMapConfiguration tmc, MemberInfo destination, out PropertyMap propertyMap)
+        private static IEnumerable<TypeMapConfiguration> InheritedConfigurations(TypeMapConfiguration tmc, IMappingConfiguration configuration)
+        {
+        	var selectMany = configuration.TypeMapConfigurations.Where(x => x.Including(tmc))
+        		.SelectMany(x => InheritedConfigurations(x, configuration));
+
+            yield return tmc;
+            foreach (var iitmc in selectMany)
+                yield return iitmc;
+        }
+
+    	private static bool MapPropertyMap(TypeMapConfiguration tmc, MemberInfo destination, out PropertyMap propertyMap)
         {
             propertyMap = null;
             PropertyMapConfiguration pmc = tmc.GetPropertyMapConfiguration(destination.Name);
@@ -67,6 +80,16 @@ namespace OoMapper
             list.Add(memberInfo);
 
             FindMembers(list, name.Substring(memberInfo.Name.Length), GetMembers(memberInfo.GetMemberType()));
+        }
+
+        private class TypeHierarchyComparer : IComparer<Type>
+        {
+            public int Compare(Type x, Type y)
+            {
+                return x == y ? 0 : (x.IsAssignableFrom(y) ? 1 : -1);
+            }
+
+            public static readonly TypeHierarchyComparer Instance = new TypeHierarchyComparer();
         }
     }
 }

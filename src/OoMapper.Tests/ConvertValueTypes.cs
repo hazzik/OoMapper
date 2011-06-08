@@ -2,7 +2,7 @@
 
 namespace OoMapper.Tests
 {
-    public class ConvertValueTypes
+	public class ConvertValueTypes
     {
         [Fact]
         public void Test()
