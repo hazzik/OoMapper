@@ -21,13 +21,15 @@ namespace OoMapper
 		    return source.Aggregate(x, GetMemberExpression);
 		}
 
-        private static MemberExpression GetMemberExpression(Expression source, MemberInfo sourceProperty)
+        private static Expression GetMemberExpression(Expression source, MemberInfo sourceProperty)
         {
             if (sourceProperty is PropertyInfo)
                 return Expression.Property(source, (PropertyInfo) sourceProperty);
             if (sourceProperty is FieldInfo)
                 return Expression.Field(source, (FieldInfo)sourceProperty);
-
+			if (sourceProperty is MethodInfo)
+				return Expression.Call(source, (MethodInfo) sourceProperty);
+			
             throw new NotSupportedException();
         }
     }

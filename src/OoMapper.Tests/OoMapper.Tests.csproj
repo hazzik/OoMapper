@@ -59,6 +59,7 @@
     <Compile Include="MapDictionaryToDictionary.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MapFromMethods.cs" />
     <Compile Include="MapFromSupertypeProperties.cs" />
     <Compile Include="MapArray.cs" />
     <Compile Include="MapCollectionIgnoreMapperOrder.cs" />

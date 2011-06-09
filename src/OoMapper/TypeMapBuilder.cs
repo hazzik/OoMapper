@@ -9,8 +9,8 @@ namespace OoMapper
     {
     	public static TypeMap CreateTypeMap(TypeMapConfiguration tmc, IMappingConfiguration configuration)
         {
-            IEnumerable<MemberInfo> sourceMembers = GetMembers(tmc.SourceType);
-            IEnumerable<MemberInfo> destinationMembers = GetMembers(tmc.DestinationType);
+            IEnumerable<MemberInfo> sourceMembers = GetMembers(tmc.SourceType, true);
+            IEnumerable<MemberInfo> destinationMembers = GetMembers(tmc.DestinationType, false);
             List<PropertyMap> propertyMaps = destinationMembers
                 .Select(destination => CreatePropertyMap(tmc, configuration, sourceMembers, destination))
                 .Where(propertyMap => propertyMap != null)
@@ -58,28 +58,31 @@ namespace OoMapper
         private static SourceMemberResolver CreateSourceMemberResolver(MemberInfo destination, IEnumerable<MemberInfo> sourceMembers, IMappingConfiguration mappingConfiguration)
         {
             var propertyInfos = new List<MemberInfo>();
-            FindMembers(propertyInfos, destination.Name, sourceMembers);
+        	FindMembers(propertyInfos, destination.Name, sourceMembers);
             return new SourceMemberResolver(propertyInfos, mappingConfiguration);
         }
 
-        private static IEnumerable<MemberInfo> GetMembers(Type sourceType)
+        private static IEnumerable<MemberInfo> GetMembers(Type sourceType, bool includeMethods)
         {
-            return sourceType.GetProperties().Concat((MemberInfo[]) sourceType.GetFields());
+        	var memberInfos = sourceType.GetProperties()
+        		.Concat((MemberInfo[]) sourceType.GetFields());
+			if(includeMethods)
+        	return memberInfos
+        		.Concat(sourceType.GetMethods().Where(x => x.GetParameters().Length == 0));
+        	return memberInfos;
         }
 
-        private static void FindMembers(ICollection<MemberInfo> list, string name,
-                                        IEnumerable<MemberInfo> sourceMembers)
+    	private static void FindMembers(ICollection<MemberInfo> list, string name, IEnumerable<MemberInfo> sourceMembers)
         {
-            if (String.IsNullOrEmpty(name))
+        	if (String.IsNullOrEmpty(name))
                 return;
             MemberInfo memberInfo =
                 sourceMembers.FirstOrDefault(pi => name.StartsWith(pi.Name, StringComparison.InvariantCultureIgnoreCase));
             if (memberInfo == null)
                 return;
-
             list.Add(memberInfo);
 
-            FindMembers(list, name.Substring(memberInfo.Name.Length), GetMembers(memberInfo.GetMemberType()));
+        	FindMembers(list, name.Substring(memberInfo.Name.Length), GetMembers(memberInfo.GetMemberType(), true));
         }
 
         private class TypeHierarchyComparer : IComparer<Type>
