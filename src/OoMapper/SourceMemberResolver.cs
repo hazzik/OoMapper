@@ -28,8 +28,13 @@ namespace OoMapper
             if (sourceProperty is FieldInfo)
                 return Expression.Field(source, (FieldInfo)sourceProperty);
 			if (sourceProperty is MethodInfo)
-				return Expression.Call(source, (MethodInfo) sourceProperty);
-			
+			{
+			    var methodInfo = (MethodInfo) sourceProperty;
+			    return methodInfo.IsStatic
+			               ? Expression.Call(null, methodInfo, new[] {source})
+			               : Expression.Call(source, methodInfo);
+			}
+
             throw new NotSupportedException();
         }
     }
