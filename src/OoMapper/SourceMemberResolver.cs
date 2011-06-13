@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -17,9 +16,17 @@ namespace OoMapper
 	    }
 
         protected override Expression BuildSourceCore(Expression x)
-		{
-		    return source.Aggregate(x, GetMemberExpression);
-		}
+        {
+            var expression = x;
+            Expression condition = Expression.Constant(false);
+            foreach (var memberInfo in source)
+            {
+                if (expression.Type.IsValueType == false)
+                    condition = Expression.OrElse(condition, Expression.Equal(expression, Expression.Constant(null)));
+                expression = GetMemberExpression(expression, memberInfo);
+            }
+            return Expression.Condition(condition, Expression.Default(expression.Type), expression, expression.Type);
+        }
 
         private static Expression GetMemberExpression(Expression source, MemberInfo sourceProperty)
         {

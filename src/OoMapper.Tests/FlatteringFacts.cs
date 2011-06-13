@@ -70,6 +70,19 @@ namespace OoMapper.Tests
 
             Assert.Equal("hello world", map.SomeProperty);
         }
+        
+        [Fact]
+        public void NullBehave()
+        {
+            Mapper.Reset();
+            Mapper.CreateMap<ComplexSource2, Destination>();
+
+            var source = new ComplexSource2();
+
+            Destination map = Mapper.Map<ComplexSource2, Destination>(source);
+
+            Assert.Null(map.SomeProperty);
+        }
 
 
         #region Nested type: ComplexSource
