@@ -13,8 +13,9 @@ namespace OoMapper
                 .Select(m => m.BuildBind(source))
                 .ToArray();
             return Expression.Lambda(
-                Expression.MemberInit(
-                    Expression.New(typeMap.DestinationType), bindings), source);
+                Expression.Condition(Expression.Equal(source, Expression.Constant(null)),
+                                     Expression.Default(typeMap.DestinationType),
+                                     Expression.MemberInit(Expression.New(typeMap.DestinationType), bindings)), source);
         }
     }
 }

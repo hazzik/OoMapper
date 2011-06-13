@@ -83,7 +83,17 @@ namespace OoMapper.Tests
 
             Assert.Null(map.SomeProperty);
         }
+        
+        [Fact]
+        public void NullBehave2()
+        {
+            Mapper.Reset();
+            Mapper.CreateMap<ComplexSource2, Destination>();
 
+            Destination map = Mapper.Map<ComplexSource2, Destination>(null);
+
+            Assert.Null(map);
+        }
 
         #region Nested type: ComplexSource
 
