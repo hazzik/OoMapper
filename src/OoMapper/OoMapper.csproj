@@ -48,10 +48,12 @@
     <Compile Include="IObjectMapperBuilder.cs" />
     <Compile Include="ISourceMemberResolver.cs" />
     <Compile Include="ITypePair.cs" />
+    <Compile Include="IUserDefinedConfiguration.cs" />
     <Compile Include="LambdaSourceMemberResolver.cs" />
     <Compile Include="MapperExpression.cs" />
     <Compile Include="MemberInfoExtensions.cs" />
     <Compile Include="NewObjectMapperBuilder.cs" />
+    <Compile Include="ParameterRewriter.cs" />
     <Compile Include="PropertyMap.cs" />
     <Compile Include="Mapper.cs" />
     <Compile Include="MappingConfiguration.cs" />
@@ -64,6 +66,7 @@
     <Compile Include="TypeMapBuilder.cs" />
     <Compile Include="TypeMapConfiguration.cs" />
     <Compile Include="TypeUtils.cs" />
+    <Compile Include="UserDefinedConfiguration.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

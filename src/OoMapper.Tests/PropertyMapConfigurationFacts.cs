@@ -24,7 +24,7 @@ namespace OoMapper.Tests
         public void WithCustomResolverIsMapped()
         {
             var pmc = new PropertyMapConfiguration("A");
-            pmc.SetCustomResolver(new LambdaSourceMemberResolver(null, null));
+            pmc.SetCustomResolver(new LambdaSourceMemberResolver(null));
             Assert.True(pmc.IsMapped());
         }
     }

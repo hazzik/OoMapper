@@ -16,7 +16,7 @@ namespace OoMapper
 
         private readonly IObjectMapperBuilder newObjectMapperBuilder = new CachedObjectMapperBuilder(new NewObjectMapperBuilder());
         private readonly ISet<TypeMapConfiguration> processed = new HashSet<TypeMapConfiguration>();
-        private readonly ICollection<TypeMapConfiguration> typeMapConfigurations = new List<TypeMapConfiguration>();
+        private readonly IUserDefinedConfiguration userDefinedConfiguration = new UserDefinedConfiguration();
 
         private DynamicMapperBuilder DynamicMapperBuilder
         {
@@ -71,13 +71,13 @@ namespace OoMapper
             }
             catch (InvalidOperationException)
             {
-                TypeMapConfiguration map = FindTypeMapConfiguration(sourceType, destinationType);
+                TypeMapConfiguration map = userDefinedConfiguration.FindTypeMapConfiguration(sourceType, destinationType);
                 if (map == null) throw new KeyNotFoundException(Tuple.Create(sourceType, destinationType).ToString());
 
                 if (processed.Add(map) == false || map.HasIncludes() == false)
                 {
                     TypeMap typeMap = CreateOrGetTypeMap(map);
-                    LambdaExpression lambda = newObjectMapperBuilder.Build(typeMap);
+                    LambdaExpression lambda = newObjectMapperBuilder.Build(typeMap, this);
                     return new ParameterRewriter(lambda.Parameters[0], expression).Visit(lambda.Body);
                 }
                 TypeMap[] typeMaps = GetTypeMapsWithIncludes(map).ToArray();
@@ -89,24 +89,19 @@ namespace OoMapper
 
         public void AddTypeMapConfiguration(TypeMapConfiguration tmc)
         {
-            typeMapConfigurations.Add(tmc);
-        }
-
-        public IEnumerable<TypeMapConfiguration> TypeMapConfigurations
-        {
-            get { return typeMapConfigurations; }
+            userDefinedConfiguration.AddTypeMapConfiguration(tmc);            
         }
 
         public LambdaExpression BuildExisting(Type sourceType, Type destinationType)
         {
-            return existingObjectMapperBuilder.Build(GetTypeMap(sourceType, destinationType));
+            return existingObjectMapperBuilder.Build(GetTypeMap(sourceType, destinationType), this);
         }
 
         #endregion
 
         private TypeMap CreateOrGetTypeMap(TypeMapConfiguration map)
         {
-            return mappers.GetOrAdd(Tuple.Create(map.SourceType, map.DestinationType), k => TypeMapBuilder.CreateTypeMap(map, this));
+            return mappers.GetOrAdd(Tuple.Create(map.SourceType, map.DestinationType), k => TypeMapBuilder.CreateTypeMap(map, userDefinedConfiguration));
         }
 
         private IEnumerable<TypeMap> GetTypeMapsWithIncludes(TypeMapConfiguration map)
@@ -131,25 +126,9 @@ namespace OoMapper
 
         private TypeMap GetTypeMap(Type sourceType, Type destinationType)
         {
-            TypeMapConfiguration map = FindTypeMapConfiguration(sourceType, destinationType);
+            TypeMapConfiguration map = userDefinedConfiguration.FindTypeMapConfiguration(sourceType, destinationType);
             if (map == null) throw new KeyNotFoundException(Tuple.Create(sourceType, destinationType).ToString());
             return CreateOrGetTypeMap(map);
-        }
-
-        private TypeMapConfiguration FindTypeMapConfiguration(Type sourceType, Type destinationType)
-        {
-            TypeMapConfiguration typeMap = typeMapConfigurations.FirstOrDefault(x => x.SourceType == sourceType && x.DestinationType == destinationType);
-            if (typeMap != null)
-                return typeMap;
-            typeMap = sourceType.GetInterfaces()
-                .Select(@interface => FindTypeMapConfiguration(@interface, destinationType))
-                .FirstOrDefault(tm => tm != null);
-            if (typeMap != null)
-                return typeMap;
-            Type baseType = sourceType.BaseType;
-            if (baseType != null)
-                return FindTypeMapConfiguration(baseType, destinationType);
-            return null;
         }
     }
 }

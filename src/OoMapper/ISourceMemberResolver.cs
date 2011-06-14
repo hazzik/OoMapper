@@ -5,6 +5,6 @@ namespace OoMapper
 {
     public interface ISourceMemberResolver
     {
-        Expression BuildSource(Expression x, Type destinationType);
+        Expression BuildSource(Expression x, Type destinationType, IMappingConfiguration mappingConfiguration);
     }
 }

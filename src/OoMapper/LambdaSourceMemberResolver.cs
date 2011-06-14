@@ -6,9 +6,8 @@ namespace OoMapper
     {
         private readonly LambdaExpression sourceMember;
 
-		public LambdaSourceMemberResolver(LambdaExpression sourceMember, IMappingConfiguration configuration)
-			:base(configuration)
-        {
+		public LambdaSourceMemberResolver(LambdaExpression sourceMember)
+		{
             this.sourceMember = sourceMember;
         }
 

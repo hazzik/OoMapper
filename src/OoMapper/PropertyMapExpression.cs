@@ -6,12 +6,10 @@ namespace OoMapper
     public class PropertyMapExpression<TSource>
     {
         private readonly PropertyMapConfiguration pmc;
-        private readonly IMappingConfiguration configuration;
 
-        public PropertyMapExpression(PropertyMapConfiguration pmc, IMappingConfiguration configuration)
+        public PropertyMapExpression(PropertyMapConfiguration pmc)
         {
             this.pmc = pmc;
-            this.configuration = configuration;
         }
 
         public void Ignore()
@@ -21,7 +19,7 @@ namespace OoMapper
 
         public void MapFrom<TProperty>(Expression<Func<TSource, TProperty>> sourceMember)
         {
-            pmc.SetCustomResolver(new LambdaSourceMemberResolver(sourceMember, configuration));
+            pmc.SetCustomResolver(new LambdaSourceMemberResolver(sourceMember));
         }
 
     	public void UseValue(object o)

@@ -7,12 +7,10 @@ namespace OoMapper
     public class MapperExpression<TSource, TDestination>
     {
         private readonly TypeMapConfiguration tmc;
-        private readonly IMappingConfiguration configuration;
 
-        public MapperExpression(TypeMapConfiguration tmc, IMappingConfiguration configuration)
+        public MapperExpression(TypeMapConfiguration tmc)
         {
             this.tmc = tmc;
-            this.configuration = configuration;
         }
 
         public MapperExpression<TSource, TDestination> ForMember<TProperty>(Expression<Func<TDestination, TProperty>> member, Action<PropertyMapExpression<TSource>> options)
@@ -20,7 +18,7 @@ namespace OoMapper
             MemberInfo mi = GetMemberInfo(member);
             var name = mi.Name;
             var pmc = new PropertyMapConfiguration(name);
-            options(new PropertyMapExpression<TSource>(pmc, configuration));
+            options(new PropertyMapExpression<TSource>(pmc));
             tmc.AddPropertyMapConfiguration(pmc);
             return this;
         }
@@ -46,7 +44,7 @@ namespace OoMapper
         public MapperExpression<TSource, TDestination> ForAllMembers(Action<PropertyMapExpression<TSource>> options)
         {
             var pmc = new PropertyMapConfiguration("*");
-            options(new PropertyMapExpression<TSource>(pmc, configuration));
+            options(new PropertyMapExpression<TSource>(pmc));
             tmc.AddPropertyMapConfiguration(pmc);
             return this;
         }

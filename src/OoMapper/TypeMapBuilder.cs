@@ -9,7 +9,7 @@ namespace OoMapper
     {
         private static readonly MethodInfo[] enumerableExtensions = EnumerableExtensions();
 
-        public static TypeMap CreateTypeMap(TypeMapConfiguration tmc, IMappingConfiguration configuration)
+        public static TypeMap CreateTypeMap(TypeMapConfiguration tmc, IUserDefinedConfiguration configuration)
         {
             IEnumerable<MemberInfo> destinationMembers = GetMembers(tmc.DestinationType, false);
             List<PropertyMap> propertyMaps = destinationMembers
@@ -20,11 +20,11 @@ namespace OoMapper
         }
 
         private static PropertyMap CreatePropertyMap(TypeMapConfiguration tmc,
-                                                     IMappingConfiguration configuration,
+                                                     IUserDefinedConfiguration configuration,
                                                      MemberInfo destination)
         {
             PropertyMap propertyMap = null;
-            bool explicitPropertyMapFound = InheritedConfigurations(tmc, configuration)
+            bool explicitPropertyMapFound = configuration.InheritedConfigurations(tmc)
                 .OrderBy(x => x.SourceType, TypeHierarchyComparer.Instance)
                 .ThenBy(x => x.DestinationType, TypeHierarchyComparer.Instance)
                 .Any(itmc => MapPropertyMap(itmc, destination, out propertyMap));
@@ -32,17 +32,7 @@ namespace OoMapper
             if (explicitPropertyMapFound)
                 return propertyMap;
 
-            return new PropertyMap(destination, CreateSourceMemberResolver(destination, configuration, tmc.SourceType));
-        }
-
-        private static IEnumerable<TypeMapConfiguration> InheritedConfigurations(TypeMapConfiguration tmc, IMappingConfiguration configuration)
-        {
-            IEnumerable<TypeMapConfiguration> selectMany = configuration.TypeMapConfigurations.Where(x => x.Including(tmc))
-                .SelectMany(x => InheritedConfigurations(x, configuration));
-
-            yield return tmc;
-            foreach (TypeMapConfiguration iitmc in selectMany)
-                yield return iitmc;
+            return new PropertyMap(destination, CreateSourceMemberResolver(destination, tmc.SourceType));
         }
 
         private static bool MapPropertyMap(TypeMapConfiguration tmc, MemberInfo destination, out PropertyMap propertyMap)
@@ -58,11 +48,11 @@ namespace OoMapper
             return true;
         }
 
-        private static SourceMemberResolver CreateSourceMemberResolver(MemberInfo destination, IMappingConfiguration mappingConfiguration, Type sourceType)
+        private static SourceMemberResolver CreateSourceMemberResolver(MemberInfo destination, Type sourceType)
         {
             var propertyInfos = new List<MemberInfo>();
             FindMembers(propertyInfos, destination.Name, sourceType);
-            return new SourceMemberResolver(propertyInfos, mappingConfiguration);
+            return new SourceMemberResolver(propertyInfos);
         }
 
         private static IEnumerable<MemberInfo> GetMembers(Type sourceType, bool includeMethods)

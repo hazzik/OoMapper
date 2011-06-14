@@ -9,9 +9,8 @@ namespace OoMapper
     {
 		private readonly IEnumerable<MemberInfo> source;
 
-        public SourceMemberResolver(IEnumerable<MemberInfo> source, IMappingConfiguration configuration) 
-			: base(configuration)
-	    {
+        public SourceMemberResolver(IEnumerable<MemberInfo> source)
+        {
 		    this.source = source;
 	    }
 

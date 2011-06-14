@@ -4,6 +4,6 @@ namespace OoMapper
 {
     public interface IObjectMapperBuilder
     {
-        LambdaExpression Build(TypeMap typeMap);
+        LambdaExpression Build(TypeMap typeMap, IMappingConfiguration configuration);
     }
 }

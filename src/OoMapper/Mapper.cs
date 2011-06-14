@@ -4,7 +4,7 @@ namespace OoMapper
 {
     public static class Mapper
     {
-        private static IMappingConfiguration configuration = new MappingConfiguration();
+        private static MappingConfiguration configuration = new MappingConfiguration();
 
         public static void Reset()
         {
@@ -20,7 +20,7 @@ namespace OoMapper
 
             configuration.AddTypeMapConfiguration(tmc);
 
-            return new MapperExpression<TSource, TDestination>(tmc, configuration);
+            return new MapperExpression<TSource, TDestination>(tmc);
         }
 
         public static TDestination Map<TSource, TDestination>(TSource source)
