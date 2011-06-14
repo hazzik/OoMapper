@@ -48,11 +48,15 @@ namespace OoMapper
             return true;
         }
 
-        private static SourceMemberResolver CreateSourceMemberResolver(MemberInfo destination, Type sourceType)
+        private static ISourceMemberResolver CreateSourceMemberResolver(MemberInfo destination, Type sourceType)
         {
             var propertyInfos = new List<MemberInfo>();
             FindMembers(propertyInfos, destination.Name, sourceType);
-            return new SourceMemberResolver(propertyInfos);
+            ISourceMemberResolver[] list = propertyInfos
+                .Select(x => new SourceMemberResolver(x))
+                .Concat(new ISourceMemberResolver[] {new ConvertSourceMemberResolver()})
+                .ToArray();
+            return new CompositeSourceMemberResolver(list);
         }
 
         private static IEnumerable<MemberInfo> GetMembers(Type sourceType, bool includeMethods)

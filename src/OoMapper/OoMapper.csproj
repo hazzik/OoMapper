@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CachedObjectMapperBuilder.cs" />
+    <Compile Include="ConvertSourceMemberResolver.cs" />
     <Compile Include="DynamicMapperBase.cs" />
     <Compile Include="DynamicMapperBuilder.cs" />
     <Compile Include="ExistingObjectMapperBuilder.cs" />
@@ -61,7 +62,7 @@
     <Compile Include="PropertyMapConfiguration.cs" />
     <Compile Include="PropertyMapExpression.cs" />
     <Compile Include="SourceMemberResolver.cs" />
-    <Compile Include="SourceMemberResolverBase.cs" />
+    <Compile Include="CompositeSourceMemberResolver.cs" />
     <Compile Include="TypeMap.cs" />
     <Compile Include="TypeMapBuilder.cs" />
     <Compile Include="TypeMapConfiguration.cs" />

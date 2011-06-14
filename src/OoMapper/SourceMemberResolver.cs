@@ -1,30 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 
 namespace OoMapper
 {
-    public class SourceMemberResolver : SourceMemberResolverBase
+    internal sealed class SourceMemberResolver : ISourceMemberResolver
     {
-		private readonly IEnumerable<MemberInfo> source;
+        private readonly MemberInfo memberInfo;
 
-        public SourceMemberResolver(IEnumerable<MemberInfo> source)
+        public SourceMemberResolver(MemberInfo memberInfo)
         {
-		    this.source = source;
-	    }
+            this.memberInfo = memberInfo;
+        }
 
-        protected override Expression BuildSourceCore(Expression x)
+        public Expression BuildSource(Expression x, Type destinationType, IMappingConfiguration mappingConfiguration)
         {
-            var expression = x;
-            Expression condition = Expression.Constant(false);
-            foreach (var memberInfo in source)
-            {
-                if (expression.Type.IsValueType == false)
-                    condition = Expression.OrElse(condition, Expression.Equal(expression, Expression.Constant(null)));
-                expression = GetMemberExpression(expression, memberInfo);
-            }
-            return Expression.Condition(condition, Expression.Default(expression.Type), expression, expression.Type);
+            return GetMemberExpression(x, memberInfo);
         }
 
         private static Expression GetMemberExpression(Expression source, MemberInfo sourceProperty)
@@ -32,14 +23,14 @@ namespace OoMapper
             if (sourceProperty is PropertyInfo)
                 return Expression.Property(source, (PropertyInfo) sourceProperty);
             if (sourceProperty is FieldInfo)
-                return Expression.Field(source, (FieldInfo)sourceProperty);
-			if (sourceProperty is MethodInfo)
-			{
-			    var methodInfo = (MethodInfo) sourceProperty;
-			    return methodInfo.IsStatic
-			               ? Expression.Call(null, methodInfo, new[] {source})
-			               : Expression.Call(source, methodInfo);
-			}
+                return Expression.Field(source, (FieldInfo) sourceProperty);
+            if (sourceProperty is MethodInfo)
+            {
+                var methodInfo = (MethodInfo) sourceProperty;
+                return methodInfo.IsStatic
+                           ? Expression.Call(null, methodInfo, new[] {source})
+                           : Expression.Call(source, methodInfo);
+            }
 
             throw new NotSupportedException();
         }

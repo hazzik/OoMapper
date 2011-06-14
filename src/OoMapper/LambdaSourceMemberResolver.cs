@@ -1,9 +1,10 @@
+using System;
 using System.Linq.Expressions;
 
 namespace OoMapper
 {
-	public class LambdaSourceMemberResolver : SourceMemberResolverBase
-    {
+	public sealed class LambdaSourceMemberResolver : ISourceMemberResolver
+	{
         private readonly LambdaExpression sourceMember;
 
 		public LambdaSourceMemberResolver(LambdaExpression sourceMember)
@@ -11,9 +12,9 @@ namespace OoMapper
             this.sourceMember = sourceMember;
         }
 
-	    protected override Expression BuildSourceCore(Expression x)
-		{
-		    return new ParameterRewriter(sourceMember.Parameters[0], x).Visit(sourceMember.Body);
-		}
+	    public Expression BuildSource(Expression x, Type destinationType, IMappingConfiguration mappingConfiguration)
+	    {
+	        return new ParameterRewriter(sourceMember.Parameters[0], x).Visit(sourceMember.Body);
+	    }
     }
 }
