@@ -16,10 +16,10 @@ namespace OoMapper
             this.inner = inner;
         }
 
-        public LambdaExpression Build(TypeMap typeMap, IMappingConfiguration configuration)
+        public LambdaExpression Build(TypeMap typeMap, IMappingConfiguration configuration, IMappingOptions options)
         {
             var tuple = Tuple.Create(typeMap.SourceType, typeMap.DestinationType);
-            return concurrentDictionary.GetOrAdd(tuple, k => inner.Build(typeMap, configuration));
+            return concurrentDictionary.GetOrAdd(tuple, k => inner.Build(typeMap, configuration, options));
         }
     }
 }

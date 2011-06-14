@@ -31,6 +31,11 @@ namespace OoMapper
             return type.GetInterfaces().Contains(typeof (IEnumerable));
         }
 
+        public static bool IsQueryable(this Type type)
+        {
+            return type.GetInterfaces().Contains(typeof (IQueryable));
+        }
+
 		public static bool IsDictionary(this Type type)
 		{
 			if(type.IsGenericType && type.GetGenericTypeDefinition()==typeof(IDictionary<,>))

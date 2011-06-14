@@ -5,7 +5,7 @@ namespace OoMapper
 {
     public interface IMappingConfiguration : ISourceMemberResolver
     {
-        LambdaExpression BuildNew(Type sourceType, Type destinationType);
-        LambdaExpression BuildExisting(Type sourceType, Type destinationType);
+        LambdaExpression BuildNew(Type sourceType, Type destinationType, IMappingOptions options);
+        LambdaExpression BuildExisting(Type sourceType, Type destinationType, IMappingOptions options);
     }
 }

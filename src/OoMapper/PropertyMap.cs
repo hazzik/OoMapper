@@ -15,17 +15,17 @@ namespace OoMapper
 
         private readonly MemberInfo destinationMember;
 
-        public Expression BuildAssign(Expression destination, Expression source, IMappingConfiguration configuration)
+        public Expression BuildAssign(Expression destination, Expression source, IMappingConfiguration configuration, IMappingOptions options)
 		{
 			MemberInfo info = destinationMember;
 			return Expression.Assign(Expression.MakeMemberAccess(destination, info),
-			                         sourceMemberResolver.BuildSource(source, info.GetMemberType(), configuration));
+			                         sourceMemberResolver.BuildSource(source, info.GetMemberType(), configuration, options));
 		}
 
-		public MemberAssignment BuildBind(Expression source, IMappingConfiguration configuration)
+		public MemberAssignment BuildBind(Expression source, IMappingConfiguration configuration, IMappingOptions options)
 		{
 			MemberInfo info = destinationMember;
-			return Expression.Bind(info, sourceMemberResolver.BuildSource(source, info.GetMemberType(), configuration));
+			return Expression.Bind(info, sourceMemberResolver.BuildSource(source, info.GetMemberType(), configuration, options));
 		}
 	}
 }

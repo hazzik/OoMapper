@@ -12,15 +12,15 @@ namespace OoMapper
             this.resolvers = resolvers;
         }
 
-        public Expression BuildSource(Expression x, Type destinationType, IMappingConfiguration mappingConfiguration)
+        public Expression BuildSource(Expression x, Type destinationType, IMappingConfiguration mappingConfiguration, IMappingOptions options)
         {
             Expression expression = x;
             Expression condition = Expression.Constant(false);
             foreach (var resolver in resolvers)
             {
-                if (expression.Type.IsValueType == false)
+                if (options.SupportNullHandling && expression.Type.IsValueType == false)
                     condition = Expression.OrElse(condition, Expression.Equal(expression, Expression.Constant(null)));
-                expression = resolver.BuildSource(expression, destinationType, mappingConfiguration);
+                expression = resolver.BuildSource(expression, destinationType, mappingConfiguration, options);
             }
             return Expression.Condition(condition, Expression.Default(expression.Type), expression, expression.Type);
         }

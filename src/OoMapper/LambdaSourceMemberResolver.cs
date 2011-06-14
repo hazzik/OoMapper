@@ -12,7 +12,7 @@ namespace OoMapper
             this.sourceMember = sourceMember;
         }
 
-	    public Expression BuildSource(Expression x, Type destinationType, IMappingConfiguration mappingConfiguration)
+	    public Expression BuildSource(Expression x, Type destinationType, IMappingConfiguration mappingConfiguration, IMappingOptions options)
 	    {
 	        return new ParameterRewriter(sourceMember.Parameters[0], x).Visit(sourceMember.Body);
 	    }

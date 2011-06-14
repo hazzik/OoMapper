@@ -27,7 +27,7 @@
 		{
 			TypeBuilder mapperBuilder = moduleBuilder.DefineType(string.Format("M{0:N}", Guid.NewGuid()), TypeAttributes.Public, ParentType);
 
-			ConstructorBuilder constructorBuilder = mapperBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, new[] {typeof (IMappingConfiguration)});
+			ConstructorBuilder constructorBuilder = mapperBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, new[] {typeof (IMappingConfiguration), typeof(IMappingOptions)});
 			ILGenerator constructorGenerator = constructorBuilder.GetILGenerator();
 			constructorGenerator.Emit(OpCodes.Ldarg_0);
 			constructorGenerator.Emit(OpCodes.Call, ParentType.GetConstructor(Type.EmptyTypes));
@@ -38,6 +38,7 @@
 				FieldBuilder fieldBuilder = mapperBuilder.DefineField(string.Format("x{0:N}", Guid.NewGuid()), filedType, FieldAttributes.Private);
 				constructorGenerator.Emit(OpCodes.Ldarg_0);
 				constructorGenerator.Emit(OpCodes.Ldarg_1);
+				constructorGenerator.Emit(OpCodes.Ldarg_2);
 				constructorGenerator.Emit(OpCodes.Call, compileMethod.MakeGenericMethod(typeMap.SourceType, typeMap.DestinationType));
 				constructorGenerator.Emit(OpCodes.Stfld, fieldBuilder);
 

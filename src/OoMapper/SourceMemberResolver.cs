@@ -13,7 +13,7 @@ namespace OoMapper
             this.memberInfo = memberInfo;
         }
 
-        public Expression BuildSource(Expression x, Type destinationType, IMappingConfiguration mappingConfiguration)
+        public Expression BuildSource(Expression x, Type destinationType, IMappingConfiguration mappingConfiguration, IMappingOptions options)
         {
             return GetMemberExpression(x, memberInfo);
         }
