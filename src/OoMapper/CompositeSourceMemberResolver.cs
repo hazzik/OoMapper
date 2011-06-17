@@ -16,13 +16,15 @@ namespace OoMapper
         {
             Expression expression = x;
             Expression condition = Expression.Constant(false);
-            foreach (var resolver in resolvers)
+            foreach (ISourceMemberResolver resolver in resolvers)
             {
-                if (options.SupportNullHandling && expression.Type.IsValueType == false)
+                if (expression.Type.IsValueType == false)
                     condition = Expression.OrElse(condition, Expression.Equal(expression, Expression.Constant(null)));
                 expression = resolver.BuildSource(expression, destinationType, mappingConfiguration, options);
             }
-            return Expression.Condition(condition, Expression.Default(expression.Type), expression, expression.Type);
+            return options.SupportNullHandling
+                       ? Expression.Condition(condition, Expression.Default(expression.Type), expression, expression.Type)
+                       : expression;
         }
     }
 }
