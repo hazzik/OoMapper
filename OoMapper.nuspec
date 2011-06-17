@@ -3,13 +3,13 @@
   <metadata>
     <id>OoMapper</id>
     <version>0.1.0.0</version>
-    <title>OoMapper is object-object mapper for .NET</title>
+    <title>OoMapper</title>
     <authors>hazzik</authors>
     <owners />
     <projectUrl>http://github.com/hazzik/OoMapper</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>OoMapper is object-object mapper for .NET</description>
-    <summary />
+    <summary>OoMapper is object-object mapper for .NET</summary>
     <language />
     <tags>OoMapper, AutoMapper, .NET</tags>
   </metadata>
