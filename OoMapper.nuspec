@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>OoMapper</id>
+    <version>0.1.0.0</version>
+    <title>OoMapper is object-object mapper for .NET</title>
+    <authors>hazzik</authors>
+    <owners />
+    <projectUrl>http://github.com/hazzik/OoMapper</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>OoMapper is object-object mapper for .NET</description>
+    <summary />
+    <language />
+    <tags>OoMapper, AutoMapper, .NET</tags>
+  </metadata>
+  <files>
+    <file src="OoMapper.dll" target="lib\OoMapper.dll" />
+    <file src="OoMapper.pdb" target="lib\OoMapper.pdb" />
+  </files>
+</package>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Full" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+		<MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\tools\CommunityTasks</MSBuildCommunityTasksPath>
+	</PropertyGroup>
+
+	<Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets"/>
+
+	<PropertyGroup Condition="'$(Condition)' == ''">
+		<Configuration>Release</Configuration>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<nugetPath>$(MSBuildProjectDirectory)\tools\nuget</nugetPath>
+		<nuspec>$(MSBuildProjectDirectory)\OoMapper.nuspec</nuspec>
+		
+		<artifactPath>$(MSBuildProjectDirectory)\release</artifactPath>
+
+		<corePath>$(MSBuildProjectDirectory)\src\OoMapper</corePath>
+		<coreFile>OoMapper</coreFile>
+		<core>$(corePath)\$(coreFile).csproj</core>
+
+		<coreTestPath>$(MSBuildProjectDirectory)\OoMapper.Tests</coreTestPath>
+		<coreTestFile>OoMapper.Tests</coreTestFile>
+		<coreTest>$(coreTestPath)\$(coreTestFile).csproj</coreTest>
+	</PropertyGroup>
+
+	<Target Name="Full" DependsOnTargets="Init; Clean; Build; Deploy; nuget"/>
+
+	<Target Name="Init">
+		<MakeDir Directories="$(artifactPath)" Condition="!Exists('$(artifactPath)')"/>
+	</Target>
+
+	<Target Name="Clean">
+		<MSBuild Projects="$(core)" Targets="Clean" Properties="Configuration=$(Configuration)"/>
+		<MSBuild Projects="$(test)" Targets="Clean" Properties="Configuration=$(Configuration)"/>
+	</Target>
+
+	<Target Name="Build">
+		<MSBuild Projects="$(core)" Targets="Build" Properties="Configuration=$(Configuration)"/>
+		<MSBuild Projects="$(test)" Targets="Build" Properties="Configuration=$(Configuration)"/>
+	</Target>
+
+	<Target Name="nuget">
+		<Exec Command="$(nugetPath)\nuget pack $(nuspec) /basepath $(corePath)\bin\$(Configuration) /outputdirectory $(artifactPath)" />		
+	</Target>
+
+	<Target Name="Deploy">
+		<CreateItem Include="$(corePath)\bin\$(Configuration)\$(coreFile).*">
+			<Output TaskParameter="Include" ItemName="zipFiles"/>
+		</CreateItem>
+		<Zip Files="@(zipFiles)" ZipFileName="$(artifactPath)\$(coreFile).zip" Flatten="true" ZipLevel="9"/>
+	</Target>
+</Project>

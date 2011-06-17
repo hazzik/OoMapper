@@ -1,6 +1,6 @@
 /_ReSharper.*/
 /src/*/bin/
 /src/*/obj/
+/release/*
 *.user
 *.suo
-/release/OoMapper.0.1.0.0.nupkg
