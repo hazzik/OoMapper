@@ -3,3 +3,4 @@
 /src/*/obj/
 *.user
 *.suo
+/release/OoMapper.0.1.0.0.nupkg
