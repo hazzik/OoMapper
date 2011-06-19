@@ -34,7 +34,7 @@ Mapper.Reset();
 
         #region Nested type: Destination
 
-        private class Destination
+        public class Destination
         {
             public int Value { get; set; }
         }
@@ -43,7 +43,7 @@ Mapper.Reset();
 
         #region Nested type: Source
 
-        private class Source : SourceParent
+        public class Source : SourceParent
         {
         }
 
@@ -51,7 +51,7 @@ Mapper.Reset();
 
         #region Nested type: SourceParent
 
-        private class SourceParent
+        public class SourceParent
         {
             public int Value { get; set; }
         }

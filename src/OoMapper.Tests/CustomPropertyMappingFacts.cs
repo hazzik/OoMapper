@@ -42,19 +42,19 @@ namespace OoMapper.Tests
 
         #region Nested type: Destination
 
-        private class Destination
+        public class Destination
         {
             public string SomeProperty { get; set; }
 
             public DestinationChild Child { get; set; }
         }
 
-        private class DestinationChild
+        public class DestinationChild
         {
             public string A { get; set; }
         }
 
-        private class SourceChild
+        public class SourceChild
         {
             public string A { get; set; }
         }
@@ -63,7 +63,7 @@ namespace OoMapper.Tests
 
         #region Nested type: Source
 
-        private class Source
+        public class Source
         {
             public string OtherProperty { get; set; }
             public SourceChild ChildProperty { get; set; }

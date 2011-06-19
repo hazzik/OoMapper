@@ -27,7 +27,7 @@ namespace OoMapper.Tests
 
         #region Nested type: Destination
 
-        private class Destination
+        public class Destination
         {
             public IDictionary<int, DestinationChild> Values { get; set; }
         }
@@ -36,7 +36,7 @@ namespace OoMapper.Tests
 
         #region Nested type: DestinationChild
 
-        private class DestinationChild
+        public class DestinationChild
         {
             public int A { get; set; }
         }
@@ -45,7 +45,7 @@ namespace OoMapper.Tests
 
         #region Nested type: Source
 
-        private class Source
+        public class Source
         {
             public IDictionary<int, SourceChild> Values { get; set; }
         }
@@ -54,7 +54,7 @@ namespace OoMapper.Tests
 
         #region Nested type: SourceChild
 
-        private class SourceChild
+        public class SourceChild
         {
             public int A { get; set; }
         }

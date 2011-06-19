@@ -97,7 +97,7 @@ namespace OoMapper.Tests
 
         #region Nested type: ComplexSource
 
-        private class ComplexSource
+        public class ComplexSource
         {
             public ComplexSourceChild Some { get; set; }
         }
@@ -106,7 +106,7 @@ namespace OoMapper.Tests
 
         #region Nested type: ComplexSource2
 
-        private class ComplexSource2
+        public class ComplexSource2
         {
             public ComplexSourceChild2 Some { get; set; }
         }
@@ -115,7 +115,7 @@ namespace OoMapper.Tests
 
         #region Nested type: ComplexSourceChild
 
-        private class ComplexSourceChild
+        public class ComplexSourceChild
         {
             public string Property { get; set; }
         }
@@ -124,7 +124,7 @@ namespace OoMapper.Tests
 
         #region Nested type: ComplexSourceChild2
 
-        private class ComplexSourceChild2
+        public class ComplexSourceChild2
         {
             public ComplexSourceChild3 Pro { get; set; }
         }
@@ -133,7 +133,7 @@ namespace OoMapper.Tests
 
         #region Nested type: ComplexSourceChild3
 
-        private class ComplexSourceChild3
+        public class ComplexSourceChild3
         {
             public string Perty { get; set; }
         }
@@ -142,7 +142,7 @@ namespace OoMapper.Tests
 
         #region Nested type: Destination
 
-        private class Destination
+        public class Destination
         {
             public string SomeProperty { get; set; }
         }
@@ -151,7 +151,7 @@ namespace OoMapper.Tests
 
         #region Nested type: Source
 
-        private class Source
+        public class Source
         {
             public string SomeProperty { get; set; }
         }

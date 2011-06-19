@@ -30,7 +30,7 @@ namespace OoMapper.Tests
 
         #region Nested type: Destination
 
-        private class Destination
+        public class Destination
         {
             public string Value { get; set; }
         }
@@ -39,7 +39,7 @@ namespace OoMapper.Tests
 
         #region Nested type: ISource
 
-        private interface ISource
+        public interface ISource
         {
             string Value { get; }
         }
@@ -48,7 +48,7 @@ namespace OoMapper.Tests
 
         #region Nested type: Source
 
-        private class Source : ISource
+        public class Source : ISource
         {
             #region ISource Members
 
@@ -61,7 +61,7 @@ namespace OoMapper.Tests
 
         #region Nested type: SubSource
 
-        private class SubSource : Source
+        public class SubSource : Source
         {
         }
 

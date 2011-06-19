@@ -28,7 +28,7 @@ namespace OoMapper.Tests
 
 		#region Nested type: Destination
 
-		private class Destination
+		public class Destination
 		{
 			public IList<DestinationChild> Children { get; set; }
 		}
@@ -37,7 +37,7 @@ namespace OoMapper.Tests
 
 		#region Nested type: DestinationChild
 
-		private class DestinationChild
+		public class DestinationChild
 		{
 			public string A { get; set; }
 		}
@@ -46,7 +46,7 @@ namespace OoMapper.Tests
 
 		#region Nested type: Source
 
-		private class Source
+		public class Source
 		{
 			public IEnumerable<SourceChild> Children { get; set; }
 		}
@@ -55,7 +55,7 @@ namespace OoMapper.Tests
 
 		#region Nested type: SourceChild
 
-		private class SourceChild
+		public class SourceChild
 		{
 			public string A { get; set; }
 		}

@@ -22,22 +22,22 @@
 			Assert.Equal("hello world", map.Some.Property);
 		}
 
-		private class ComplexSource
+		public class ComplexSource
 		{
 			public ComplexSourceChild Some { get; set; }
 		}
 
-		private class ComplexSourceChild
+		public class ComplexSourceChild
 		{
 			public string Property { get; set; }
 		}
 		
-		private class ComplexDestinationChild
+		public class ComplexDestinationChild
 		{
 			public string Property { get; set; }
 		}
 
-		private class ComplexDestination
+		public class ComplexDestination
 		{
 			public ComplexDestinationChild Some { get; set; }
 		}

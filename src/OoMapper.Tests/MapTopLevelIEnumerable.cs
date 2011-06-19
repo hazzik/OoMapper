@@ -23,7 +23,7 @@ namespace OoMapper.Tests
 
         #region Nested type: Destination
 
-        private class Destination
+        public class Destination
         {
             public int Value { get; set; }
         }
@@ -32,7 +32,7 @@ namespace OoMapper.Tests
 
         #region Nested type: Source
 
-        private class Source
+        public class Source
         {
             public int Value { get; set; }
         }

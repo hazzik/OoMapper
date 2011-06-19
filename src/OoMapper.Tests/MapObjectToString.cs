@@ -16,12 +16,12 @@ namespace OoMapper.Tests
             Assert.Equal("100500", destination.Value);
         }
 
-        private class Destination
+        public class Destination
         {
             public string Value { get; set; }
         }
 
-        private class Source
+        public class Source
         {
             public int Value { get; set; }
         }

@@ -34,7 +34,7 @@
 
 		#region Nested type: Destination
 
-		private class Destination : DestinationBase
+		public class Destination : DestinationBase
 		{
 		}
 
@@ -42,7 +42,7 @@
 
 		#region Nested type: DestinationBase
 
-		private class DestinationBase
+		public class DestinationBase
 		{
 			public int Value { get; set; }
 		}
@@ -51,7 +51,7 @@
 
 		#region Nested type: Source
 
-		private class Source
+		public class Source
 		{
 			public int Value { get; set; }
 		}
