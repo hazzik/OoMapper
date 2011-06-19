@@ -3,7 +3,7 @@
 	using System.Collections.Generic;
 	using Xunit;
 
-	public class ConventionMappedCollectionShouldMapBaseTypes
+    public class ConventionMappedCollectionShouldMapBaseTypes
 	{
 		public class ItemBase { }
 

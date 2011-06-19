@@ -50,11 +50,13 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Cache.cs" />
     <Compile Include="CachedObjectMapperBuilder.cs" />
     <Compile Include="ConvertSourceMemberResolver.cs" />
     <Compile Include="DynamicMapperBase.cs" />
     <Compile Include="DynamicMapperBuilder.cs" />
     <Compile Include="ExistingObjectMapperBuilder.cs" />
+    <Compile Include="ICache.cs" />
     <Compile Include="IMappingConfiguration.cs" />
     <Compile Include="IObjectMapperBuilder.cs" />
     <Compile Include="ISourceMemberResolver.cs" />

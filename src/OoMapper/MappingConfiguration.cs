@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -11,8 +10,8 @@ namespace OoMapper
         private readonly IObjectMapperBuilder existingObjectMapperBuilder = new CachedObjectMapperBuilder(new ExistingObjectMapperBuilder());
         private readonly Lazy<DynamicMapperBuilder> lazyDynamicMapperBuilder = new Lazy<DynamicMapperBuilder>(DynamicMapperBuilder.Create);
 
-        private readonly ConcurrentDictionary<Tuple<Type, Type>, TypeMap> mappers =
-            new ConcurrentDictionary<Tuple<Type, Type>, TypeMap>();
+        private readonly ICache<Tuple<Type, Type>, TypeMap> mappers =
+            new Cache<Tuple<Type, Type>, TypeMap>();
 
         private readonly IObjectMapperBuilder newObjectMapperBuilder = new CachedObjectMapperBuilder(new NewObjectMapperBuilder());
         private readonly ISet<TypeMapConfiguration> processed = new HashSet<TypeMapConfiguration>();

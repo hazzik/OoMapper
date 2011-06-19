@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Concurrent;
 using System.Linq.Expressions;
 
 namespace OoMapper
@@ -8,8 +7,8 @@ namespace OoMapper
     {
         private readonly IObjectMapperBuilder inner;
 
-        private readonly ConcurrentDictionary<Tuple<Type, Type>, LambdaExpression> concurrentDictionary =
-            new ConcurrentDictionary<Tuple<Type, Type>, LambdaExpression>();
+        private readonly ICache<Tuple<Type, Type>, LambdaExpression> concurrentDictionary =
+            new Cache<Tuple<Type, Type>, LambdaExpression>();
 
         public CachedObjectMapperBuilder(IObjectMapperBuilder inner)
         {
