@@ -1,5 +1,6 @@
 /_ReSharper.*/
 /src/*/bin/
+/src/*/bin/SL4
 /src/*/obj/
 /release/*
 *.user

@@ -14,7 +14,7 @@ namespace OoMapper
             {
                 return type.GetElementType();
             }
-            Type iEnumerable = type.GetInterface("IEnumerable`1");
+            Type iEnumerable = type.GetInterface("IEnumerable`1", true);
             if (iEnumerable != null)
             {
                 return iEnumerable.GetGenericArguments().First();
@@ -35,7 +35,7 @@ namespace OoMapper
 		{
 			if(type.IsGenericType && type.GetGenericTypeDefinition()==typeof(IDictionary<,>))
 				return true;
-			return type.GetInterface("IDictionary`2") != null;
+			return type.GetInterface("IDictionary`2", true) != null;
 		}
     }
 }

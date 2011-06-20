@@ -53,7 +53,7 @@ namespace OoMapper
             var propertyInfos = new List<MemberInfo>();
             FindMembers(propertyInfos, destination.Name, sourceType);
             ISourceMemberResolver[] list = propertyInfos
-                .Select(x => new SourceMemberResolver(x))
+                .Select(x => (ISourceMemberResolver) new SourceMemberResolver(x))
                 .Concat(new ISourceMemberResolver[] {new ConvertSourceMemberResolver()})
                 .ToArray();
             return new CompositeSourceMemberResolver(list);
@@ -64,7 +64,7 @@ namespace OoMapper
             IEnumerable<MemberInfo> memberInfos = sourceType.GetProperties()
                 .Concat((MemberInfo[]) sourceType.GetFields());
             if (includeMethods)
-                return memberInfos.Concat(sourceType.GetMethods().Where(x => x.GetParameters().Length == 0));
+                return memberInfos.Concat(sourceType.GetMethods().Where(x => x.GetParameters().Length == 0).Cast<MemberInfo>());
             return memberInfos;
         }
 

@@ -5,6 +5,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OoMapper.Tests", "src\OoMap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OoMapper", "src\OoMapper\OoMapper.csproj", "{AA83FDE3-48FE-404D-9C42-018D15DEB4FC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OoMapperSL4", "src\OoMapper\OoMapperSL4.csproj", "{D36B0FD0-FA5F-45BC-802D-A3E86F4A1199}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OoMapper.TestsSL4", "src\OoMapper.Tests\OoMapper.TestsSL4.csproj", "{42A1870A-702D-453E-8A41-829D1724D8CB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +23,14 @@ Global
 		{AA83FDE3-48FE-404D-9C42-018D15DEB4FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA83FDE3-48FE-404D-9C42-018D15DEB4FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA83FDE3-48FE-404D-9C42-018D15DEB4FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D36B0FD0-FA5F-45BC-802D-A3E86F4A1199}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D36B0FD0-FA5F-45BC-802D-A3E86F4A1199}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D36B0FD0-FA5F-45BC-802D-A3E86F4A1199}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D36B0FD0-FA5F-45BC-802D-A3E86F4A1199}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42A1870A-702D-453E-8A41-829D1724D8CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42A1870A-702D-453E-8A41-829D1724D8CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42A1870A-702D-453E-8A41-829D1724D8CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42A1870A-702D-453E-8A41-829D1724D8CB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

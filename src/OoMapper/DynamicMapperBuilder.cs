@@ -9,8 +9,8 @@
 	{
 		public static DynamicMapperBuilder Create()
 		{
-			var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName("DynamicMappers"), AssemblyBuilderAccess.RunAndSave);
-			var moduleBuilder = assemblyBuilder.DefineDynamicModule("DynamicMappers", "DynamicMappers.dll");
+			var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName("DynamicMappers"), AssemblyBuilderAccess.Run);
+			var moduleBuilder = assemblyBuilder.DefineDynamicModule("DynamicMappers");
 			return new DynamicMapperBuilder(moduleBuilder);
 		}
 
