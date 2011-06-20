@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>OoMapper</id>
-    <version>0.1.0.0</version>
+    <version>0.0.0.0</version>
     <title>OoMapper</title>
     <authors>hazzik</authors>
     <owners />
@@ -14,7 +14,9 @@
     <tags>OoMapper, AutoMapper, .NET</tags>
   </metadata>
   <files>
-    <file src="OoMapper.dll" target="lib\OoMapper.dll" />
-    <file src="OoMapper.pdb" target="lib\OoMapper.pdb" />
+    <file src="NET4\OoMapper.dll" target="lib\net4\OoMapper.dll" />
+    <file src="NET4\OoMapper.pdb" target="lib\net4\OoMapper.pdb" />
+    <file src="SL4\OoMapper.Silverlight.dll" target="lib\sl4\OoMapper.Silverlight.dll" />
+    <file src="SL4\OoMapper.Silverlight.pdb" target="lib\sl4\OoMapper.Silverlight.pdb" />
   </files>
 </package>

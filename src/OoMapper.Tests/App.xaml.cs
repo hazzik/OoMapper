@@ -1,16 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.Automation;
-using System.Security;
-using System.Security.Permissions;
-using System.Threading;
 using System.Windows;
 using System.Windows.Browser;
 using Microsoft.Silverlight.Testing;
-using Microsoft.Silverlight.Testing.UnitTesting.Metadata;
 using XunitContrib.Runner.Silverlight.Toolkit;
 
 namespace SilverlightTest1
@@ -30,8 +22,6 @@ namespace SilverlightTest1
         {
             var unitTestProvider = new UnitTestProvider();
             UnitTestSystem.RegisterUnitTestProvider(unitTestProvider);
-            UnitTestSettings unitTestSettings = UnitTestSystem.CreateDefaultSettings();
-            unitTestSettings.StartRunImmediately = true;
             RootVisual = UnitTestSystem.CreateTestPage();
         }
 
@@ -39,7 +29,7 @@ namespace SilverlightTest1
         {
         }
 
-        private void ApplicationUnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
+        private static void ApplicationUnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
             if (Debugger.IsAttached)
                 return;
