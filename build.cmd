@@ -5,6 +5,8 @@ set cfg=%1%
 
 if "%cfg%"=="" set cfg=Release
 
-%msbuild% OoMapper.build /t:Full /p:Configuration=%cfg%
+FOR /F %%a IN ('git describe --abbrev^=0') DO set version=%%a.0
+
+%msbuild% OoMapper.build /t:Full /p:Configuration=%cfg% -p:version=%version%
 
 pause
