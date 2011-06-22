@@ -30,7 +30,7 @@
 		<testSilverlight>$(testPath)\$(testFile).Silverlight.csproj</testSilverlight>
 	</PropertyGroup>
 
-	<Target Name="Full" DependsOnTargets="Init; Clean; Build; Deploy; nuget"/>
+	<Target Name="Full" DependsOnTargets="Init; Clean; Build; testAll; Deploy; nuget"/>
 
 	<Target Name="Init">
 		<MakeDir Directories="$(artifactPath)" Condition="!Exists('$(artifactPath)')"/>
@@ -57,6 +57,11 @@
 		<MSBuild Projects="$(test)" Targets="Build" Properties="Configuration=$(Configuration)"/>
 		<MSBuild Projects="$(coreSilverlight)" Targets="Build" Properties="Configuration=$(Configuration)"/>
 		<MSBuild Projects="$(testSilverlight)" Targets="Build" Properties="Configuration=$(Configuration)"/>
+	</Target>
+
+	<Target Name="testAll">
+		<Exec Command="tools\xunit\xunit.console.clr4.exe $(testPath)\bin\$(Configuration)\NET4\$(testFile).dll" />
+		<Exec Command="tools\StatLight\StatLight.exe -d=$(testPath)\bin\$(Configuration)\SL4\$(testFile).Silverlight.dll" />
 	</Target>
 
 	<Target Name="nuget">
