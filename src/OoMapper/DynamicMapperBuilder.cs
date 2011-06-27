@@ -16,7 +16,8 @@
 
 		private static readonly Type ParentType = typeof(DynamicMapperBase);
 		private readonly ModuleBuilder moduleBuilder;
-		private readonly MethodInfo compileMethod = ParentType.GetMethod("Compile", BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
+		private readonly MethodInfo compileMethod = ParentType.GetMethod("Compile", BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance);
+		private readonly MethodInfo tryMapMethod = ParentType.GetMethod("TryMap", BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance);
 
 		private DynamicMapperBuilder(ModuleBuilder moduleBuilder)
 		{
@@ -34,7 +35,7 @@
 
 			foreach (var typeMap in typeMaps)
 			{
-				Type filedType = typeof (Func<,>).MakeGenericType(typeMap.SourceType, typeMap.DestinationType);
+				Type filedType = typeof (Func<,,>).MakeGenericType(typeMap.SourceType, typeMap.DestinationType, typeMap.DestinationType);
 				FieldBuilder fieldBuilder = mapperBuilder.DefineField(string.Format("x{0:N}", Guid.NewGuid()), filedType, FieldAttributes.Private);
 				constructorGenerator.Emit(OpCodes.Ldarg_0);
 				constructorGenerator.Emit(OpCodes.Ldarg_1);
@@ -44,9 +45,10 @@
 				MethodBuilder methodBuilder = mapperBuilder.DefineMethod("Map", MethodAttributes.Public, typeMap.DestinationType, new[] {typeMap.SourceType});
 				var methodGenerator = methodBuilder.GetILGenerator();
 				methodGenerator.Emit(OpCodes.Ldarg_0);
-				methodGenerator.Emit(OpCodes.Ldfld, fieldBuilder);
 				methodGenerator.Emit(OpCodes.Ldarg_1);
-				methodGenerator.Emit(OpCodes.Callvirt, filedType.GetMethod("Invoke"));
+				methodGenerator.Emit(OpCodes.Ldarg_0);
+				methodGenerator.Emit(OpCodes.Ldfld, fieldBuilder);
+				methodGenerator.Emit(OpCodes.Call, tryMapMethod.MakeGenericMethod(typeMap.SourceType, typeMap.DestinationType));
 				methodGenerator.Emit(OpCodes.Ret);
 			}
 
