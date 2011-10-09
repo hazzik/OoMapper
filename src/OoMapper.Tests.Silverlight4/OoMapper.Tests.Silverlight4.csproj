@@ -183,9 +183,7 @@
     <None Include="..\OoMapper.snk">
       <Link>OoMapper.snk</Link>
     </None>
-    <None Include="..\OoMapper.Tests\packages.config">
-      <Link>packages.config</Link>
-    </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OoMapper.Silverlight4\OoMapper.Silverlight4.csproj">

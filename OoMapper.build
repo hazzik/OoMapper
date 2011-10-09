@@ -10,6 +10,7 @@
 		<Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
 
 		<xunit>$(MSBuildProjectDirectory)\tools\xunit\xunit.console.clr4.exe</xunit>
+    <xunit-silverlight>$(MSBuildProjectDirectory)\packages\StatLight.1.5.4260\tools\StatLight.exe</xunit-silverlight>
 		<nuget>$(MSBuildProjectDirectory)\tools\nuget\nuget</nuget>
 		<nuspec>$(MSBuildProjectDirectory)\OoMapper.nuspec</nuspec>
 
@@ -52,9 +53,9 @@
 		<MSBuild Projects="$(sln)" Targets="Build" Properties="Configuration=$(Configuration)"/>
 	</Target>
 
-	<Target Name="testAll">
+	<Target Name="TestAll">
 		<Exec Command="$(xunit) $(testPath)\bin\$(Configuration)\$(testFile).dll" />
-		<Exec Command="tools\StatLight\StatLight.exe -d=$(testPath).Silverlight4\bin\$(Configuration)\$(testFile).Silverlight4.dll" />
+		<Exec Command="$(xunit-silverlight) -d=$(testPath).Silverlight4\bin\$(Configuration)\$(testFile).Silverlight4.dll" />
 	</Target>
 
 	<Target Name="nuget">
