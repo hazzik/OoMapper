@@ -5,7 +5,7 @@ using System.Windows.Browser;
 using Microsoft.Silverlight.Testing;
 using XunitContrib.Runner.Silverlight.Toolkit;
 
-namespace SilverlightTest1
+namespace OoMapper.Tests.Silverlight4
 {
     public partial class App : Application
     {

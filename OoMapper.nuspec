@@ -14,9 +14,9 @@
     <tags>OoMapper, AutoMapper, .NET</tags>
   </metadata>
   <files>
-    <file src="NET4\OoMapper.dll" target="lib\net4\OoMapper.dll" />
-    <file src="NET4\OoMapper.pdb" target="lib\net4\OoMapper.pdb" />
-    <file src="SL4\OoMapper.Silverlight.dll" target="lib\sl4\OoMapper.Silverlight.dll" />
-    <file src="SL4\OoMapper.Silverlight.pdb" target="lib\sl4\OoMapper.Silverlight.pdb" />
+    <file src="OoMapper.dll" target="lib\net4\OoMapper.dll" />
+    <file src="OoMapper.pdb" target="lib\net4\OoMapper.pdb" />
+    <file src="OoMapper.Silverlight4.dll" target="lib\sl4\OoMapper.Silverlight.dll" />
+    <file src="OoMapper.Silverlight4.pdb" target="lib\sl4\OoMapper.Silverlight.pdb" />
   </files>
 </package>

@@ -16,8 +16,9 @@
 		<artifactPath>$(MSBuildProjectDirectory)\release</artifactPath>
 
 		<sln>$(MSBuildProjectDirectory)\OoMapper.sln</sln>
-
+    
 		<corePath>$(MSBuildProjectDirectory)\src\OoMapper</corePath>
+    <coreOutput>$(corePath)\bin\$(Configuration)\OoMapper.</coreOutput>
 		<coreFile>OoMapper</coreFile>
 		<core>$(corePath)\$(coreFile).csproj</core>
 		<coreSilverlight>$(corePath)\$(coreFile).Silverlight.csproj</coreSilverlight>
@@ -52,20 +53,25 @@
 	</Target>
 
 	<Target Name="testAll">
-		<Exec Command="$(xunit) $(testPath)\bin\$(Configuration)\NET4\$(testFile).dll" />
-		<Exec Command="tools\StatLight\StatLight.exe -d=$(testPath)\bin\$(Configuration)\SL4\$(testFile).Silverlight.dll" />
+		<Exec Command="$(xunit) $(testPath)\bin\$(Configuration)\$(testFile).dll" />
+		<Exec Command="tools\StatLight\StatLight.exe -d=$(testPath).Silverlight4\bin\$(Configuration)\$(testFile).Silverlight4.dll" />
 	</Target>
 
 	<Target Name="nuget">
-		<Exec Command="$(nuget) pack $(nuspec) /basepath $(corePath)\bin\$(Configuration) /outputdirectory $(artifactPath) /version $(version)" />
+    <ItemGroup>
+      <SourceFiles Include="$(corePath)\bin\$(Configuration)\$(coreFile).*" />
+      <SourceFiles Include="$(corePath).Silverlight4\bin\$(Configuration)\$(coreFile).Silverlight4.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(SourceFiles)" DestinationFolder="$(ArtifactPath)\temp" />
+		<Exec Command="$(nuget) pack $(nuspec) /basepath $(ArtifactPath)\temp /outputdirectory $(artifactPath) /version $(version)" />
 	</Target>
 
 	<Target Name="Deploy">
 		<ItemGroup>
-			<ZipFiles Include="$(corePath)\bin\$(Configuration)\NET4\$(coreFile).*" />
-			<ZipFiles Include="$(corePath)\bin\$(Configuration)\SL4\$(coreFile).Silverlight.*" />
+			<ZipFiles Include="$(corePath)\bin\$(Configuration)\$(coreFile).*" />
+			<ZipFiles Include="$(corePath).Silverlight4\bin\$(Configuration)\$(coreFile).Silverlight4.*" />
 		</ItemGroup>
-		<Zip Files="@(zipFiles)"
+		<Zip Files="@(ZipFiles)"
 			WorkingDirectory="$(corePath)\bin\$(Configuration)\"
 			ZipFileName="$(artifactPath)\$(coreFile).$(version).zip"
 			ZipLevel="9"/>
