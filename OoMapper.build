@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Full" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
 		<MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\tools\CommunityTasks</MSBuildCommunityTasksPath>
@@ -6,15 +6,16 @@
 
 	<Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets"/>
 
-	<PropertyGroup Condition="'$(Condition)' == ''">
-		<Configuration>Release</Configuration>
-	</PropertyGroup>
-
 	<PropertyGroup>
-		<nugetPath>$(MSBuildProjectDirectory)\tools\nuget</nugetPath>
+		<Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
+
+		<xunit>$(MSBuildProjectDirectory)\tools\xunit\xunit.console.clr4.exe</xunit>
+		<nuget>$(MSBuildProjectDirectory)\tools\nuget\nuget</nuget>
 		<nuspec>$(MSBuildProjectDirectory)\OoMapper.nuspec</nuspec>
 
 		<artifactPath>$(MSBuildProjectDirectory)\release</artifactPath>
+
+		<sln>$(MSBuildProjectDirectory)\OoMapper.sln</sln>
 
 		<corePath>$(MSBuildProjectDirectory)\src\OoMapper</corePath>
 		<coreFile>OoMapper</coreFile>
@@ -34,10 +35,7 @@
 	</Target>
 
 	<Target Name="Clean">
-		<MSBuild Projects="$(core)" Targets="Clean" Properties="Configuration=$(Configuration)"/>
-		<MSBuild Projects="$(test)" Targets="Clean" Properties="Configuration=$(Configuration)"/>
-		<MSBuild Projects="$(coreSilverlight)" Targets="Clean" Properties="Configuration=$(Configuration)"/>
-		<MSBuild Projects="$(testSilverlight)" Targets="Clean" Properties="Configuration=$(Configuration)"/>
+		<MSBuild Projects="$(sln)" Targets="Clean" Properties="Configuration=$(Configuration)"/>
 	</Target>
 
 	<Target Name="Build">
@@ -50,19 +48,16 @@
 					AssemblyVersion="$(Version)"
 					AssemblyFileVersion="$(Version)"/>
 
-		<MSBuild Projects="$(core)" Targets="Build" Properties="Configuration=$(Configuration)"/>
-		<MSBuild Projects="$(test)" Targets="Build" Properties="Configuration=$(Configuration)"/>
-		<MSBuild Projects="$(coreSilverlight)" Targets="Build" Properties="Configuration=$(Configuration)"/>
-		<MSBuild Projects="$(testSilverlight)" Targets="Build" Properties="Configuration=$(Configuration)"/>
+		<MSBuild Projects="$(sln)" Targets="Build" Properties="Configuration=$(Configuration)"/>
 	</Target>
 
 	<Target Name="testAll">
-		<Exec Command="tools\xunit\xunit.console.clr4.exe $(testPath)\bin\$(Configuration)\NET4\$(testFile).dll" />
+		<Exec Command="$(xunit) $(testPath)\bin\$(Configuration)\NET4\$(testFile).dll" />
 		<Exec Command="tools\StatLight\StatLight.exe -d=$(testPath)\bin\$(Configuration)\SL4\$(testFile).Silverlight.dll" />
 	</Target>
 
 	<Target Name="nuget">
-		<Exec Command="$(nugetPath)\nuget pack $(nuspec) /basepath $(corePath)\bin\$(Configuration) /outputdirectory $(artifactPath) /version $(version)" />
+		<Exec Command="$(nuget) pack $(nuspec) /basepath $(corePath)\bin\$(Configuration) /outputdirectory $(artifactPath) /version $(version)" />
 	</Target>
 
 	<Target Name="Deploy">
