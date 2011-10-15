@@ -58,7 +58,7 @@
 		<Exec Command="$(xunit) $(testPath)\bin\$(Configuration)\$(testFile).dll" />
 	</Target>
 	<Target Name="TestSL">
-		<Exec Command="$(xunit-silverlight) -d=&quot;$(testPath).Silverlight4\bin\$(Configuration)\$(testFile).Silverlight4.dll&quot; --teamcity"  />
+		<Exec Command="$(xunit-silverlight) -d=&quot;$(testPath).Silverlight4\bin\$(Configuration)\$(testFile).Silverlight4.dll&quot; --teamcity --debug"  />
 	</Target>
 
 	<Target Name="nugetPack">
