@@ -31,7 +31,7 @@
 		<testSilverlight>$(testPath)\$(testFile).Silverlight.csproj</testSilverlight>
 	</PropertyGroup>
 
-	<Target Name="Full" DependsOnTargets="Init; Clean; Build; TestNet; TestSL; Deploy; nuget"/>
+	<Target Name="Full" DependsOnTargets="Init; Clean; Build; TestNet; Deploy; nugetPack"/>
 
 	<Target Name="Init">
 		<MakeDir Directories="$(artifactPath)" Condition="!Exists('$(artifactPath)')"/>
@@ -61,13 +61,17 @@
 		<Exec Command="$(xunit-silverlight) -d=&quot;$(testPath).Silverlight4\bin\$(Configuration)\$(testFile).Silverlight4.dll&quot; --teamcity"  />
 	</Target>
 
-	<Target Name="nuget">
+	<Target Name="nugetPack">
     <ItemGroup>
       <SourceFiles Include="$(corePath)\bin\$(Configuration)\$(coreFile).*" />
       <SourceFiles Include="$(corePath).Silverlight4\bin\$(Configuration)\$(coreFile).Silverlight4.*" />
     </ItemGroup>
     <Copy SourceFiles="@(SourceFiles)" DestinationFolder="$(ArtifactPath)\temp" />
-		<Exec Command="$(nuget) pack $(nuspec) /basepath $(ArtifactPath)\temp /outputdirectory $(artifactPath) /version $(version)" />
+		<Exec Command="$(nuget).exe pack $(nuspec) /basepath $(ArtifactPath)\temp /outputdirectory $(artifactPath) /version $(version)" />
+	</Target>
+
+	<Target Name="nugetPush">
+		<Exec Command="$(nuget).cmd push $(ArtifactPath)\OoMapper.$(version).nupkg" />
 	</Target>
 
 	<Target Name="Deploy">
