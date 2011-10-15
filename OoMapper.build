@@ -8,6 +8,7 @@
 
 	<PropertyGroup>
 		<Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
+		<version Condition="'$(version)' == ''">0.1.2.$(BUILD_NUMBER)</version>
 
 		<xunit>$(MSBuildProjectDirectory)\tools\xunit\xunit.console.clr4.exe</xunit>
     <xunit-silverlight>$(MSBuildProjectDirectory)\packages\StatLight.1.5.4260\tools\StatLight.exe</xunit-silverlight>
@@ -30,7 +31,7 @@
 		<testSilverlight>$(testPath)\$(testFile).Silverlight.csproj</testSilverlight>
 	</PropertyGroup>
 
-	<Target Name="Full" DependsOnTargets="Init; Clean; Build; TestNet; Deploy; nuget"/>
+	<Target Name="Full" DependsOnTargets="Init; Clean; Build; TestNet; TestSL; Deploy; nuget"/>
 
 	<Target Name="Init">
 		<MakeDir Directories="$(artifactPath)" Condition="!Exists('$(artifactPath)')"/>
@@ -57,7 +58,7 @@
 		<Exec Command="$(xunit) $(testPath)\bin\$(Configuration)\$(testFile).dll" />
 	</Target>
 	<Target Name="TestSL">
-		<Exec Command="$(xunit-silverlight) -d=$(testPath).Silverlight4\bin\$(Configuration)\$(testFile).Silverlight4.dll" />
+		<Exec Command="$(xunit-silverlight) -d=&quot;$(testPath).Silverlight4\bin\$(Configuration)\$(testFile).Silverlight4.dll&quot; --teamcity"  />
 	</Target>
 
 	<Target Name="nuget">
