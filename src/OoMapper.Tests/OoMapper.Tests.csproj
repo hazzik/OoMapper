@@ -57,6 +57,9 @@
     </Compile>
     <Compile Include="ConventionMappedCollectionShouldMapBaseTypes.cs" />
     <Compile Include="ConvertValueTypes.cs" />
+    <Compile Include="MapIEnumerableFacts.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="MapOnlyWriteableProperties.cs" />
     <Compile Include="CustomPropertyMappingFacts.cs" />
     <Compile Include="DeepInheritance.cs" />

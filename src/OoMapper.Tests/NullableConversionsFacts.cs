@@ -13,8 +13,31 @@ namespace OoMapper.Tests
                              {
                                  Property = 100
                              };
-            var destination = Mapper.Map<Source, Destination>(source);
+            Destination destination = Mapper.Map<Source, Destination>(source);
             Assert.Equal(100, destination.Property);
+        }
+
+        [Fact]
+        public void ShouldBeAbleToMapNullableToItsNotNullable()
+        {
+            Mapper.Reset();
+            Mapper.CreateMap<Destination, Source>();
+            var source = new Destination
+                             {
+                                 Property = 100,
+                             };
+            Source destination = Mapper.Map<Destination, Source>(source);
+            Assert.Equal(100, destination.Property);
+        }
+
+        [Fact]
+        public void ShouldBeAbleToMapNullableNullToItsNotNullable()
+        {
+            Mapper.Reset();
+            Mapper.CreateMap<Destination, Source>();
+            var source = new Destination();
+            Source destination = Mapper.Map<Destination, Source>(source);
+            Assert.Equal(0, destination.Property);
         }
 
         #region Nested type: Destination

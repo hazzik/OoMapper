@@ -140,6 +140,9 @@
     <Compile Include="..\OoMapper.Tests\MapFromSupertypeProperties.cs">
       <Link>MapFromSupertypeProperties.cs</Link>
     </Compile>
+    <Compile Include="..\OoMapper.Tests\MapIEnumerableFacts.cs">
+      <Link>MapIEnumerableFacts.cs</Link>
+    </Compile>
     <Compile Include="..\OoMapper.Tests\MapIEnumerableToArray.cs">
       <Link>MapIEnumerableToArray.cs</Link>
     </Compile>

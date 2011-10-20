@@ -18,7 +18,7 @@ namespace OoMapper
             Expression condition = Expression.Constant(false);
             foreach (var resolver in resolvers)
             {
-                if (expression.Type.IsValueType == false)
+                if (expression.Type.IsValueType == false || expression.Type.IsNullable())
                     condition = Expression.OrElse(condition, Expression.Equal(expression, Expression.Constant(null)));
                 expression = resolver.BuildSource(expression, destinationType, mappingConfiguration);
             }
