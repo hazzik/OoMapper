@@ -30,7 +30,7 @@ namespace OoMapper
             Type sourceType = expression.Type;
             if (destinationType == sourceType || destinationType.IsAssignableFrom(sourceType))
             {
-                return expression;
+                return Expression.Convert(expression, destinationType);
             }
             TypeMapConfiguration map = userDefinedConfiguration.FindTypeMapConfiguration(sourceType, destinationType);
             if (map != null)

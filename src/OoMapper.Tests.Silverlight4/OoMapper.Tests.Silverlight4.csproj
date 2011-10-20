@@ -173,6 +173,9 @@
     <Compile Include="..\OoMapper.Tests\NotFoundDestinationMembersFacts.cs">
       <Link>NotFoundDestinationMembersFacts.cs</Link>
     </Compile>
+    <Compile Include="..\OoMapper.Tests\NullableConversionsFacts.cs">
+      <Link>NullableConversionsFacts.cs</Link>
+    </Compile>
     <Compile Include="..\OoMapper.Tests\PropertyMapConfigurationFacts.cs">
       <Link>PropertyMapConfigurationFacts.cs</Link>
     </Compile>
