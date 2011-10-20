@@ -56,23 +56,17 @@ namespace OoMapper
             if (sourceType.IsDictionary())
                 return new DictionarySourceMemberResolver(destination);
 
-            var memberInfos = FindSourceMembersChain(destination, sourceType);
-            if (memberInfos.Count == 0)
+            var members = new HashSet<MemberInfo>();
+            var findMembers = FindMembers(members, destination, sourceType);
+            if (findMembers == false)
                 return null;
 
-            ISourceMemberResolver[] resolvers = memberInfos
+            ISourceMemberResolver[] resolvers = members
                 .Select(x => (ISourceMemberResolver) new SourceMemberResolver(x))
                 .Concat(new ISourceMemberResolver[] {new ConvertSourceMemberResolver()})
                 .ToArray();
 
             return new CompositeSourceMemberResolver(resolvers);
-        }
-
-        private static HashSet<MemberInfo> FindSourceMembersChain(string destination, Type sourceType)
-        {
-            var memberInfos = new HashSet<MemberInfo>();
-            FindMembers(memberInfos, destination, sourceType);
-            return memberInfos;
         }
 
         private static IEnumerable<MemberInfo> GetDestinationMembers(Type destinationType)
@@ -93,10 +87,10 @@ namespace OoMapper
                 yield return methodInfo;
         }
 
-        private static void FindMembers(ICollection<MemberInfo> list, string name, Type sourceType)
+        private static bool FindMembers(ICollection<MemberInfo> members, string name, Type sourceType)
         {
             if (String.IsNullOrEmpty(name))
-                return;
+                return true;
 
             IEnumerable<MemberInfo> sourceMembers = GetSourceMembers(sourceType);
 
@@ -114,10 +108,10 @@ namespace OoMapper
                     .FirstOrDefault();
             }
             if (memberInfo == null)
-                return;
-            list.Add(memberInfo);
+                return false;
+            members.Add(memberInfo);
 
-            FindMembers(list, name.Substring(memberInfo.Name.Length), memberInfo.GetMemberType());
+            return FindMembers(members, name.Substring(memberInfo.Name.Length), memberInfo.GetMemberType());
         }
 
         private static MethodInfo[] EnumerableExtensions()
