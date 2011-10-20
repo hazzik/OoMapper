@@ -25,7 +25,8 @@ namespace OoMapper
 		public MemberAssignment BuildBind(Expression source, IMappingConfiguration configuration)
 		{
 			MemberInfo info = destinationMember;
-			return Expression.Bind(info, sourceMemberResolver.BuildSource(source, info.GetMemberType(), configuration));
+		    var expression = sourceMemberResolver.BuildSource(source, info.GetMemberType(), configuration);
+		    return Expression.Bind(info, expression);
 		}
 	}
 }

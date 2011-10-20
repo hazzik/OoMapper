@@ -57,6 +57,7 @@
     </Compile>
     <Compile Include="ConventionMappedCollectionShouldMapBaseTypes.cs" />
     <Compile Include="ConvertValueTypes.cs" />
+    <Compile Include="MapOnlyWriteableProperties.cs" />
     <Compile Include="CustomPropertyMappingFacts.cs" />
     <Compile Include="DeepInheritance.cs" />
     <Compile Include="DeepMappingFacts.cs" />
@@ -86,6 +87,9 @@
     <Compile Include="FlatteringFacts.cs" />
     <Compile Include="MapTopLevelIEnumerable.cs" />
     <Compile Include="MapToSupertypeProperties.cs" />
+    <Compile Include="NotFoundDestinationMembersFacts.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyMapConfigurationFacts.cs" />
     <Compile Include="TypeUtilsFacts.cs" />

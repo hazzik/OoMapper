@@ -42,7 +42,7 @@ namespace OoMapper
                     return new ParameterRewriter(lambda.Parameters[0], expression).Visit(lambda.Body);
                 }
                 TypeMap[] typeMaps = GetTypeMapsWithIncludes(map).ToArray();
-                Type dynamicMapper = DynamicMapperBuilder.CreateDynamicMapper(typeMaps);
+                Type dynamicMapper = DynamicMapperBuilder.BuildDynamicMapperType(typeMaps);
                 var instance = Activator.CreateInstance(dynamicMapper, this);
                 return Expression.Convert(Expression.Call(Expression.Constant(instance), "DynamicMap", Type.EmptyTypes, expression), destinationType);
             }

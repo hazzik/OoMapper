@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace OoMapper
@@ -11,8 +12,7 @@ namespace OoMapper
 
         public static TypeMap CreateTypeMap(TypeMapConfiguration tmc, IUserDefinedConfiguration configuration)
         {
-            IEnumerable<MemberInfo> destinationMembers = GetMembers(tmc.DestinationType, false);
-            List<PropertyMap> propertyMaps = destinationMembers
+            List<PropertyMap> propertyMaps = GetDestinationMembers(tmc.DestinationType)
                 .Select(destination => CreatePropertyMap(tmc, configuration, destination))
                 .Where(propertyMap => propertyMap != null)
                 .ToList();
@@ -32,7 +32,10 @@ namespace OoMapper
             if (explicitPropertyMapFound)
                 return propertyMap;
 
-            return new PropertyMap(destination, CreateSourceMemberResolver(destination, tmc.SourceType));
+            var resolver = CreateSourceMemberResolver(destination.Name, tmc.SourceType);
+            if (resolver != null)
+                return new PropertyMap(destination, resolver);
+            return null;
         }
 
         private static bool MapPropertyMap(TypeMapConfiguration tmc, MemberInfo destination, out PropertyMap propertyMap)
@@ -48,24 +51,46 @@ namespace OoMapper
             return true;
         }
 
-        private static ISourceMemberResolver CreateSourceMemberResolver(MemberInfo destination, Type sourceType)
+        private static ISourceMemberResolver CreateSourceMemberResolver(string destination, Type sourceType)
         {
-            var propertyInfos = new List<MemberInfo>();
-            FindMembers(propertyInfos, destination.Name, sourceType);
-            ISourceMemberResolver[] list = propertyInfos
+            if (sourceType.IsDictionary())
+                return new DictionarySourceMemberResolver(destination);
+
+            var memberInfos = FindSourceMembersChain(destination, sourceType);
+            if (memberInfos.Count == 0)
+                return null;
+
+            ISourceMemberResolver[] resolvers = memberInfos
                 .Select(x => (ISourceMemberResolver) new SourceMemberResolver(x))
                 .Concat(new ISourceMemberResolver[] {new ConvertSourceMemberResolver()})
                 .ToArray();
-            return new CompositeSourceMemberResolver(list);
+
+            return new CompositeSourceMemberResolver(resolvers);
         }
 
-        private static IEnumerable<MemberInfo> GetMembers(Type sourceType, bool includeMethods)
+        private static HashSet<MemberInfo> FindSourceMembersChain(string destination, Type sourceType)
         {
-            IEnumerable<MemberInfo> memberInfos = sourceType.GetProperties()
-                .Concat((MemberInfo[]) sourceType.GetFields());
-            if (includeMethods)
-                return memberInfos.Concat(sourceType.GetMethods().Where(x => x.GetParameters().Length == 0).Cast<MemberInfo>());
+            var memberInfos = new HashSet<MemberInfo>();
+            FindMembers(memberInfos, destination, sourceType);
             return memberInfos;
+        }
+
+        private static IEnumerable<MemberInfo> GetDestinationMembers(Type destinationType)
+        {
+            foreach (PropertyInfo propertyInfo in destinationType.GetProperties().Where(propertyInfo => propertyInfo.CanWrite))
+                yield return propertyInfo;
+            foreach (FieldInfo fieldInfo in destinationType.GetFields())
+                yield return fieldInfo;
+        }
+
+        private static IEnumerable<MemberInfo> GetSourceMembers(Type sourceType)
+        {
+            foreach (PropertyInfo property in sourceType.GetProperties())
+                yield return property;
+            foreach (FieldInfo fieldInfo in sourceType.GetFields())
+                yield return fieldInfo;
+            foreach (MethodInfo methodInfo in sourceType.GetMethods().Where(methodInfo => methodInfo.GetParameters().Length == 0))
+                yield return methodInfo;
         }
 
         private static void FindMembers(ICollection<MemberInfo> list, string name, Type sourceType)
@@ -73,7 +98,7 @@ namespace OoMapper
             if (String.IsNullOrEmpty(name))
                 return;
 
-            var sourceMembers = GetMembers(sourceType, true);
+            IEnumerable<MemberInfo> sourceMembers = GetSourceMembers(sourceType);
 
             MemberInfo memberInfo =
                 sourceMembers.FirstOrDefault(pi => name.StartsWith(pi.Name, StringComparison.InvariantCultureIgnoreCase));
@@ -102,14 +127,38 @@ namespace OoMapper
                 .ToArray();
         }
 
+        #region Nested type: TypeHierarchyComparer
+
         private class TypeHierarchyComparer : IComparer<Type>
         {
             public static readonly TypeHierarchyComparer Instance = new TypeHierarchyComparer();
+
+            #region IComparer<Type> Members
 
             public int Compare(Type x, Type y)
             {
                 return x == y ? 0 : (x.IsAssignableFrom(y) ? 1 : -1);
             }
+
+            #endregion
+        }
+
+        #endregion
+    }
+
+    internal class DictionarySourceMemberResolver : ISourceMemberResolver
+    {
+        private readonly string destination;
+
+        public DictionarySourceMemberResolver(string destination)
+        {
+            this.destination = destination;
+        }
+
+        public Expression BuildSource(Expression x, Type destinationType, IMappingConfiguration mappingConfiguration)
+        {
+            Expression<Func<IDictionary<object, string>, object>> f = (y) => y[destination];
+            return f;
         }
     }
 }
