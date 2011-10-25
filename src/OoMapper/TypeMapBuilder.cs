@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 
 namespace OoMapper
@@ -16,6 +15,7 @@ namespace OoMapper
                 .Select(destination => CreatePropertyMap(tmc, configuration, destination))
                 .Where(propertyMap => propertyMap != null)
                 .ToList();
+
             return new TypeMap(tmc.SourceType, tmc.DestinationType, propertyMaps);
         }
 
@@ -32,7 +32,7 @@ namespace OoMapper
             if (explicitPropertyMapFound)
                 return propertyMap;
 
-            var resolver = CreateSourceMemberResolver(destination.Name, tmc.SourceType);
+            ISourceMemberResolver resolver = CreateSourceMemberResolver(destination.Name, tmc.SourceType);
             if (resolver != null)
                 return new PropertyMap(destination, resolver);
             return null;
@@ -53,12 +53,9 @@ namespace OoMapper
 
         private static ISourceMemberResolver CreateSourceMemberResolver(string destination, Type sourceType)
         {
-            if (sourceType.IsDictionary())
-                return new DictionarySourceMemberResolver(destination);
-
             var members = new HashSet<MemberInfo>();
-            var findMembers = FindMembers(members, destination, sourceType);
-            if (findMembers == false)
+            bool membersAreFound = FindMembers(members, destination, sourceType);
+            if (membersAreFound == false)
                 return null;
 
             ISourceMemberResolver[] resolvers = members
@@ -69,28 +66,31 @@ namespace OoMapper
             return new CompositeSourceMemberResolver(resolvers);
         }
 
-        private static IEnumerable<MemberInfo> GetDestinationMembers(Type destinationType)
+        private static IEnumerable<MemberInfo> GetDestinationMembers(IReflect destinationType)
         {
-            foreach (PropertyInfo propertyInfo in destinationType.GetProperties()
+            const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
+
+            foreach (PropertyInfo propertyInfo in destinationType.GetProperties(flags)
                 .Where(propertyInfo => propertyInfo.CanWrite))
                 yield return propertyInfo;
 
-            foreach (FieldInfo fieldInfo in destinationType.GetFields())
+            foreach (FieldInfo fieldInfo in destinationType.GetFields(flags))
                 yield return fieldInfo;
         }
 
         private static IEnumerable<MemberInfo> GetSourceMembers(Type sourceType)
         {
-            foreach (PropertyInfo property in sourceType.GetProperties()
+            const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
+
+            foreach (PropertyInfo property in sourceType.GetProperties(flags)
                 .Where(pi => pi.CanRead))
                 yield return property;
 
-            foreach (FieldInfo fieldInfo in sourceType.GetFields())
+            foreach (FieldInfo fieldInfo in sourceType.GetFields(flags))
                 yield return fieldInfo;
 
-            foreach (MethodInfo methodInfo in sourceType.GetMethods()
+            foreach (MethodInfo methodInfo in sourceType.GetMethods(flags)
                 .Where(mi => mi.GetParameters().Length == 0)
-                .Where(mi => mi.IsStatic == false)
                 .Where(mi => mi.ReturnType != typeof (void)))
                 yield return methodInfo;
         }
@@ -146,21 +146,5 @@ namespace OoMapper
         }
 
         #endregion
-    }
-
-    internal class DictionarySourceMemberResolver : ISourceMemberResolver
-    {
-        private readonly string destination;
-
-        public DictionarySourceMemberResolver(string destination)
-        {
-            this.destination = destination;
-        }
-
-        public Expression BuildSource(Expression x, Type destinationType, IMappingConfiguration mappingConfiguration)
-        {
-            Expression<Func<IDictionary<object, string>, object>> f = (y) => y[destination];
-            return f;
-        }
     }
 }

@@ -137,6 +137,9 @@
     <Compile Include="..\OoMapper.Tests\MapFromMethods.cs">
       <Link>MapFromMethods.cs</Link>
     </Compile>
+    <Compile Include="..\OoMapper.Tests\MapFromProperties.cs">
+      <Link>MapFromProperties.cs</Link>
+    </Compile>
     <Compile Include="..\OoMapper.Tests\MapFromSupertypeProperties.cs">
       <Link>MapFromSupertypeProperties.cs</Link>
     </Compile>
@@ -170,6 +173,9 @@
     <Compile Include="..\OoMapper.Tests\MapTopLevelPrimitives.cs">
       <Link>MapTopLevelPrimitives.cs</Link>
     </Compile>
+    <Compile Include="..\OoMapper.Tests\MapToProperties.cs">
+      <Link>MapToProperties.cs</Link>
+    </Compile>
     <Compile Include="..\OoMapper.Tests\MapToSupertypeProperties.cs">
       <Link>MapToSupertypeProperties.cs</Link>
     </Compile>
@@ -181,6 +187,9 @@
     </Compile>
     <Compile Include="..\OoMapper.Tests\PropertyMapConfigurationFacts.cs">
       <Link>PropertyMapConfigurationFacts.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\TestBase.cs">
+      <Link>TestBase.cs</Link>
     </Compile>
     <Compile Include="..\OoMapper.Tests\TypeUtilsFacts.cs">
       <Link>TypeUtilsFacts.cs</Link>
@@ -219,7 +228,7 @@
       <FlavorProperties GUID="{A1591282-1198-4647-A2B1-27E5FF5F6F3B}">
         <SilverlightProjectProperties />
       </FlavorProperties>
-      <UserProperties SourceShareSettings="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&#xA;&lt;ProjectSettings xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot;&gt;&#xA;  &lt;Settings&gt;&#xA;    &lt;ProjectLinkSettings&gt;&#xA;      &lt;ProjectFilePath&gt;..\OoMapper.Tests\OoMapper.Tests.csproj&lt;/ProjectFilePath&gt;&#xA;      &lt;SourceProjectLinkedFolder /&gt;&#xA;      &lt;TargetProjectLinkedFolder /&gt;&#xA;      &lt;SyncType&gt;Global&lt;/SyncType&gt;&#xA;      &lt;SyncDirection&gt;SourceToTarget&lt;/SyncDirection&gt;&#xA;      &lt;SyncReferences&gt;False&lt;/SyncReferences&gt;&#xA;      &lt;SyncAssemblyVersion&gt;False&lt;/SyncAssemblyVersion&gt;&#xA;      &lt;UseRelativePaths&gt;True&lt;/UseRelativePaths&gt;&#xA;      &lt;ProcessLinkedFiles&gt;true&lt;/ProcessLinkedFiles&gt;&#xA;      &lt;UseGlobalRules&gt;true&lt;/UseGlobalRules&gt;&#xA;      &lt;SourceProjectVersion&gt;Current&lt;/SourceProjectVersion&gt;&#xA;      &lt;Rules /&gt;&#xA;    &lt;/ProjectLinkSettings&gt;&#xA;  &lt;/Settings&gt;&#xA;&lt;/ProjectSettings&gt;" />
+      <UserProperties SourceShareSettings="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&#xA;&lt;ProjectSettings xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot;&gt;&#xA;  &lt;Settings&gt;&#xA;    &lt;ProjectLinkSettings&gt;&#xA;      &lt;ProjectFilePath&gt;..\OoMapper.Tests\OoMapper.Tests.csproj&lt;/ProjectFilePath&gt;&#xA;      &lt;SourceProjectLinkedFolder /&gt;&#xA;      &lt;TargetProjectLinkedFolder /&gt;&#xA;      &lt;SyncType&gt;Global&lt;/SyncType&gt;&#xA;      &lt;SyncDirection&gt;SourceToTarget&lt;/SyncDirection&gt;&#xA;      &lt;SyncReferences&gt;False&lt;/SyncReferences&gt;&#xA;      &lt;SyncAssemblyVersion&gt;False&lt;/SyncAssemblyVersion&gt;&#xA;      &lt;UseRelativePaths&gt;True&lt;/UseRelativePaths&gt;&#xA;      &lt;ProcessLinkedFiles&gt;true&lt;/ProcessLinkedFiles&gt;&#xA;      &lt;UseGlobalRules&gt;true&lt;/UseGlobalRules&gt;&#xA;      &lt;SourceProjectVersion&gt;Current&lt;/SourceProjectVersion&gt;&#xA;      &lt;Rules&gt;&#xA;        &lt;LinkRule&gt;&#xA;          &lt;Name&gt;packages.config&lt;/Name&gt;&#xA;          &lt;Type&gt;ExactMatch&lt;/Type&gt;&#xA;          &lt;Target&gt;Folders Files Links&lt;/Target&gt;&#xA;          &lt;Direction&gt;SourceToTarget&lt;/Direction&gt;&#xA;          &lt;DataType&gt;Name&lt;/DataType&gt;&#xA;          &lt;Data&gt;packages.config&lt;/Data&gt;&#xA;          &lt;Enabled&gt;true&lt;/Enabled&gt;&#xA;        &lt;/LinkRule&gt;&#xA;      &lt;/Rules&gt;&#xA;    &lt;/ProjectLinkSettings&gt;&#xA;  &lt;/Settings&gt;&#xA;&lt;/ProjectSettings&gt;" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

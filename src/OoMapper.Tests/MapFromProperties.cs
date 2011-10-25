@@ -5,7 +5,7 @@ namespace OoMapper.Tests
 	public class MapFromProperties : TestBase
 	{
 		[Fact]
-		public void ShouldNotMapFromWriteOnlyFields()
+		public void ShouldNotMapFromWriteOnlyProperties()
 		{
 			Mapper.CreateMap<Source, Destination>();
 
@@ -17,11 +17,21 @@ namespace OoMapper.Tests
 			Assert.NotEqual(123, destination.SomeValue);
 		}
 
+		[Fact]
+		public void ShouldNotMapFromStaticProperties()
+		{
+			Mapper.CreateMap<Source, Destination>();
+			var source = new Source();
+			Destination destination = Mapper.Map<Source, Destination>(source);
+			Assert.NotEqual(100, destination.Static);
+		}
+
 		#region Nested type: Destination
 
 		public class Destination
 		{
 			public int SomeValue { get; set; }
+			public int Static { get; set; }
 		}
 
 		#endregion
@@ -33,6 +43,11 @@ namespace OoMapper.Tests
 			public int SomeValue
 			{
 				set { }
+			}
+
+			public static int Static
+			{
+				get { return 100; }
 			}
 		}
 
