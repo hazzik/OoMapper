@@ -71,25 +71,28 @@ namespace OoMapper
 
         private static IEnumerable<MemberInfo> GetDestinationMembers(Type destinationType)
         {
-            foreach (PropertyInfo propertyInfo in destinationType.GetProperties().Where(propertyInfo => propertyInfo.CanWrite))
+            foreach (PropertyInfo propertyInfo in destinationType.GetProperties()
+                .Where(propertyInfo => propertyInfo.CanWrite))
                 yield return propertyInfo;
+
             foreach (FieldInfo fieldInfo in destinationType.GetFields())
                 yield return fieldInfo;
         }
 
         private static IEnumerable<MemberInfo> GetSourceMembers(Type sourceType)
         {
-        	foreach (PropertyInfo property in sourceType.GetProperties())
-        		yield return property;
+            foreach (PropertyInfo property in sourceType.GetProperties()
+                .Where(pi => pi.CanRead))
+                yield return property;
 
-        	foreach (FieldInfo fieldInfo in sourceType.GetFields())
-        		yield return fieldInfo;
+            foreach (FieldInfo fieldInfo in sourceType.GetFields())
+                yield return fieldInfo;
 
-        	foreach (MethodInfo methodInfo in sourceType.GetMethods()
-        		.Where(mi => mi.GetParameters().Length == 0)
-        		.Where(mi => mi.IsStatic == false)
-        		.Where(mi => mi.ReturnType != typeof (void)))
-        		yield return methodInfo;
+            foreach (MethodInfo methodInfo in sourceType.GetMethods()
+                .Where(mi => mi.GetParameters().Length == 0)
+                .Where(mi => mi.IsStatic == false)
+                .Where(mi => mi.ReturnType != typeof (void)))
+                yield return methodInfo;
         }
 
         private static bool FindMembers(ICollection<MemberInfo> members, string name, Type sourceType)
