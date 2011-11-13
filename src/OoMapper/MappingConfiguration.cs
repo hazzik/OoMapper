@@ -37,7 +37,8 @@ namespace OoMapper
             TypeMapConfiguration map = userDefinedConfiguration.FindTypeMapConfiguration(sourceType, destinationType);
             if (map != null)
             {
-            	return Expression.Convert(Expression.Call(Expression.Call(Expression.Constant(this), "GetDynamicMapper", new Type[0], Expression.Constant(map)), "DynamicMap", Type.EmptyTypes, expression), destinationType);
+                Expression<Func<DynamicMapperBase>> mapper = () => GetDynamicMapper(map);
+                return Expression.Convert(Expression.Call(mapper.Body, "DynamicMap", Type.EmptyTypes, expression), destinationType);
             }
             if (sourceType.IsDictionary() && destinationType.IsDictionary())
             {
@@ -78,14 +79,14 @@ namespace OoMapper
 
     	private readonly IDictionary<TypeMapConfiguration, DynamicMapperBase> instances = new Dictionary<TypeMapConfiguration, DynamicMapperBase>();
 
-    	public DynamicMapperBase GetDynamicMapper(TypeMapConfiguration map)
+        private DynamicMapperBase GetDynamicMapper(TypeMapConfiguration map)
     	{
     		DynamicMapperBase res;
     		if(instances.TryGetValue(map, out res))
     			return res;
 			
     		TypeMap[] typeMaps = GetTypeMapsWithIncludes(map).ToArray();
-    		Type dynamicMapper = DynamicMapperBuilder.CreateDynamicMapper(typeMaps);
+    		Type dynamicMapper = DynamicMapperBuilder.BuildDynamicMapperType(typeMaps);
     		var dynamicMapperBase = (DynamicMapperBase)Activator.CreateInstance(dynamicMapper, this);
     		instances.Add(map, dynamicMapperBase);
     		return dynamicMapperBase;
