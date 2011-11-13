@@ -5,7 +5,7 @@ namespace OoMapper.Tests
     public class IgnoreFacts
     {
         [Fact]
-        public void NewFact()
+        public void ShouldNotMapIgnoredProperty()
         {
             Mapper.CreateMap<Source, Destination>()
                 .ForMember(x => x.IgnoredProperty, opt => opt.Ignore());

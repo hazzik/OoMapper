@@ -37,5 +37,10 @@ namespace OoMapper
 				return true;
 			return type.GetInterface("IDictionary`2", true) != null;
 		}
+
+	    public static bool IsNullable(this Type type)
+	    {
+	        return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+	    }
     }
 }

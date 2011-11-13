@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Full" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
 		<MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\tools\CommunityTasks</MSBuildCommunityTasksPath>
@@ -6,17 +6,21 @@
 
 	<Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets"/>
 
-	<PropertyGroup Condition="'$(Condition)' == ''">
-		<Configuration>Release</Configuration>
-	</PropertyGroup>
-
 	<PropertyGroup>
-		<nugetPath>$(MSBuildProjectDirectory)\tools\nuget</nugetPath>
+		<Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
+		<version Condition="'$(version)' == ''">0.1.2.$(BUILD_NUMBER)</version>
+
+		<xunit>$(MSBuildProjectDirectory)\tools\xunit\xunit.console.clr4.exe</xunit>
+    <xunit-silverlight>$(MSBuildProjectDirectory)\packages\StatLight.1.5.4260\tools\StatLight.exe</xunit-silverlight>
+		<nuget>$(MSBuildProjectDirectory)\tools\nuget\nuget</nuget>
 		<nuspec>$(MSBuildProjectDirectory)\OoMapper.nuspec</nuspec>
 
 		<artifactPath>$(MSBuildProjectDirectory)\release</artifactPath>
 
+		<sln>$(MSBuildProjectDirectory)\OoMapper.sln</sln>
+    
 		<corePath>$(MSBuildProjectDirectory)\src\OoMapper</corePath>
+    <coreOutput>$(corePath)\bin\$(Configuration)\OoMapper.</coreOutput>
 		<coreFile>OoMapper</coreFile>
 		<core>$(corePath)\$(coreFile).csproj</core>
 		<coreSilverlight>$(corePath)\$(coreFile).Silverlight.csproj</coreSilverlight>
@@ -27,17 +31,14 @@
 		<testSilverlight>$(testPath)\$(testFile).Silverlight.csproj</testSilverlight>
 	</PropertyGroup>
 
-	<Target Name="Full" DependsOnTargets="Init; Clean; Build; testAll; Deploy; nuget"/>
+	<Target Name="Full" DependsOnTargets="Init; Clean; Build; TestNet; Deploy; nugetPack"/>
 
 	<Target Name="Init">
 		<MakeDir Directories="$(artifactPath)" Condition="!Exists('$(artifactPath)')"/>
 	</Target>
 
 	<Target Name="Clean">
-		<MSBuild Projects="$(core)" Targets="Clean" Properties="Configuration=$(Configuration)"/>
-		<MSBuild Projects="$(test)" Targets="Clean" Properties="Configuration=$(Configuration)"/>
-		<MSBuild Projects="$(coreSilverlight)" Targets="Clean" Properties="Configuration=$(Configuration)"/>
-		<MSBuild Projects="$(testSilverlight)" Targets="Clean" Properties="Configuration=$(Configuration)"/>
+		<MSBuild Projects="$(sln)" Targets="Clean" Properties="Configuration=$(Configuration)"/>
 	</Target>
 
 	<Target Name="Build">
@@ -50,27 +51,35 @@
 					AssemblyVersion="$(Version)"
 					AssemblyFileVersion="$(Version)"/>
 
-		<MSBuild Projects="$(core)" Targets="Build" Properties="Configuration=$(Configuration)"/>
-		<MSBuild Projects="$(test)" Targets="Build" Properties="Configuration=$(Configuration)"/>
-		<MSBuild Projects="$(coreSilverlight)" Targets="Build" Properties="Configuration=$(Configuration)"/>
-		<MSBuild Projects="$(testSilverlight)" Targets="Build" Properties="Configuration=$(Configuration)"/>
+		<MSBuild Projects="$(sln)" Targets="Build" Properties="Configuration=$(Configuration)"/>
 	</Target>
 
-	<Target Name="testAll">
-		<Exec Command="tools\xunit\xunit.console.clr4.exe $(testPath)\bin\$(Configuration)\NET4\$(testFile).dll" />
-		<Exec Command="tools\StatLight\StatLight.exe -d=$(testPath)\bin\$(Configuration)\SL4\$(testFile).Silverlight.dll" />
+	<Target Name="TestNet">
+		<Exec Command="$(xunit) $(testPath)\bin\$(Configuration)\$(testFile).dll" />
+	</Target>
+	<Target Name="TestSL">
+		<Exec Command="$(xunit-silverlight) -d=&quot;$(testPath).Silverlight4\bin\$(Configuration)\$(testFile).Silverlight4.dll&quot; --teamcity"  />
 	</Target>
 
-	<Target Name="nuget">
-		<Exec Command="$(nugetPath)\nuget pack $(nuspec) /basepath $(corePath)\bin\$(Configuration) /outputdirectory $(artifactPath) /version $(version)" />
+	<Target Name="nugetPack">
+    <ItemGroup>
+      <SourceFiles Include="$(corePath)\bin\$(Configuration)\$(coreFile).*" />
+      <SourceFiles Include="$(corePath).Silverlight4\bin\$(Configuration)\$(coreFile).Silverlight4.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(SourceFiles)" DestinationFolder="$(ArtifactPath)\temp" />
+		<Exec Command="$(nuget).exe pack $(nuspec) /basepath $(ArtifactPath)\temp /outputdirectory $(artifactPath) /version $(version)" />
+	</Target>
+
+	<Target Name="nugetPush">
+		<Exec Command="$(nuget).cmd push $(ArtifactPath)\OoMapper.$(version).nupkg" />
 	</Target>
 
 	<Target Name="Deploy">
 		<ItemGroup>
-			<ZipFiles Include="$(corePath)\bin\$(Configuration)\NET4\$(coreFile).*" />
-			<ZipFiles Include="$(corePath)\bin\$(Configuration)\SL4\$(coreFile).Silverlight.*" />
+			<ZipFiles Include="$(corePath)\bin\$(Configuration)\$(coreFile).*" />
+			<ZipFiles Include="$(corePath).Silverlight4\bin\$(Configuration)\$(coreFile).Silverlight4.*" />
 		</ItemGroup>
-		<Zip Files="@(zipFiles)"
+		<Zip Files="@(ZipFiles)"
 			WorkingDirectory="$(corePath)\bin\$(Configuration)\"
 			ZipFileName="$(artifactPath)\$(coreFile).$(version).zip"
 			ZipLevel="9"/>

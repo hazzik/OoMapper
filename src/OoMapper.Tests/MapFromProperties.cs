@@ -1,23 +1,21 @@
-﻿using Xunit;
+using Xunit;
 
 namespace OoMapper.Tests
 {
-	public class MapFromFields
+	public class MapFromProperties : TestBase
 	{
 		[Fact]
-		public void MapFromField()
+		public void ShouldNotMapFromWriteOnlyProperties()
 		{
-			Mapper.Reset();
 			Mapper.CreateMap<Source, Destination>();
 
 			var source = new Source
 			             	{
-			             		SomeField = 123
+			             		SomeValue = 123
 			             	};
 			Destination destination = Mapper.Map<Source, Destination>(source);
-			Assert.Equal(123, destination.SomeField);
+			Assert.NotEqual(123, destination.SomeValue);
 		}
-
 
 		[Fact]
 		public void ShouldNotMapFromStaticProperties()
@@ -32,7 +30,7 @@ namespace OoMapper.Tests
 
 		public class Destination
 		{
-			public int SomeField { get; set; }
+			public int SomeValue { get; set; }
 			public int Static { get; set; }
 		}
 
@@ -42,8 +40,15 @@ namespace OoMapper.Tests
 
 		public class Source
 		{
-			public static int Static = 100;
-			public int SomeField;
+			public int SomeValue
+			{
+				set { }
+			}
+
+			public static int Static
+			{
+				get { return 100; }
+			}
 		}
 
 		#endregion

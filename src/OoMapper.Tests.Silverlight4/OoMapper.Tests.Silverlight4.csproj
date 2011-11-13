@@ -1,0 +1,241 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B7E1FB7F-7F42-4CBA-9601-027FB48B0924}</ProjectGuid>
+    <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>OoMapper.Tests.Silverlight4</RootNamespace>
+    <AssemblyName>OoMapper.Tests.Silverlight4</AssemblyName>
+    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
+    <SilverlightApplication>false</SilverlightApplication>
+    <ValidateXaml>true</ValidateXaml>
+    <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+  </PropertyGroup>
+  <!-- This property group is only here to support building this project using the 
+       MSBuild 3.5 toolset. In order to work correctly with this older toolset, it needs 
+       to set the TargetFrameworkVersion to v3.5 -->
+  <PropertyGroup Condition="'$(MSBuildToolsVersion)' == '3.5'">
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Bin\Release</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.Core">
+      <HintPath>..\..\packages\Moq.4.0.10827\lib\Silverlight4\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Silverlight.Testing">
+      <HintPath>..\..\lib\Silverlight4\Microsoft.Silverlight.Testing.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight">
+      <HintPath>..\..\lib\Silverlight4\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll</HintPath>
+    </Reference>
+    <Reference Include="Moq.Silverlight">
+      <HintPath>..\..\packages\Moq.4.0.10827\lib\Silverlight4\Moq.Silverlight.dll</HintPath>
+    </Reference>
+    <Reference Include="mscorlib" />
+    <Reference Include="System.Windows" />
+    <Reference Include="system" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Windows.Browser" />
+    <Reference Include="xunit-silverlight4">
+      <HintPath>..\..\lib\Silverlight4\xunit-silverlight4.dll</HintPath>
+    </Reference>
+    <Reference Include="xunit.extensions-silverlight4">
+      <HintPath>..\..\lib\Silverlight4\xunit.extensions-silverlight4.dll</HintPath>
+    </Reference>
+    <Reference Include="xunitcontrib.runner.silverlight.toolkit-sl4">
+      <HintPath>..\..\lib\Silverlight4\xunitcontrib.runner.silverlight.toolkit-sl4.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\ConventionMappedCollectionShouldMapBaseTypes.cs">
+      <Link>ConventionMappedCollectionShouldMapBaseTypes.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\ConvertValueTypes.cs">
+      <Link>ConvertValueTypes.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\CustomPropertyMappingFacts.cs">
+      <Link>CustomPropertyMappingFacts.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\DeepInheritance.cs">
+      <Link>DeepInheritance.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\DeepMappingFacts.cs">
+      <Link>DeepMappingFacts.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\DynamicMapperBuilderTests.cs">
+      <Link>DynamicMapperBuilderTests.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\EnumerableAnyMap.cs">
+      <Link>EnumerableAnyMap.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\EnumerableCountMap.cs">
+      <Link>EnumerableCountMap.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\EnumerableMaxMap.cs">
+      <Link>EnumerableMaxMap.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\FlatteringFacts.cs">
+      <Link>FlatteringFacts.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\ForAllMembersFacts.cs">
+      <Link>ForAllMembersFacts.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\IgnoreFacts.cs">
+      <Link>IgnoreFacts.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\IncludedMappingShouldInheritBaseMappings.cs">
+      <Link>IncludedMappingShouldInheritBaseMappings.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\InheritanceTests.cs">
+      <Link>InheritanceTests.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\MapArray.cs">
+      <Link>MapArray.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\MapCollectionIgnoreMapperOrder.cs">
+      <Link>MapCollectionIgnoreMapperOrder.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\MapDictionaryToDictionary.cs">
+      <Link>MapDictionaryToDictionary.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\MapFromFields.cs">
+      <Link>MapFromFields.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\MapFromMethods.cs">
+      <Link>MapFromMethods.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\MapFromProperties.cs">
+      <Link>MapFromProperties.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\MapFromSupertypeProperties.cs">
+      <Link>MapFromSupertypeProperties.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\MapIEnumerableFacts.cs">
+      <Link>MapIEnumerableFacts.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\MapIEnumerableToArray.cs">
+      <Link>MapIEnumerableToArray.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\MapIEnumerableToICollection.cs">
+      <Link>MapIEnumerableToICollection.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\MapIEnumerableToIList.cs">
+      <Link>MapIEnumerableToIList.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\MapIEnumerableToIListExplicit.cs">
+      <Link>MapIEnumerableToIListExplicit.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\MapObjectToString.cs">
+      <Link>MapObjectToString.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\MapOnlyWriteableProperties.cs">
+      <Link>MapOnlyWriteableProperties.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\MapToFields.cs">
+      <Link>MapToFields.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\MapTopLevelIEnumerable.cs">
+      <Link>MapTopLevelIEnumerable.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\MapTopLevelPrimitives.cs">
+      <Link>MapTopLevelPrimitives.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\MapToProperties.cs">
+      <Link>MapToProperties.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\MapToSupertypeProperties.cs">
+      <Link>MapToSupertypeProperties.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\NotFoundDestinationMembersFacts.cs">
+      <Link>NotFoundDestinationMembersFacts.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\NullableConversionsFacts.cs">
+      <Link>NullableConversionsFacts.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\PropertyMapConfigurationFacts.cs">
+      <Link>PropertyMapConfigurationFacts.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\TestBase.cs">
+      <Link>TestBase.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\TypeUtilsFacts.cs">
+      <Link>TypeUtilsFacts.cs</Link>
+    </Compile>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\OoMapper.snk">
+      <Link>OoMapper.snk</Link>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OoMapper.Silverlight4\OoMapper.Silverlight4.csproj">
+      <Project>{65DD73F6-25A6-4E19-B30F-A40EB9CA6991}</Project>
+      <Name>OoMapper.Silverlight4</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Properties\AppManifest.xml" />
+    <Content Include="Properties\OutOfBrowserSettings.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="App.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{A1591282-1198-4647-A2B1-27E5FF5F6F3B}">
+        <SilverlightProjectProperties />
+      </FlavorProperties>
+      <UserProperties SourceShareSettings="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&#xA;&lt;ProjectSettings xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot;&gt;&#xA;  &lt;Settings&gt;&#xA;    &lt;ProjectLinkSettings&gt;&#xA;      &lt;ProjectFilePath&gt;..\OoMapper.Tests\OoMapper.Tests.csproj&lt;/ProjectFilePath&gt;&#xA;      &lt;SourceProjectLinkedFolder /&gt;&#xA;      &lt;TargetProjectLinkedFolder /&gt;&#xA;      &lt;SyncType&gt;Global&lt;/SyncType&gt;&#xA;      &lt;SyncDirection&gt;SourceToTarget&lt;/SyncDirection&gt;&#xA;      &lt;SyncReferences&gt;False&lt;/SyncReferences&gt;&#xA;      &lt;SyncAssemblyVersion&gt;False&lt;/SyncAssemblyVersion&gt;&#xA;      &lt;UseRelativePaths&gt;True&lt;/UseRelativePaths&gt;&#xA;      &lt;ProcessLinkedFiles&gt;true&lt;/ProcessLinkedFiles&gt;&#xA;      &lt;UseGlobalRules&gt;true&lt;/UseGlobalRules&gt;&#xA;      &lt;SourceProjectVersion&gt;Current&lt;/SourceProjectVersion&gt;&#xA;      &lt;Rules&gt;&#xA;        &lt;LinkRule&gt;&#xA;          &lt;Name&gt;packages.config&lt;/Name&gt;&#xA;          &lt;Type&gt;ExactMatch&lt;/Type&gt;&#xA;          &lt;Target&gt;Folders Files Links&lt;/Target&gt;&#xA;          &lt;Direction&gt;SourceToTarget&lt;/Direction&gt;&#xA;          &lt;DataType&gt;Name&lt;/DataType&gt;&#xA;          &lt;Data&gt;packages.config&lt;/Data&gt;&#xA;          &lt;Enabled&gt;true&lt;/Enabled&gt;&#xA;        &lt;/LinkRule&gt;&#xA;      &lt;/Rules&gt;&#xA;    &lt;/ProjectLinkSettings&gt;&#xA;  &lt;/Settings&gt;&#xA;&lt;/ProjectSettings&gt;" />
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

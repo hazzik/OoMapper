@@ -24,7 +24,7 @@
 			this.moduleBuilder = moduleBuilder;
 		}
 
-		public Type CreateDynamicMapper(IEnumerable<ITypePair> typeMaps)
+		public Type BuildDynamicMapperType(IEnumerable<ITypePair> typeMaps)
 		{
 			TypeBuilder mapperBuilder = moduleBuilder.DefineType(string.Format("M{0:N}", Guid.NewGuid()), TypeAttributes.Public, ParentType);
 

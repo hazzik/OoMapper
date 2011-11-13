@@ -19,7 +19,13 @@ namespace OoMapper
 
         public void MapFrom<TProperty>(Expression<Func<TSource, TProperty>> sourceMember)
         {
-            pmc.SetCustomResolver(new CompositeSourceMemberResolver(new LambdaSourceMemberResolver(sourceMember), new ConvertSourceMemberResolver()));
+            var tryCatch = Expression.TryCatch(sourceMember.Body,
+                                               Expression.Catch(typeof (ArgumentNullException), Expression.Default(sourceMember.Body.Type)),
+                                               Expression.Catch(typeof (NullReferenceException), Expression.Default(sourceMember.Body.Type)));
+
+            var lambda = Expression.Lambda(tryCatch, sourceMember.Parameters);
+
+            pmc.SetCustomResolver(new CompositeSourceMemberResolver(new LambdaSourceMemberResolver(lambda), new ConvertSourceMemberResolver()));
         }
 
     	public void UseValue(object o)

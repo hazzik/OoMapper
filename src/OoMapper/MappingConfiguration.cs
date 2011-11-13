@@ -26,9 +26,13 @@ namespace OoMapper
         public Expression BuildSource(Expression expression, Type destinationType, IMappingConfiguration cfg)
         {
             Type sourceType = expression.Type;
-            if (destinationType == sourceType || destinationType.IsAssignableFrom(sourceType))
+            if (destinationType == sourceType)
             {
                 return expression;
+            }
+            if (destinationType.IsAssignableFrom(sourceType))
+            {
+                return Expression.Convert(expression, destinationType);
             }
             TypeMapConfiguration map = userDefinedConfiguration.FindTypeMapConfiguration(sourceType, destinationType);
             if (map != null)

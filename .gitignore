@@ -1,4 +1,5 @@
 /_ReSharper.*/
+/src/*/_ReSharper.*/
 /src/*/bin/
 /src/*/obj/
 /release/*
