@@ -71,19 +71,21 @@ namespace OoMapper
             const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
 
             foreach (PropertyInfo propertyInfo in destinationType.GetProperties(flags)
-                .Where(propertyInfo => propertyInfo.CanWrite))
+                .Where(pi => pi.CanWrite)
+                .Where(pi => pi.GetIndexParameters().Length == 0))
                 yield return propertyInfo;
 
             foreach (FieldInfo fieldInfo in destinationType.GetFields(flags))
                 yield return fieldInfo;
         }
 
-        private static IEnumerable<MemberInfo> GetSourceMembers(Type sourceType)
+        private static IEnumerable<MemberInfo> GetSourceMembers(IReflect sourceType)
         {
             const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
 
             foreach (PropertyInfo property in sourceType.GetProperties(flags)
-                .Where(pi => pi.CanRead))
+                .Where(pi => pi.CanRead)
+                .Where(pi => pi.GetIndexParameters().Length == 0))
                 yield return property;
 
             foreach (FieldInfo fieldInfo in sourceType.GetFields(flags))
