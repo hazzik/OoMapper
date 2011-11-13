@@ -2,13 +2,8 @@ namespace OoMapper.Tests
 {
 	using Xunit;
 
-	public class IncludedMappingShouldInheritBaseMappings
+    public class IncludedMappingShouldInheritBaseMappings : TestBase
 	{
-		public IncludedMappingShouldInheritBaseMappings()
-		{
-			Mapper.Reset();
-		}
-
         [Fact]
         public void included_mapping_should_inherit_base_mappings_should_not_throw()
         {

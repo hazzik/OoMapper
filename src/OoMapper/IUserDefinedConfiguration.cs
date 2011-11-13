@@ -5,8 +5,8 @@ namespace OoMapper
 {
     public interface IUserDefinedConfiguration
     {
-        void AddTypeMapConfiguration(TypeMapConfiguration tmc);
-        TypeMapConfiguration FindTypeMapConfiguration(Type sourceType, Type destinationType);
-        IEnumerable<TypeMapConfiguration> InheritedConfigurations(TypeMapConfiguration tmc);
+        void AddTypeMapConfiguration(ITypeMapConfiguration tmc);
+        ITypeMapConfiguration FindTypeMapConfiguration(Type sourceType, Type destinationType);
+        IEnumerable<ITypeMapConfiguration> InheritedConfigurations(ITypeMapConfiguration tmc);
     }
 }

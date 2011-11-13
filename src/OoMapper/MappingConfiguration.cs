@@ -14,7 +14,7 @@ namespace OoMapper
             new Cache<Tuple<Type, Type>, TypeMap>();
 
         private readonly IObjectMapperBuilder newObjectMapperBuilder = new CachedObjectMapperBuilder(new NewObjectMapperBuilder());
-        private readonly ISet<TypeMapConfiguration> processed = new HashSet<TypeMapConfiguration>();
+        private readonly ISet<ITypeMapConfiguration> processed = new HashSet<ITypeMapConfiguration>();
         private readonly ISourceMemberResolver sourceMemberResolver = new ConvertSourceMemberResolver();
         private readonly IUserDefinedConfiguration userDefinedConfiguration = new UserDefinedConfiguration();
 
@@ -36,7 +36,7 @@ namespace OoMapper
             {
                 return Expression.Convert(expression, destinationType);
             }
-            TypeMapConfiguration map = userDefinedConfiguration.FindTypeMapConfiguration(sourceType, destinationType);
+            var map = userDefinedConfiguration.FindTypeMapConfiguration(sourceType, destinationType);
             if (map != null)
             {
                 if (processed.Add(map) == false || map.HasIncludes() == false)
@@ -100,7 +100,7 @@ namespace OoMapper
 
         #endregion
 
-        private IEnumerable<TypeMap> GetTypeMapsWithIncludes(TypeMapConfiguration map)
+        private IEnumerable<TypeMap> GetTypeMapsWithIncludes(ITypeMapConfiguration map)
         {
             yield return CreateOrGetTypeMap(map);
             foreach (var include in map.Includes)
@@ -121,19 +121,19 @@ namespace OoMapper
                                                    property, BuildNew(sourceType, destinationType)));
         }
 
-        private TypeMap CreateOrGetTypeMap(TypeMapConfiguration map)
+        private TypeMap CreateOrGetTypeMap(ITypeMapConfiguration map)
         {
             return mappers.GetOrAdd(Tuple.Create(map.SourceType, map.DestinationType), k => TypeMapBuilder.CreateTypeMap(map, userDefinedConfiguration));
         }
 
         private TypeMap GetTypeMap(Type sourceType, Type destinationType)
         {
-            TypeMapConfiguration map = userDefinedConfiguration.FindTypeMapConfiguration(sourceType, destinationType);
+            var map = userDefinedConfiguration.FindTypeMapConfiguration(sourceType, destinationType);
             if (map == null) throw new KeyNotFoundException(Tuple.Create(sourceType, destinationType).ToString());
             return CreateOrGetTypeMap(map);
         }
 
-        public void AddTypeMapConfiguration(TypeMapConfiguration tmc)
+        public void AddTypeMapConfiguration(ITypeMapConfiguration tmc)
         {
             userDefinedConfiguration.AddTypeMapConfiguration(tmc);
         }

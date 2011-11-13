@@ -2,12 +2,11 @@
 
 namespace OoMapper.Tests
 {
-	public class MapFromFields
+    public class MapFromFields : TestBase
 	{
 		[Fact]
 		public void MapFromField()
 		{
-			Mapper.Reset();
 			Mapper.CreateMap<Source, Destination>();
 
 			var source = new Source

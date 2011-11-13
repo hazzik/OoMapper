@@ -2,12 +2,11 @@
 
 namespace OoMapper.Tests
 {
-    public class InheritanceTests
+    public class InheritanceTests : TestBase
     {
         [Fact]
         public void ShouldMapAsBaseClass()
         {
-            Mapper.Reset();
             Mapper.CreateMap<Source, Destination>();
             Destination destination = Mapper.Map<SubSource, Destination>(new SubSource
                                                                              {
@@ -19,7 +18,6 @@ namespace OoMapper.Tests
         [Fact]
         public void ShouldMapAsInterfaceClass()
         {
-            Mapper.Reset();
             Mapper.CreateMap<ISource, Destination>();
             Destination destination = Mapper.Map<SubSource, Destination>(new SubSource
                                                                              {

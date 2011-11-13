@@ -2,12 +2,11 @@
 {
 	using Xunit;
 
-	public class DeepMappingFacts
+    public class DeepMappingFacts : TestBase
 	{
 		[Fact]
 		public void Test()
 		{
-			Mapper.Reset();
 			Mapper.CreateMap<ComplexSourceChild, ComplexDestinationChild>();
 			Mapper.CreateMap<ComplexSource, ComplexDestination>();
 

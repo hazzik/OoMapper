@@ -4,11 +4,23 @@ using System.Linq;
 
 namespace OoMapper
 {
-    public class TypeMapConfiguration : ITypePair
+    public interface ITypeMapConfiguration
+    {
+        Type SourceType { get; }
+        Type DestinationType { get; }
+        IEnumerable<Tuple<Type, Type>> Includes { get; }
+        void AddPropertyMapConfiguration(IPropertyMapConfiguration pmc);
+        IPropertyMapConfiguration GetPropertyMapConfiguration(string destinationMemberName);
+        void Include<TSource, TDestination>();
+        bool Including(ITypeMapConfiguration other);
+        bool HasIncludes();
+    }
+
+    public class TypeMapConfiguration : ITypePair, ITypeMapConfiguration
     {
         private readonly Type destinationType;
-        private readonly ICollection<Tuple<Type, Type>> includes = new List<Tuple<Type, Type>>();
-        private readonly IDictionary<string, PropertyMapConfiguration> propertyMapConfigurations = new Dictionary<string, PropertyMapConfiguration>();
+        private readonly ICollection<Tuple<Type, Type>> includes = new HashSet<Tuple<Type, Type>>();
+        private readonly IDictionary<string, IPropertyMapConfiguration> propertyMapConfigurations = new Dictionary<string, IPropertyMapConfiguration>();
         private readonly Type sourceType;
 
         public TypeMapConfiguration(Type sourceType, Type destinationType)
@@ -32,14 +44,14 @@ namespace OoMapper
             get { return includes; }
         }
 
-        public void AddPropertyMapConfiguration(PropertyMapConfiguration pmc)
+        public void AddPropertyMapConfiguration(IPropertyMapConfiguration pmc)
         {
             propertyMapConfigurations[pmc.DestinationMemberName] = pmc;
         }
 
-        public PropertyMapConfiguration GetPropertyMapConfiguration(string destinationMemberName)
+        public IPropertyMapConfiguration GetPropertyMapConfiguration(string destinationMemberName)
         {
-            PropertyMapConfiguration pmc;
+            IPropertyMapConfiguration pmc;
             propertyMapConfigurations.TryGetValue(destinationMemberName, out pmc);
             return pmc;
         }
@@ -49,7 +61,7 @@ namespace OoMapper
             includes.Add(Tuple.Create(typeof (TSource), typeof (TDestination)));
         }
 
-        public bool Including(TypeMapConfiguration other)
+        public bool Including(ITypeMapConfiguration other)
         {
             return includes.Contains(Tuple.Create(other.SourceType, other.DestinationType));
         }

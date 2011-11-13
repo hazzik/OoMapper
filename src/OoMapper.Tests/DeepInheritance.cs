@@ -2,13 +2,8 @@
 {
 	using Xunit;
 
-	public class DeepInheritance
+    public class DeepInheritance : TestBase
 	{
-		public DeepInheritance()
-		{
-			Mapper.Reset();
-		}
-
 		[Fact]
 		public void FactName()
 		{

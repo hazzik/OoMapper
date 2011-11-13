@@ -2,12 +2,11 @@ using Xunit;
 
 namespace OoMapper.Tests
 {
-    public class NotFoundDestinationMembersFacts
+    public class NotFoundDestinationMembersFacts :TestBase
     {
         [Fact]
         public void ShouldBeAbleToMap()
         {
-            Mapper.Reset();
             Mapper.CreateMap<Source, Destination>();
 
             Destination destination = null;
@@ -33,12 +32,11 @@ namespace OoMapper.Tests
         #endregion
     }
 
-    public class ShouldNotMapCompositePropertyIfFullNameDoesNotMathc
+    public class ShouldNotMapCompositePropertyIfFullNameDoesNotMatch :TestBase
     {
         [Fact]
         public void ShouldNotMap()
         {
-            Mapper.Reset();
             Mapper.CreateMap<Source, Destination>();
 
             var source = new Source

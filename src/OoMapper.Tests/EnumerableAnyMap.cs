@@ -3,12 +3,11 @@ using Xunit;
 
 namespace OoMapper.Tests
 {
-    public class EnumerableAnyMap
+    public class EnumerableAnyMap : TestBase
     {
         [Fact]
         public void True()
         {
-            Mapper.Reset();
             Mapper.CreateMap<Category, CategoryDto>();
             CategoryDto categoryDto = Mapper.Map<Category, CategoryDto>(new Category
                                                                             {
@@ -24,7 +23,6 @@ namespace OoMapper.Tests
         [Fact]
         public void False()
         {
-            Mapper.Reset();
             Mapper.CreateMap<Category, CategoryDto>();
             CategoryDto categoryDto = Mapper.Map<Category, CategoryDto>(new Category
                                                                             {

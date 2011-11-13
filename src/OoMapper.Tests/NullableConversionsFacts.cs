@@ -2,12 +2,11 @@
 
 namespace OoMapper.Tests
 {
-    public class NullableConversionsFacts
+    public class NullableConversionsFacts : TestBase
     {
         [Fact]
         public void ShouldBeAbleToMapValueTypeToItsNullable()
         {
-            Mapper.Reset();
             Mapper.CreateMap<Source, Destination>();
             var source = new Source
                              {
@@ -20,7 +19,6 @@ namespace OoMapper.Tests
         [Fact]
         public void ShouldBeAbleToMapNullableToItsNotNullable()
         {
-            Mapper.Reset();
             Mapper.CreateMap<Destination, Source>();
             var source = new Destination
                              {
@@ -33,7 +31,6 @@ namespace OoMapper.Tests
         [Fact]
         public void ShouldBeAbleToMapNullableNullToItsNotNullable()
         {
-            Mapper.Reset();
             Mapper.CreateMap<Destination, Source>();
             var source = new Destination();
             Source destination = Mapper.Map<Destination, Source>(source);

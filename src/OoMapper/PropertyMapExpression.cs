@@ -5,9 +5,9 @@ namespace OoMapper
 {
     public class PropertyMapExpression<TSource>
     {
-        private readonly PropertyMapConfiguration pmc;
+        private readonly IPropertyMapConfiguration pmc;
 
-        public PropertyMapExpression(PropertyMapConfiguration pmc)
+        public PropertyMapExpression(IPropertyMapConfiguration pmc)
         {
             this.pmc = pmc;
         }
