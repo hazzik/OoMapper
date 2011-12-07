@@ -13,9 +13,7 @@ namespace OoMapper
         private readonly ICache<Tuple<Type, Type>, TypeMap> mappers =
             new Cache<Tuple<Type, Type>, TypeMap>();
 
-        private readonly IObjectMapperBuilder newObjectMapperBuilder = new CachedObjectMapperBuilder(new NewObjectMapperBuilder());
-        private readonly ISet<ITypeMapConfiguration> processed = new HashSet<ITypeMapConfiguration>();
-    	private readonly ISourceMemberResolver sourceMemberResolver = new ConvertSourceMemberResolver();
+        private readonly ISourceMemberResolver sourceMemberResolver = new ConvertSourceMemberResolver();
         private readonly IUserDefinedConfiguration userDefinedConfiguration = new UserDefinedConfiguration();
 
         private DynamicMapperBuilder DynamicMapperBuilder

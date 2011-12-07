@@ -22,7 +22,7 @@ namespace OoMapper
 			                         sourceMemberResolver.BuildSource(source, info.GetMemberType(), configuration));
 		}
 
-		public MemberAssignment BuildBind(Expression source, IMappingConfiguration configuration)
+        public MemberBinding BuildBind(Expression source, IMappingConfiguration configuration)
 		{
 			MemberInfo info = destinationMember;
 		    var expression = sourceMemberResolver.BuildSource(source, info.GetMemberType(), configuration);

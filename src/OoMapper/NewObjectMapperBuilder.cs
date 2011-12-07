@@ -9,7 +9,7 @@ namespace OoMapper
         {
             const string name = "src";
             ParameterExpression source = Expression.Parameter(typeMap.SourceType, name);
-            MemberAssignment[] bindings = typeMap.PropertyMaps
+            MemberBinding[] bindings = typeMap.PropertyMaps
                 .Select(m => m.BuildBind(source, configuration))
                 .ToArray();
             return Expression.Lambda(
