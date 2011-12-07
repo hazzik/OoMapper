@@ -3,12 +3,11 @@ using Xunit;
 
 namespace OoMapper.Tests
 {
-    public class EnumerableMaxMap
+    public class EnumerableMaxMap : TestBase
     {
         [Fact]
         public void NewFact()
         {
-            Mapper.Reset();
             Mapper.CreateMap<Category, CategoryDto>();
             CategoryDto categoryDto = Mapper.Map<Category, CategoryDto>(new Category
                                                                             {

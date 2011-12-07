@@ -122,6 +122,12 @@
     <Compile Include="..\OoMapper.Tests\InheritanceTests.cs">
       <Link>InheritanceTests.cs</Link>
     </Compile>
+    <Compile Include="..\OoMapper.Tests\Integration\MapFromProperties.cs">
+      <Link>Integration\MapFromProperties.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\Integration\MapToProperties.cs">
+      <Link>Integration\MapToProperties.cs</Link>
+    </Compile>
     <Compile Include="..\OoMapper.Tests\MapArray.cs">
       <Link>MapArray.cs</Link>
     </Compile>
@@ -136,9 +142,6 @@
     </Compile>
     <Compile Include="..\OoMapper.Tests\MapFromMethods.cs">
       <Link>MapFromMethods.cs</Link>
-    </Compile>
-    <Compile Include="..\OoMapper.Tests\MapFromProperties.cs">
-      <Link>MapFromProperties.cs</Link>
     </Compile>
     <Compile Include="..\OoMapper.Tests\MapFromSupertypeProperties.cs">
       <Link>MapFromSupertypeProperties.cs</Link>
@@ -172,9 +175,6 @@
     </Compile>
     <Compile Include="..\OoMapper.Tests\MapTopLevelPrimitives.cs">
       <Link>MapTopLevelPrimitives.cs</Link>
-    </Compile>
-    <Compile Include="..\OoMapper.Tests\MapToProperties.cs">
-      <Link>MapToProperties.cs</Link>
     </Compile>
     <Compile Include="..\OoMapper.Tests\MapToSupertypeProperties.cs">
       <Link>MapToSupertypeProperties.cs</Link>

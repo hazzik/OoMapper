@@ -3,7 +3,7 @@
 	using System.Collections.Generic;
 	using Xunit;
 
-    public class ConventionMappedCollectionShouldMapBaseTypes
+    public class ConventionMappedCollectionShouldMapBaseTypes : TestBase
 	{
 		public class ItemBase { }
 
@@ -38,10 +38,7 @@
 		[Fact]
 		public void item_collection_should_map_by_base_type()
 		{
-			Mapper.Reset();
-
 			Mapper.CreateMap<Container, ContainerDto>();
-			
 			Mapper.CreateMap<GeneralItem, GeneralItemDto>();
 			Mapper.CreateMap<SpecificItem, SpecificItemDto>();
 

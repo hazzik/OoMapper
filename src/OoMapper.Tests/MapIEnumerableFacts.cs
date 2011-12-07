@@ -4,12 +4,11 @@ using Xunit;
 
 namespace OoMapper.Tests
 {
-    public class MapIEnumerableFacts
+    public class MapIEnumerableFacts   :TestBase
     {
         [Fact]
         public void ShouldBeAbleToMap()
         {
-            Mapper.Reset();
             Mapper.CreateMap<SourceChild, DestinationChild>();
             Mapper.CreateMap<Source, Destination>()
                 .ForMember(x => x.A, opt => opt.MapFrom(x => X(x)));
@@ -26,7 +25,6 @@ namespace OoMapper.Tests
         [Fact]
         public void ShouldBeAbleToMapNullEnumerable()
         {
-            Mapper.Reset();
             Mapper.CreateMap<SourceChild, DestinationChild>();
             Mapper.CreateMap<Source, Destination>()
                 .ForMember(x => x.A, opt => opt.MapFrom(x => X(x)));

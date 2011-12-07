@@ -58,7 +58,7 @@
     <Compile Include="BidirectionalMap.cs" />
     <Compile Include="ConventionMappedCollectionShouldMapBaseTypes.cs" />
     <Compile Include="ConvertValueTypes.cs" />
-    <Compile Include="MapFromProperties.cs" />
+    <Compile Include="Integration\MapFromProperties.cs" />
     <Compile Include="MapIEnumerableFacts.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -91,7 +91,7 @@
     <Compile Include="MapIEnumerableToIList.cs" />
     <Compile Include="FlatteringFacts.cs" />
     <Compile Include="MapTopLevelIEnumerable.cs" />
-    <Compile Include="MapToProperties.cs" />
+    <Compile Include="Integration\MapToProperties.cs" />
     <Compile Include="MapToSupertypeProperties.cs" />
     <Compile Include="NotFoundDestinationMembersFacts.cs">
       <SubType>Code</SubType>

@@ -2,12 +2,11 @@
 
 namespace OoMapper.Tests
 {
-    public class MapOnlyWriteableProperties
+    public class MapOnlyWriteableProperties :TestBase
     {
         [Fact]
         public void Test()
         {
-            Mapper.Reset();
             Mapper.CreateMap<Source, Destination>();
             Mapper.Map<Source, Destination>(new Source
                                                 {

@@ -1,6 +1,16 @@
 namespace OoMapper
 {
-    public class PropertyMapConfiguration
+    public interface IPropertyMapConfiguration
+    {
+        string DestinationMemberName { get; }
+        ISourceMemberResolver Resolver { get; }
+        void Ignore();
+        bool IsIgnored();
+        bool IsMapped();
+        void SetCustomResolver(ISourceMemberResolver resolver);
+    }
+
+    public class PropertyMapConfiguration : IPropertyMapConfiguration
     {
         private readonly string destinationMemberName;
         private bool isIgnored;

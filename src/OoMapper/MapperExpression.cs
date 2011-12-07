@@ -6,9 +6,9 @@ namespace OoMapper
 {
     public class MapperExpression<TSource, TDestination>
     {
-        private readonly TypeMapConfiguration tmc;
+        private readonly ITypeMapConfiguration tmc;
 
-        public MapperExpression(TypeMapConfiguration tmc)
+        public MapperExpression(ITypeMapConfiguration tmc)
         {
             this.tmc = tmc;
         }

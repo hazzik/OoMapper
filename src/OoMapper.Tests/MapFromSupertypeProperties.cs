@@ -2,12 +2,11 @@
 
 namespace OoMapper.Tests
 {
-    public class MapFromSupertypeProperties
+    public class MapFromSupertypeProperties : TestBase
     {
         [Fact]
         public void TestAutomapping()
         {
-Mapper.Reset();
             Mapper.CreateMap<Source, Destination>();
             var source = new Source
                              {
@@ -20,7 +19,6 @@ Mapper.Reset();
         [Fact]
         public void TestExplicitMapping()
         {
-Mapper.Reset();
             Mapper.CreateMap<Source, Destination>()
                 .ForMember(x => x.Value, opt => opt.MapFrom(x => x.Value));
 

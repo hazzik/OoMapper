@@ -27,8 +27,8 @@ namespace OoMapper
         {
             Type sourceType = typeof (TSource);
             Type destinationType = typeof (TDestination);
-        	var lambdaExpression = configuration.BuildNew(sourceType, destinationType);
-        	var func = (Func<TSource, TDestination>)lambdaExpression.Compile();
+        	var expression = configuration.BuildNew(sourceType, destinationType);
+        	var func = (Func<TSource, TDestination>)expression.Compile();
             return func.Invoke(source);
         }
 
@@ -36,7 +36,8 @@ namespace OoMapper
         {
             Type sourceType = typeof(TSource);
             Type destinationType = typeof(TDestination);
-            var func = (Func<TSource, TDestination, TDestination>)configuration.BuildExisting(sourceType, destinationType).Compile();
+            var expression = configuration.BuildExisting(sourceType, destinationType);
+            var func = (Func<TSource, TDestination, TDestination>)expression.Compile();
             return func.Invoke(source, destination);
         }
 

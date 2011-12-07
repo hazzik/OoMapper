@@ -9,7 +9,7 @@ namespace OoMapper
     {
         private static readonly MethodInfo[] enumerableExtensions = EnumerableExtensions();
 
-        public static TypeMap CreateTypeMap(TypeMapConfiguration tmc, IUserDefinedConfiguration configuration)
+        public static TypeMap CreateTypeMap(ITypeMapConfiguration tmc, IUserDefinedConfiguration configuration)
         {
             List<PropertyMap> propertyMaps = GetDestinationMembers(tmc.DestinationType)
                 .Select(destination => CreatePropertyMap(tmc, configuration, destination))
@@ -19,7 +19,7 @@ namespace OoMapper
             return new TypeMap(tmc.SourceType, tmc.DestinationType, propertyMaps);
         }
 
-        private static PropertyMap CreatePropertyMap(TypeMapConfiguration tmc,
+        private static PropertyMap CreatePropertyMap(ITypeMapConfiguration tmc,
                                                      IUserDefinedConfiguration configuration,
                                                      MemberInfo destination)
         {
@@ -38,10 +38,10 @@ namespace OoMapper
             return null;
         }
 
-        private static bool MapPropertyMap(TypeMapConfiguration tmc, MemberInfo destination, out PropertyMap propertyMap)
+        private static bool MapPropertyMap(ITypeMapConfiguration tmc, MemberInfo destination, out PropertyMap propertyMap)
         {
             propertyMap = null;
-            PropertyMapConfiguration pmc = tmc.GetPropertyMapConfiguration(destination.Name);
+            IPropertyMapConfiguration pmc = tmc.GetPropertyMapConfiguration(destination.Name);
             if (pmc == null || !pmc.IsMapped())
                 pmc = tmc.GetPropertyMapConfiguration("*");
             if (pmc == null || !pmc.IsMapped())
@@ -71,19 +71,21 @@ namespace OoMapper
             const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
 
             foreach (PropertyInfo propertyInfo in destinationType.GetProperties(flags)
-                .Where(propertyInfo => propertyInfo.CanWrite))
+                .Where(pi => pi.CanWrite)
+                .Where(pi => pi.GetIndexParameters().Length == 0))
                 yield return propertyInfo;
 
             foreach (FieldInfo fieldInfo in destinationType.GetFields(flags))
                 yield return fieldInfo;
         }
 
-        private static IEnumerable<MemberInfo> GetSourceMembers(Type sourceType)
+        private static IEnumerable<MemberInfo> GetSourceMembers(IReflect sourceType)
         {
             const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
 
             foreach (PropertyInfo property in sourceType.GetProperties(flags)
-                .Where(pi => pi.CanRead))
+                .Where(pi => pi.CanRead)
+                .Where(pi => pi.GetIndexParameters().Length == 0))
                 yield return property;
 
             foreach (FieldInfo fieldInfo in sourceType.GetFields(flags))
@@ -112,8 +114,7 @@ namespace OoMapper
                     .Select(x => x.IsGenericMethodDefinition
                                      ? x.MakeGenericMethod(sourceElementType)
                                      : x)
-                    .Where(x => TypeUtils.GetElementTypeOfEnumerable(x.GetParameters().First().ParameterType) == sourceElementType)
-                    .FirstOrDefault();
+                    .FirstOrDefault(x => TypeUtils.GetElementTypeOfEnumerable(x.GetParameters().First().ParameterType) == sourceElementType);
             }
             if (memberInfo == null)
                 return false;

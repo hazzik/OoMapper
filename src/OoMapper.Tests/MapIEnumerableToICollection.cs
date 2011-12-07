@@ -3,12 +3,11 @@ using Xunit;
 
 namespace OoMapper.Tests
 {
-	public class MapIEnumerableToICollection
+	public class MapIEnumerableToICollection : TestBase
 	{
 		[Fact]
 		public void Test()
 		{
-			Mapper.Reset();
 			Mapper.CreateMap<SourceChild, DestinationChild>();
 			Mapper.CreateMap<Source, Destination>();
 

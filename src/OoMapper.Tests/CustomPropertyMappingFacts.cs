@@ -2,12 +2,11 @@ using Xunit;
 
 namespace OoMapper.Tests
 {
-    public class CustomPropertyMappingFacts
+    public class CustomPropertyMappingFacts : TestBase
     {
         [Fact]
         public void NewFact()
         {
-			Mapper.Reset();
             Mapper.CreateMap<Source, Destination>()
                 .ForMember(x => x.SomeProperty, opt => opt.MapFrom(x => x.OtherProperty))
                 .ForMember(x => x.Child, opt => opt.Ignore());
@@ -23,7 +22,6 @@ namespace OoMapper.Tests
         [Fact]
         public void MapWithDifferentSourceType()
         {
-			Mapper.Reset();
             Mapper.CreateMap<SourceChild, DestinationChild>();
             Mapper.CreateMap<Source, Destination>()
                 .ForMember(x => x.SomeProperty, opt => opt.Ignore())

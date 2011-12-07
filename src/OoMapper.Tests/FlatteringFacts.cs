@@ -2,7 +2,7 @@
 
 namespace OoMapper.Tests
 {
-    public class FlatteringFacts
+    public class FlatteringFacts : TestBase
     {
         [Fact]
         public void MapMembersOnSameLevelWithEqualNames()
@@ -38,7 +38,6 @@ namespace OoMapper.Tests
         [Fact]
         public void MapMemberWithPartNamesOnDeepDifferentLevels()
         {
-            Mapper.Reset();
             Mapper.CreateMap<ComplexSource2, Destination>();
 
             var source = new ComplexSource2
@@ -56,7 +55,6 @@ namespace OoMapper.Tests
         [Fact]
         public void MapExistingObject()
         {
-            Mapper.Reset();
             Mapper.CreateMap<ComplexSource2, Destination>();
 
             var source = new ComplexSource2
@@ -74,7 +72,6 @@ namespace OoMapper.Tests
         [Fact]
         public void NullBehave()
         {
-            Mapper.Reset();
             Mapper.CreateMap<ComplexSource2, Destination>();
 
             var source = new ComplexSource2();
@@ -87,7 +84,6 @@ namespace OoMapper.Tests
         [Fact]
         public void NullBehave2()
         {
-            Mapper.Reset();
             Mapper.CreateMap<ComplexSource2, Destination>();
 
             Destination map = Mapper.Map<ComplexSource2, Destination>(null);

@@ -2,12 +2,11 @@
 
 namespace OoMapper.Tests
 {
-    public class ForAllMembersFacts
+    public class ForAllMembersFacts : TestBase
     {
         [Fact]
         public void TestIgnore()
         {
-            Mapper.Reset();
             Mapper.CreateMap<Source, Destination>()
                 .ForAllMembers(opt => opt.Ignore());
 
@@ -24,7 +23,6 @@ namespace OoMapper.Tests
         [Fact]
         public void TestSource()
         {
-            Mapper.Reset();
             Mapper.CreateMap<Source, Destination>()
                 .ForAllMembers(opt => opt.MapFrom(x => "x"));
 

@@ -6,16 +6,16 @@ namespace OoMapper
 {
     class UserDefinedConfiguration : IUserDefinedConfiguration
     {
-        private readonly ICollection<TypeMapConfiguration> typeMapConfigurations = new List<TypeMapConfiguration>();
+        private readonly ICollection<ITypeMapConfiguration> typeMapConfigurations = new List<ITypeMapConfiguration>();
 
-        public void AddTypeMapConfiguration(TypeMapConfiguration tmc)
+        public void AddTypeMapConfiguration(ITypeMapConfiguration tmc)
         {
             typeMapConfigurations.Add(tmc);
         }
 
-        public TypeMapConfiguration FindTypeMapConfiguration(Type sourceType, Type destinationType)
+        public ITypeMapConfiguration FindTypeMapConfiguration(Type sourceType, Type destinationType)
         {
-            TypeMapConfiguration typeMap = typeMapConfigurations.FirstOrDefault(x => x.SourceType == sourceType && x.DestinationType == destinationType);
+            var typeMap = typeMapConfigurations.FirstOrDefault(x => x.SourceType == sourceType && x.DestinationType == destinationType);
             if (typeMap != null)
                 return typeMap;
             typeMap = sourceType.GetInterfaces()
@@ -29,9 +29,9 @@ namespace OoMapper
             return null;
         }
 
-        public IEnumerable<TypeMapConfiguration> InheritedConfigurations(TypeMapConfiguration tmc)
+        public IEnumerable<ITypeMapConfiguration> InheritedConfigurations(ITypeMapConfiguration tmc)
         {
-            IEnumerable<TypeMapConfiguration> selectMany = typeMapConfigurations.Where(x => x.Including(tmc))
+            var selectMany = typeMapConfigurations.Where(x => x.Including(tmc))
                 .SelectMany(InheritedConfigurations);
 
             yield return tmc;
