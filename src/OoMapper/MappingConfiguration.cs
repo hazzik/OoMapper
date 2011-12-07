@@ -79,9 +79,9 @@ namespace OoMapper
             throw new KeyNotFoundException(Tuple.Create(sourceType, destinationType).ToString());
         }
 
-    	private readonly IDictionary<TypeMapConfiguration, DynamicMapperBase> instances = new Dictionary<TypeMapConfiguration, DynamicMapperBase>();
+    	private readonly IDictionary<ITypeMapConfiguration, DynamicMapperBase> instances = new Dictionary<ITypeMapConfiguration, DynamicMapperBase>();
 
-        private DynamicMapperBase GetDynamicMapper(TypeMapConfiguration map)
+        private DynamicMapperBase GetDynamicMapper(ITypeMapConfiguration map)
     	{
     		DynamicMapperBase res;
     		if(instances.TryGetValue(map, out res))
@@ -114,11 +114,11 @@ namespace OoMapper
 				yield return include;
         }
 
-    	private TypeMapConfiguration GetTypeMapConfiguration(Tuple<Type, Type> include)
+    	private ITypeMapConfiguration GetTypeMapConfiguration(Tuple<Type, Type> include)
     	{
     		Type sourceType = include.Item1;
     		Type destinationType = include.Item2;
-    		TypeMapConfiguration map = userDefinedConfiguration.FindTypeMapConfiguration(sourceType, destinationType);
+    		var map = userDefinedConfiguration.FindTypeMapConfiguration(sourceType, destinationType);
     		if (map == null) throw new KeyNotFoundException(include.ToString());
     		return map;
     	}

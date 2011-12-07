@@ -20,16 +20,20 @@ namespace OoMapper
 
         private static Expression GetMemberExpression(Expression source, MemberInfo sourceProperty)
         {
-            if (sourceProperty is PropertyInfo)
-                return Expression.Property(source, (PropertyInfo) sourceProperty);
-            if (sourceProperty is FieldInfo)
-                return Expression.Field(source, (FieldInfo) sourceProperty);
-            if (sourceProperty is MethodInfo)
+            var property = sourceProperty as PropertyInfo;
+            if (property != null)
+                return Expression.Property(source, property);
+            
+            var field = sourceProperty as FieldInfo;
+            if (field != null)
+                return Expression.Field(source, field);
+            
+            var method = sourceProperty as MethodInfo;
+            if (method != null)
             {
-                var methodInfo = (MethodInfo) sourceProperty;
-                return methodInfo.IsStatic
-                           ? Expression.Call(null, methodInfo, new[] {source})
-                           : Expression.Call(source, methodInfo);
+                return method.IsStatic
+                           ? Expression.Call(null, method, new[] {source})
+                           : Expression.Call(source, method);
             }
 
             throw new NotSupportedException();
