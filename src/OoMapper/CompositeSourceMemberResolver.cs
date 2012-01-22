@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace OoMapper
 {
-    public class CompositeSourceMemberResolver : ISourceMemberResolver
+    internal class CompositeSourceMemberResolver : ISourceMemberResolver
     {
         private readonly ISourceMemberResolver[] resolvers;
 

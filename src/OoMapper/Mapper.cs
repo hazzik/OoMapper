@@ -1,20 +1,15 @@
-using System;
-
 namespace OoMapper
 {
+    using System;
+
     public static class Mapper
     {
         private static MappingConfiguration configuration = new MappingConfiguration();
 
-        public static void Reset()
-        {
-            configuration = new MappingConfiguration();
-        }
-
         public static MapperExpression<TSource, TDestination> CreateMap<TSource, TDestination>()
         {
-            Type sourceType = typeof (TSource);
-            Type destinationType = typeof (TDestination);
+            var sourceType = typeof (TSource);
+            var destinationType = typeof (TDestination);
 
             var tmc = new TypeMapConfiguration(sourceType, destinationType);
 
@@ -25,30 +20,31 @@ namespace OoMapper
 
         public static TDestination Map<TSource, TDestination>(TSource source)
         {
-            Type sourceType = typeof (TSource);
-            Type destinationType = typeof (TDestination);
-        	var expression = configuration.BuildNew(sourceType, destinationType);
-        	var func = (Func<TSource, TDestination>)expression.Compile();
-            return func.Invoke(source);
+            var mapper = (Func<TSource, TDestination>) configuration.GetCompiledNew(typeof (TSource), typeof (TDestination));
+            return mapper.Invoke(source);
         }
 
         public static TDestination Map<TSource, TDestination>(TSource source, TDestination destination)
         {
-            Type sourceType = typeof(TSource);
-            Type destinationType = typeof(TDestination);
-            var expression = configuration.BuildExisting(sourceType, destinationType);
-            var func = (Func<TSource, TDestination, TDestination>)expression.Compile();
-            return func.Invoke(source, destination);
+            var mapper = (Func<TSource, TDestination, TDestination>) configuration.GetCompiledExisting(typeof (TSource), typeof (TDestination));
+            return mapper.Invoke(source, destination);
         }
 
         public static object Map(object source, Type sourceType, Type destinationType)
         {
-            return configuration.BuildNew(sourceType, destinationType).Compile().DynamicInvoke(source);
+            var mapper = configuration.GetCompiledNew(sourceType, destinationType);
+            return mapper.DynamicInvoke(source);
         }
 
         public static object Map(object source, object destination, Type sourceType, Type destinationType)
         {
-            return configuration.BuildExisting(sourceType, destinationType).Compile().DynamicInvoke(source, destination);
+            var mapper = configuration.GetCompiledExisting(sourceType, destinationType);
+            return mapper.DynamicInvoke(source, destination);
+        }
+
+        public static void Reset()
+        {
+            configuration = new MappingConfiguration();
         }
     }
 }

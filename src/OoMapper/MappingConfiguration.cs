@@ -7,6 +7,8 @@ namespace OoMapper
 
     public class MappingConfiguration : IMappingConfiguration
     {
+        private readonly ICache<Tuple<Type, Type>, Delegate> compilledExisting = new Cache<Tuple<Type, Type>, Delegate>();
+        private readonly ICache<Tuple<Type, Type>, Delegate> compilledNew = new Cache<Tuple<Type, Type>, Delegate>();
         private readonly IObjectMapperBuilder existingObjectMapperBuilder = new CachedObjectMapperBuilder(new ExistingObjectMapperBuilder());
         private readonly ICache<Tuple<Type, Type>, TypeMap> mappers = new Cache<Tuple<Type, Type>, TypeMap>();
         private readonly ISourceMemberResolver[] resolvers;
@@ -25,8 +27,6 @@ namespace OoMapper
                                 new ConvertMapper(),
                             };
         }
-
-        #region IMappingConfiguration Members
 
         public Expression BuildSource(Expression expression, Type destinationType, IMappingConfiguration cfg)
         {
@@ -51,11 +51,21 @@ namespace OoMapper
             return existingObjectMapperBuilder.Build(GetTypeMap(sourceType, destinationType), this);
         }
 
-        #endregion
-
         public void AddTypeMapConfiguration(ITypeMapConfiguration tmc)
         {
             userDefinedConfiguration.AddTypeMapConfiguration(tmc);
+        }
+
+        public Delegate GetCompiledExisting(Type sourceType, Type destinationType)
+        {
+            return compilledExisting.GetOrAdd(Tuple.Create(sourceType, destinationType),
+                                              key => BuildExisting(sourceType, destinationType).Compile());
+        }
+
+        public Delegate GetCompiledNew(Type sourceType, Type destinationType)
+        {
+            return compilledNew.GetOrAdd(Tuple.Create(sourceType, destinationType),
+                                         key => BuildNew(sourceType, destinationType).Compile());
         }
 
         private TypeMap CreateOrGetTypeMap(ITypeMapConfiguration map)
