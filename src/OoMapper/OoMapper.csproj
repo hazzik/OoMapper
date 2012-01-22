@@ -52,9 +52,13 @@
     </Compile>
     <Compile Include="Cache.cs" />
     <Compile Include="CachedObjectMapperBuilder.cs" />
+    <Compile Include="ConvertibleTypeMapper.cs" />
+    <Compile Include="ConvertMapper.cs" />
     <Compile Include="ConvertSourceMemberResolver.cs" />
+    <Compile Include="DictionaryToDictionaryMapper.cs" />
     <Compile Include="DynamicMapperBase.cs" />
     <Compile Include="DynamicMapperBuilder.cs" />
+    <Compile Include="EnumerableToEnumerableMapper.cs" />
     <Compile Include="ExistingObjectMapperBuilder.cs" />
     <Compile Include="ICache.cs" />
     <Compile Include="IMappingConfiguration.cs" />
@@ -73,12 +77,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyMapConfiguration.cs" />
     <Compile Include="PropertyMapExpression.cs" />
+    <Compile Include="SameTypeMapper.cs" />
     <Compile Include="SourceMemberResolver.cs" />
     <Compile Include="CompositeSourceMemberResolver.cs" />
+    <Compile Include="ObjectToStringMapper.cs" />
     <Compile Include="TypeMap.cs" />
     <Compile Include="TypeMapBuilder.cs" />
     <Compile Include="TypeMapConfiguration.cs" />
     <Compile Include="TypeUtils.cs" />
+    <Compile Include="UserConfigurationMapper.cs" />
     <Compile Include="UserDefinedConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -86,6 +93,7 @@
       <Link>OoMapper.snk</Link>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
