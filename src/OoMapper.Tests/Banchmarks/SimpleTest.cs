@@ -26,7 +26,7 @@
 
             var sw = new Stopwatch();
             sw.Start();
-            for (int i = 0; i < mappingsCount; ++i)
+            for (var i = 0; i < mappingsCount; ++i)
             {
                 d = HandwrittenMap(s, d);
             }
@@ -65,7 +65,7 @@
 
             var sw = new Stopwatch();
             sw.Start();
-            for (int i = 0; i < mappingsCount; ++i)
+            for (var i = 0; i < mappingsCount; ++i)
             {
                 d = Mapper.Map(s, d);
             }
