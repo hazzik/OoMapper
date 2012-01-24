@@ -4,7 +4,7 @@
     using System.Diagnostics;
     using Xunit;
 
-    public class SimpleTest
+    public class SimpleTest:BenchmarkBase
     {
         public SimpleTest()
         {
@@ -24,17 +24,10 @@
             var s = new B2();
             var d = new A2();
 
-            var sw = new Stopwatch();
-            sw.Start();
-            for (var i = 0; i < mappingsCount; ++i)
-            {
-                d = HandwrittenMap(s, d);
-            }
-            sw.Stop();
-            return sw.ElapsedMilliseconds;
+            return Benchmark(mappingsCount, () => d = Map(s, d));
         }
 
-        private static A2 HandwrittenMap(B2 s, A2 result)
+        private static A2 Map(B2 s, A2 result)
         {
             result.str1 = s.str1;
             result.str2 = s.str2;
@@ -63,14 +56,7 @@
             var s = new B2();
             var d = new A2();
 
-            var sw = new Stopwatch();
-            sw.Start();
-            for (var i = 0; i < mappingsCount; ++i)
-            {
-                d = Mapper.Map(s, d);
-            }
-            sw.Stop();
-            return sw.ElapsedMilliseconds;
+            return Benchmark(mappingsCount, () => d = Mapper.Map(s, d));
         }
 
         public class A2

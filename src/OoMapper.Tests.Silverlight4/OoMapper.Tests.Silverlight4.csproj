@@ -80,6 +80,15 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\OoMapper.Tests\Banchmarks\BenchmarkBase.cs">
+      <Link>Banchmarks\BenchmarkBase.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\Banchmarks\NestedClassesTest.cs">
+      <Link>Banchmarks\NestedClassesTest.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper.Tests\Banchmarks\SimpleTest.cs">
+      <Link>Banchmarks\SimpleTest.cs</Link>
+    </Compile>
     <Compile Include="..\OoMapper.Tests\ConventionMappedCollectionShouldMapBaseTypes.cs">
       <Link>ConventionMappedCollectionShouldMapBaseTypes.cs</Link>
     </Compile>

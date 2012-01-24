@@ -68,14 +68,26 @@
     <Compile Include="..\OoMapper\CompositeSourceMemberResolver.cs">
       <Link>CompositeSourceMemberResolver.cs</Link>
     </Compile>
+    <Compile Include="..\OoMapper\ConvertibleTypeMapper.cs">
+      <Link>ConvertibleTypeMapper.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper\ConvertMapper.cs">
+      <Link>ConvertMapper.cs</Link>
+    </Compile>
     <Compile Include="..\OoMapper\ConvertSourceMemberResolver.cs">
       <Link>ConvertSourceMemberResolver.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper\DictionaryToDictionaryMapper.cs">
+      <Link>DictionaryToDictionaryMapper.cs</Link>
     </Compile>
     <Compile Include="..\OoMapper\DynamicMapperBase.cs">
       <Link>DynamicMapperBase.cs</Link>
     </Compile>
     <Compile Include="..\OoMapper\DynamicMapperBuilder.cs">
       <Link>DynamicMapperBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper\EnumerableToEnumerableMapper.cs">
+      <Link>EnumerableToEnumerableMapper.cs</Link>
     </Compile>
     <Compile Include="..\OoMapper\ExistingObjectMapperBuilder.cs">
       <Link>ExistingObjectMapperBuilder.cs</Link>
@@ -116,6 +128,9 @@
     <Compile Include="..\OoMapper\NewObjectMapperBuilder.cs">
       <Link>NewObjectMapperBuilder.cs</Link>
     </Compile>
+    <Compile Include="..\OoMapper\ObjectToStringMapper.cs">
+      <Link>ObjectToStringMapper.cs</Link>
+    </Compile>
     <Compile Include="..\OoMapper\ParameterRewriter.cs">
       <Link>ParameterRewriter.cs</Link>
     </Compile>
@@ -127,6 +142,9 @@
     </Compile>
     <Compile Include="..\OoMapper\PropertyMapExpression.cs">
       <Link>PropertyMapExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper\SameTypeMapper.cs">
+      <Link>SameTypeMapper.cs</Link>
     </Compile>
     <Compile Include="..\OoMapper\SourceMemberResolver.cs">
       <Link>SourceMemberResolver.cs</Link>
@@ -142,6 +160,9 @@
     </Compile>
     <Compile Include="..\OoMapper\TypeUtils.cs">
       <Link>TypeUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper\UserConfigurationMapper.cs">
+      <Link>UserConfigurationMapper.cs</Link>
     </Compile>
     <Compile Include="..\OoMapper\UserDefinedConfiguration.cs">
       <Link>UserDefinedConfiguration.cs</Link>

@@ -1,10 +1,9 @@
 ﻿namespace OoMapper.Tests.Banchmarks
 {
     using System;
-    using System.Diagnostics;
     using Xunit;
 
-    public class NestedClassesTest
+    public class NestedClassesTest : BenchmarkBase
     {
         public NestedClassesTest()
         {
@@ -25,29 +24,14 @@
         {
             var s = new BenchSource();
             var d = new BenchDestination();
-            var sw = new Stopwatch();
-            sw.Start();
-            for (int i = 0; i < mappingsCount; ++i)
-            {
-                d = Map(s, d);
-            }
-            sw.Stop();
-            return sw.ElapsedMilliseconds;
+            return Benchmark(mappingsCount, () => d = Map(s, d));
         }
 
         private static long BenchOoMapper(int mappingsCount)
         {
             var s = new BenchSource();
             var d = new BenchDestination();
-
-            var sw = new Stopwatch();
-            sw.Start();
-            for (int i = 0; i < mappingsCount; ++i)
-            {
-                Mapper.Map(s, d);
-            }
-            sw.Stop();
-            return sw.ElapsedMilliseconds;
+            return Benchmark(mappingsCount, () => d = Mapper.Map(s, d));
         }
 
         private static BenchDestination.Int1 Map(BenchSource.Int1 s, BenchDestination.Int1 d)
