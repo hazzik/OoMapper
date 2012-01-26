@@ -41,13 +41,14 @@ namespace OoMapper
         private static bool MapPropertyMap(ITypeMapConfiguration tmc, MemberInfo destination, out PropertyMap propertyMap)
         {
             propertyMap = null;
-            IPropertyMapConfiguration pmc = tmc.GetPropertyMapConfiguration(destination.Name);
-            if (pmc == null || !pmc.IsMapped())
-                pmc = tmc.GetPropertyMapConfiguration("*");
-            if (pmc == null || !pmc.IsMapped())
+
+            IPropertyMapConfiguration pmc;
+            if (!tmc.GetPropertyMapConfiguration(destination, out pmc))
                 return false;
+
             if (pmc.IsIgnored() == false)
                 propertyMap = new PropertyMap(destination, pmc.Resolver);
+            
             return true;
         }
 

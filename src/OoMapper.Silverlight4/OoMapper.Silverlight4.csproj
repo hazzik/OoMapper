@@ -101,8 +101,14 @@
     <Compile Include="..\OoMapper\IObjectMapperBuilder.cs">
       <Link>IObjectMapperBuilder.cs</Link>
     </Compile>
+    <Compile Include="..\OoMapper\IPropertyMapConfiguration.cs">
+      <Link>IPropertyMapConfiguration.cs</Link>
+    </Compile>
     <Compile Include="..\OoMapper\ISourceMemberResolver.cs">
       <Link>ISourceMemberResolver.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper\ITypeMapConfiguration.cs">
+      <Link>ITypeMapConfiguration.cs</Link>
     </Compile>
     <Compile Include="..\OoMapper\ITypePair.cs">
       <Link>ITypePair.cs</Link>

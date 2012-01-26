@@ -1,34 +1,30 @@
 namespace OoMapper
 {
-    public interface IPropertyMapConfiguration
-    {
-        string DestinationMemberName { get; }
-        ISourceMemberResolver Resolver { get; }
-        void Ignore();
-        bool IsIgnored();
-        bool IsMapped();
-        void SetCustomResolver(ISourceMemberResolver resolver);
-    }
+    using System;
+    using System.Reflection;
 
     public class PropertyMapConfiguration : IPropertyMapConfiguration
     {
-        private readonly string destinationMemberName;
+        private readonly Func<MemberInfo, bool> predicate;
         private bool isIgnored;
         private ISourceMemberResolver sourceMemberResolver;
 
-        public PropertyMapConfiguration(string destinationMemberName)
+        public PropertyMapConfiguration(Func<MemberInfo, bool> predicate, int order)
         {
-            this.destinationMemberName = destinationMemberName;
-        }
-
-        public string DestinationMemberName
-        {
-            get { return destinationMemberName; }
+            this.predicate = predicate;
+            Order = order;
         }
 
         public ISourceMemberResolver Resolver
         {
             get { return sourceMemberResolver; }
+        }
+
+        public int Order { get; private set; }
+
+        public bool IsApplicableTo(MemberInfo mi)
+        {
+            return predicate(mi);
         }
 
         public void Ignore()

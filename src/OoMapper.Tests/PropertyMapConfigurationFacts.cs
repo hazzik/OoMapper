@@ -7,7 +7,7 @@ namespace OoMapper.Tests
         [Fact]
         public void IgnoredIsMapped()
         {
-            var pmc = new PropertyMapConfiguration("A");
+            var pmc = new PropertyMapConfiguration(mi => true, 1);
             pmc.Ignore();
             Assert.True(pmc.IsMapped());
         }
@@ -15,7 +15,7 @@ namespace OoMapper.Tests
         [Fact]
         public void IgnoredIsIgnored()
         {
-            var pmc = new PropertyMapConfiguration("A");
+            var pmc = new PropertyMapConfiguration(mi => true, 1);
             pmc.Ignore();
             Assert.True(pmc.IsIgnored());
         }
@@ -23,7 +23,7 @@ namespace OoMapper.Tests
         [Fact]
         public void WithCustomResolverIsMapped()
         {
-            var pmc = new PropertyMapConfiguration("A");
+            var pmc = new PropertyMapConfiguration(mi => true, 1);
             pmc.SetCustomResolver(new LambdaSourceMemberResolver(null));
             Assert.True(pmc.IsMapped());
         }

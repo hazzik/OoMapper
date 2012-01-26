@@ -63,7 +63,9 @@
     <Compile Include="ICache.cs" />
     <Compile Include="IMappingConfiguration.cs" />
     <Compile Include="IObjectMapperBuilder.cs" />
+    <Compile Include="IPropertyMapConfiguration.cs" />
     <Compile Include="ISourceMemberResolver.cs" />
+    <Compile Include="ITypeMapConfiguration.cs" />
     <Compile Include="ITypePair.cs" />
     <Compile Include="IUserDefinedConfiguration.cs" />
     <Compile Include="LambdaSourceMemberResolver.cs" />

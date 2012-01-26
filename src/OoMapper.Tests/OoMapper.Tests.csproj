@@ -59,6 +59,7 @@
     <Compile Include="Banchmarks\NestedClassesTest.cs" />
     <Compile Include="Banchmarks\SimpleTest.cs" />
     <Compile Include="ConventionMappedCollectionShouldMapBaseTypes.cs" />
+    <Compile Include="Conventions\ForMembersTests.cs" />
     <Compile Include="ConvertValueTypes.cs" />
     <Compile Include="Integration\MapFromProperties.cs" />
     <Compile Include="MapIEnumerableFacts.cs">
