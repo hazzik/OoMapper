@@ -62,15 +62,18 @@ namespace OoMapper
 	        const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
 
 	        var members = new List<MemberInfo>();
-	        members.AddRange(type.GetProperties(flags)
-	            .Where(pi => pi.CanRead)
-	            .Where(pi => pi.GetIndexParameters().Length == 0));
+            members.AddRange(type.GetProperties(flags)
+                .Where(pi => pi.CanRead)
+                .Where(pi => pi.GetIndexParameters().Length == 0)
+                .Cast<MemberInfo>());
 
-	        members.AddRange(type.GetFields(flags));
+            members.AddRange(type.GetFields(flags)
+                .Cast<MemberInfo>());
 
             members.AddRange(type.GetMethods(flags)
                 .Where(mi => mi.GetParameters().Length == 0)
-                .Where(mi => mi.ReturnType != typeof (void)));
+                .Where(mi => mi.ReturnType != typeof (void))
+                .Cast<MemberInfo>());
 	        return members;
 	    }
     }
