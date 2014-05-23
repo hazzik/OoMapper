@@ -170,6 +170,9 @@
     <Compile Include="..\OoMapper.Tests\MapIEnumerableToIListExplicit.cs">
       <Link>MapIEnumerableToIListExplicit.cs</Link>
     </Compile>
+    <Compile Include="..\OoMapper.Tests\MapObjectToDictionary.cs">
+      <Link>MapObjectToDictionary.cs</Link>
+    </Compile>
     <Compile Include="..\OoMapper.Tests\MapObjectToString.cs">
       <Link>MapObjectToString.cs</Link>
     </Compile>
@@ -229,6 +232,8 @@
     <Page Include="App.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />

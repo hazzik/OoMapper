@@ -15,24 +15,7 @@ namespace OoMapper
 
         public Expression BuildSource(Expression x, Type destinationType, IMappingConfiguration mappingConfiguration)
         {
-            return GetMemberExpression(x, memberInfo);
-        }
-
-        private static Expression GetMemberExpression(Expression source, MemberInfo sourceProperty)
-        {
-            if (sourceProperty is PropertyInfo)
-                return Expression.Property(source, (PropertyInfo) sourceProperty);
-            if (sourceProperty is FieldInfo)
-                return Expression.Field(source, (FieldInfo) sourceProperty);
-            if (sourceProperty is MethodInfo)
-            {
-                var methodInfo = (MethodInfo) sourceProperty;
-                return methodInfo.IsStatic
-                           ? Expression.Call(null, methodInfo, new[] {source})
-                           : Expression.Call(source, methodInfo);
-            }
-
-            throw new NotSupportedException();
+            return ExpressionEx.Member(x, memberInfo);
         }
     }
 }

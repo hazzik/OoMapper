@@ -5,3 +5,4 @@
 /release/*
 *.user
 *.suo
+/UpgradeLog*.htm

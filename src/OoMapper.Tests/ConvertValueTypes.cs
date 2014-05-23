@@ -12,32 +12,30 @@ namespace OoMapper.Tests
                              {
                                  Value1 = 100500,
                                  Value2 = 500100,
+                                 Value3 = 42,
                              };
             Destination destination = Mapper.Map<Source, Destination>(source);
             Assert.Equal(100500, destination.Value1);
             Assert.Equal(500100, destination.Value2);
+            Assert.Equal(42, destination.Value3);
         }
 
-        #region Nested type: Destination
-
-        public class Destination
+	    public class Destination
         {
             public long Value1 { get; set; }
 
             public int Value2 { get; set; }
+
+            public int Value3 { get; set; }
         }
 
-        #endregion
-
-        #region Nested type: Source
-
-        public class Source
+	    public class Source
         {
             public int Value1 { get; set; }
 
             public long Value2 { get; set; }
-        }
 
-        #endregion
+	        public byte Value3 { get; set; }
+        }
     }
 }

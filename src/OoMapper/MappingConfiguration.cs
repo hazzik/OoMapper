@@ -25,6 +25,7 @@ namespace OoMapper
                                new ConvertibleTypeMapper(),
                                new UserConfigurationMapper(userDefinedConfiguration),
                                new DictionaryToDictionaryMapper(),
+                               new ObjectToDictionaryMapper(), 
                                new EnumerableToEnumerableMapper(),
                                new ObjectToStringMapper(),
                                new ConvertMapper(),

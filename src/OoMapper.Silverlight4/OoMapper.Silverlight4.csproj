@@ -92,6 +92,9 @@
     <Compile Include="..\OoMapper\ExistingObjectMapperBuilder.cs">
       <Link>ExistingObjectMapperBuilder.cs</Link>
     </Compile>
+    <Compile Include="..\OoMapper\ExpressionEx.cs">
+      <Link>ExpressionEx.cs</Link>
+    </Compile>
     <Compile Include="..\OoMapper\ICache.cs">
       <Link>ICache.cs</Link>
     </Compile>
@@ -133,6 +136,9 @@
     </Compile>
     <Compile Include="..\OoMapper\NewObjectMapperBuilder.cs">
       <Link>NewObjectMapperBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\OoMapper\ObjectToDictionaryMapper.cs">
+      <Link>ObjectToDictionaryMapper.cs</Link>
     </Compile>
     <Compile Include="..\OoMapper\ObjectToStringMapper.cs">
       <Link>ObjectToStringMapper.cs</Link>

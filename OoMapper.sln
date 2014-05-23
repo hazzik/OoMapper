@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OoMapper.Tests", "src\OoMapper.Tests\OoMapper.Tests.csproj", "{394267C8-5199-4BE9-9342-9FD172DF1536}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OoMapper", "src\OoMapper\OoMapper.csproj", "{AA83FDE3-48FE-404D-9C42-018D15DEB4FC}"
@@ -47,8 +49,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{AA83FDE3-48FE-404D-9C42-018D15DEB4FC} = {75E443E8-F769-45B4-BC99-ECAF7168B50E}
 		{394267C8-5199-4BE9-9342-9FD172DF1536} = {75E443E8-F769-45B4-BC99-ECAF7168B50E}
+		{AA83FDE3-48FE-404D-9C42-018D15DEB4FC} = {75E443E8-F769-45B4-BC99-ECAF7168B50E}
 		{65DD73F6-25A6-4E19-B30F-A40EB9CA6991} = {7C5D9E13-9F35-4F4C-BA25-81B1DF2235DE}
 		{B7E1FB7F-7F42-4CBA-9601-027FB48B0924} = {7C5D9E13-9F35-4F4C-BA25-81B1DF2235DE}
 	EndGlobalSection

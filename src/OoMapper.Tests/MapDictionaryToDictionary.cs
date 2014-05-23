@@ -25,40 +25,24 @@ namespace OoMapper.Tests
             Assert.Equal(2, destination.Values.Values.First().A);
         }
 
-        #region Nested type: Destination
-
         public class Destination
         {
             public IDictionary<int, DestinationChild> Values { get; set; }
         }
-                   
-        #endregion
-
-        #region Nested type: DestinationChild
 
         public class DestinationChild
         {
             public int A { get; set; }
         }
 
-        #endregion
-
-        #region Nested type: Source
-
         public class Source
         {
             public IDictionary<int, SourceChild> Values { get; set; }
         }
 
-        #endregion
-
-        #region Nested type: SourceChild
-
         public class SourceChild
         {
             public int A { get; set; }
         }
-
-        #endregion
     }
 }

@@ -11,7 +11,7 @@ namespace OoMapper
 
         public static TypeMap CreateTypeMap(ITypeMapConfiguration tmc, IUserDefinedConfiguration configuration)
         {
-            List<PropertyMap> propertyMaps = GetDestinationMembers(tmc.DestinationType)
+            List<PropertyMap> propertyMaps = tmc.DestinationType.GetWritableMembers()
                 .Select(destination => CreatePropertyMap(tmc, configuration, destination))
                 .Where(propertyMap => propertyMap != null)
                 .ToList();
@@ -67,43 +67,12 @@ namespace OoMapper
             return new CompositeSourceMemberResolver(resolvers);
         }
 
-        private static IEnumerable<MemberInfo> GetDestinationMembers(IReflect destinationType)
-        {
-            const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
-
-            foreach (PropertyInfo propertyInfo in destinationType.GetProperties(flags)
-                .Where(pi => pi.CanWrite)
-                .Where(pi => pi.GetIndexParameters().Length == 0))
-                yield return propertyInfo;
-
-            foreach (FieldInfo fieldInfo in destinationType.GetFields(flags))
-                yield return fieldInfo;
-        }
-
-        private static IEnumerable<MemberInfo> GetSourceMembers(IReflect sourceType)
-        {
-            const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
-
-            foreach (PropertyInfo property in sourceType.GetProperties(flags)
-                .Where(pi => pi.CanRead)
-                .Where(pi => pi.GetIndexParameters().Length == 0))
-                yield return property;
-
-            foreach (FieldInfo fieldInfo in sourceType.GetFields(flags))
-                yield return fieldInfo;
-
-            foreach (MethodInfo methodInfo in sourceType.GetMethods(flags)
-                .Where(mi => mi.GetParameters().Length == 0)
-                .Where(mi => mi.ReturnType != typeof (void)))
-                yield return methodInfo;
-        }
-
         private static bool FindMembers(ICollection<MemberInfo> members, string name, Type sourceType)
         {
             if (String.IsNullOrEmpty(name))
                 return true;
 
-            IEnumerable<MemberInfo> sourceMembers = GetSourceMembers(sourceType);
+            var sourceMembers = sourceType.GetReadableMembers();
 
             MemberInfo memberInfo =
                 sourceMembers.FirstOrDefault(pi => name.StartsWith(pi.Name, StringComparison.InvariantCultureIgnoreCase));

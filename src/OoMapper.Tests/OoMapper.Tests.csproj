@@ -65,6 +65,7 @@
     <Compile Include="MapIEnumerableFacts.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MapObjectToDictionary.cs" />
     <Compile Include="MapOnlyWriteableProperties.cs" />
     <Compile Include="CustomPropertyMappingFacts.cs" />
     <Compile Include="DeepInheritance.cs" />

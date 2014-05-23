@@ -60,6 +60,7 @@
     <Compile Include="DynamicMapperBuilder.cs" />
     <Compile Include="EnumerableToEnumerableMapper.cs" />
     <Compile Include="ExistingObjectMapperBuilder.cs" />
+    <Compile Include="ExpressionEx.cs" />
     <Compile Include="ICache.cs" />
     <Compile Include="IMappingConfiguration.cs" />
     <Compile Include="IObjectMapperBuilder.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="MapperExpression.cs" />
     <Compile Include="MemberInfoExtensions.cs" />
     <Compile Include="NewObjectMapperBuilder.cs" />
+    <Compile Include="ObjectToDictionaryMapper.cs" />
     <Compile Include="ParameterRewriter.cs" />
     <Compile Include="PropertyMap.cs" />
     <Compile Include="Mapper.cs" />
